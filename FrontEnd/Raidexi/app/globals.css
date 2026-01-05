@@ -1,0 +1,141 @@
+@import "tailwindcss";
+:root {
+  --color-Background: #e9be49;
+  --text-Primary: #1a1510;
+  --paragraph-color: #b8b19d;
+  --color-brand: #b8b19d;
+}
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #1a1510;
+}
+::-webkit-scrollbar-thumb {
+  background: #383429;
+  border: 1px solid #1a1510;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #e9be49;
+}
+.font-mono-nums {
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+body {
+  background-color: #1a1510;
+  color: #e0dcd5;
+}
+
+::selection {
+  background-color: #e9be49;
+  color: #1a1510;
+}
+
+::-moz-selection {
+  background-color: #e9be49;
+  color: #1a1510;
+}
+.bg-primary {
+  background-color: var(--color-Background);
+}
+
+.border-primary {
+  border-color: var(--color-Background);
+}
+.text-primarys {
+  color: var(--color-Background);
+}
+.border-primarys {
+  border-color: var(--color-Background);
+}
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #1a1612;
+}
+::-webkit-scrollbar-thumb {
+  background: #544c3b;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #f2a60d;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #1a1612 inset !important;
+  -webkit-text-fill-color: #e6e1d6 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.retro-grid {
+  background-size: 40px 40px;
+  background-image: linear-gradient(
+      to right,
+      rgba(84, 76, 59, 0.1) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(84, 76, 59, 0.1) 1px, transparent 1px);
+}
+body {
+  margin: 0;
+  background-color: #1a1814;
+}
+.scanline {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.2)
+  );
+  background-size: 100% 4px;
+}
+.crt-flicker {
+  animation: flicker 0.15s infinite;
+}
+@keyframes flicker {
+  0% {
+    opacity: 0.97;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.98;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: #1a1814;
+}
+::-webkit-scrollbar-thumb {
+  background: #3a342a;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c28e2b;
+}
+.bg-grid-pattern {
+  background-image: linear-gradient(to right, #2a241d 1px, transparent 1px),
+    linear-gradient(to bottom, #2a241d 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.bg-grid-pattern {
+  background-image: linear-gradient(#393328 1px, transparent 1px),
+    linear-gradient(90deg, #393328 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+::-webkit-scrollbar-track {
+  background: #181511;
+}
+::-webkit-scrollbar-thumb {
+  background: #393328;
+  border: 1px solid #181511;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d48d11;
+}

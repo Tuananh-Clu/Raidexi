@@ -1,0 +1,9 @@
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.env
+.vscode/
+.DS_Store
+*.env

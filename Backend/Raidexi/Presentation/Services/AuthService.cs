@@ -1,0 +1,167 @@
+﻿using Microsoft.AspNetCore.Http;
+using Org.BouncyCastle.Asn1.Ocsp;
+using Raidexi.Application.Dtos;
+using Raidexi.Domain.Entities;
+using Raidexi.Domain.Interfaces;
+using Raidexi.Infrastructure.Persistence;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+
+namespace Raidexi.Presentation.Services
+{
+    public class AuthService : IAuthService
+    {
+        private readonly IUserRepository _userRepository;
+        private readonly IPassWordHash _passWordHash;
+        private readonly ITokenServices _tokenService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly AppDBContext appDBContext;
+        public AuthService(IUserRepository userRepository, IPassWordHash passWordHash, ITokenServices tokenService, IHttpContextAccessor httpContextAccessor, AppDBContext context)
+        {
+            _userRepository = userRepository;
+            _passWordHash = passWordHash;
+            _tokenService = tokenService;
+            _httpContextAccessor = httpContextAccessor;
+            appDBContext = context;
+        }
+
+        public async Task<AuthResult> LoginAsync(string email, string password)
+        {
+            var user = await _userRepository.GetByEmailAsync(email);
+            if (user == null || !_passWordHash.VerifyPassword(user.HashPassword,password))
+            {
+                return new AuthResult
+                {
+                    IsSuccess = false,
+                    ErrorMessage = "Invalid email or password.",
+                    User = null
+                };
+            }
+            var token = _tokenService.CreateToken(user);
+            if (token == null) {
+                return new AuthResult
+                {
+                    IsSuccess = false,
+                    ErrorMessage = "Token generation failed.",
+                    User = null
+                };
+            }
+            _httpContextAccessor.HttpContext?.Response.Cookies.Append("access_token_client", token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            });
+            return new AuthResult
+            {
+                IsSuccess = true,
+                ErrorMessage = null,
+                User = user
+            };
+        }
+
+        public async Task<AuthResult> RegisterAsync(string email, string password, string fullName)
+        {
+            var existingUser = await _userRepository.GetByEmailAsync(email);
+            if (existingUser != null)
+            {
+                return new AuthResult
+                {
+                    IsSuccess = false,
+                    ErrorMessage = "User with this email already exists.",
+                    User = null
+                };
+            }
+
+            var hashedPassword = _passWordHash.HashPassword(password);
+
+            var newUser = new User
+            {
+                Id = Guid.NewGuid().ToString(),
+                Email = email,
+                FullName = fullName,
+                HashPassword = hashedPassword,
+                CreatedAt = DateTime.UtcNow
+            };
+            await _userRepository.AddAsync(newUser);
+            var token = _tokenService.CreateToken(newUser);
+            _httpContextAccessor.HttpContext?.Response.Cookies.Append("access_token_client", token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            });
+
+            return new AuthResult
+            {
+                IsSuccess = true,
+                ErrorMessage = null,
+                User = newUser
+            };
+        }
+        public async Task<AuthResult> LoginWithFirebase(string token)
+        {
+            FirebaseAdmin.Auth.FirebaseToken decodeToken = await FirebaseAdmin.Auth.FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(token);
+            if (decodeToken == null)
+            {
+                return null;
+            }
+            var id = decodeToken.Uid;
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+            {
+                user = new User
+                {
+                    Id = id,
+                    Email = decodeToken.Claims["email"]?.ToString(),
+                    FullName = decodeToken.Claims["name"]?.ToString(),
+                    HashPassword = "",
+                    CreatedAt = DateTime.UtcNow
+                };
+                await _userRepository.AddAsync(user);
+                var tokens = _tokenService.CreateToken(user);
+                _httpContextAccessor.HttpContext?.Response.Cookies.Append("access_token_client", tokens, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = DateTimeOffset.UtcNow.AddDays(7)
+                });
+
+            }
+            else
+            {
+                var tokens=_tokenService.CreateToken(user);
+                _httpContextAccessor.HttpContext?.Response.Cookies.Append("access_token_client", tokens, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = DateTimeOffset.UtcNow.AddDays(7)
+                });
+            }
+            return new AuthResult
+            {
+                IsSuccess = true,
+                ErrorMessage = null,
+                User = user
+            };
+        }
+
+        public async Task<User> GetDataUser()
+        {
+            var token = _httpContextAccessor.HttpContext?.Request.Cookies[$"access_token_client"];
+            var jwt=new JwtSecurityTokenHandler().ReadJwtToken(token);
+            var userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            var user = await _userRepository.GetByIdAsync(userId);
+            return user;
+        }
+        public async Task LogOut()
+        {
+            _httpContextAccessor.HttpContext?.Response.Cookies.Delete("access_token_client");
+            await Task.CompletedTask;
+        }
+    }
+}
