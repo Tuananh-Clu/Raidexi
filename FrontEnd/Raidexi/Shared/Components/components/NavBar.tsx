@@ -18,6 +18,10 @@ export const NavBar: React.FC = () => {
   const currentPath = usePathname();
   console.log(currentPath);
   const navigate = useRouter();
+  const handleClick=async()=>{
+    context?.AuthLogout()
+    navigate.push("/")
+  }
   return (
     <header className="sticky top-0 z-50 border-b border-border-brass bg-background-dark/95 backdrop-blur-sm">
       <div className="flex items-center justify-between h-16 px-6 mx-auto max-w-7xl">
@@ -69,12 +73,12 @@ export const NavBar: React.FC = () => {
             >
               Profile
             </a>
-            <a
-              href="/Logout"
+            <button
+            onClick={handleClick}
               className="px-4 py-2 font-mono text-xs font-bold text-white uppercase transition-all duration-300 border border-primary/50 hover:bg-primary/20 hover:border-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
             >
               Log Out
-            </a>
+            </button>
           </div>
         ) : (
           <div className="flex items-center gap-3">

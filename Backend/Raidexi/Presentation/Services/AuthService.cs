@@ -153,7 +153,11 @@ namespace Raidexi.Presentation.Services
         public async Task<User> GetDataUser()
         {
             var token = _httpContextAccessor.HttpContext?.Request.Cookies[$"access_token_client"];
-            var jwt=new JwtSecurityTokenHandler().ReadJwtToken(token);
+            if(token==null)
+            {
+                return null;
+            }
+            var jwt =new JwtSecurityTokenHandler().ReadJwtToken(token);
             var userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
             var user = await _userRepository.GetByIdAsync(userId);
             return user;
