@@ -6,22 +6,23 @@ import PartnerGrid from "@/features/Brand/components/PartnerGrid";
 import QuoteSection from "@/features/Brand/components/QuoteSection";
 import { useContext, useMemo, useState } from "react";
 import { BrandStatus, FilterType } from "@/features/Brand/types";
-import { BRANDS } from "@/features/Brand/contstants";
 import FilterBar from "@/features/Brand/components/FilterBar";
 import BrandCard from "@/features/Brand/components/BrandCard";
 import Pagination from "@/features/Brand/components/Pagination";
-import { useAuthentication } from "@/features/Auth/Hook/Authentication";
+
 import { AuthContext } from "@/provider/AuthProvider";
+import { BrandContext } from "@/provider/BrandProvider";
 export default function Page() {
   const [activeFilter, setActiveFilter] = useState<FilterType>(FilterType.ALL);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const context=useContext(AuthContext);
+  const BrandContexts=useContext(BrandContext)
   const isLoggedIn=context?.isLoggedIn;
   const itemsPerPage = 8;
 
   const filteredBrands = useMemo(() => {
-    return BRANDS.filter((brand) => {
+    return BrandContexts?.dataBrand.filter((brand) => {
       const matchesSearch =
         brand.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         brand.refCode.toLowerCase().includes(searchQuery.toLowerCase());
@@ -40,22 +41,22 @@ export default function Page() {
     });
   }, [searchQuery, activeFilter]);
 
-  const totalItems = filteredBrands.length;
+  const totalItems = BrandContexts?.dataBrand.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const currentBrands = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
-    return filteredBrands.slice(start, start + itemsPerPage);
+    return BrandContexts?.dataBrand.slice(start, start + itemsPerPage);
   }, [filteredBrands, currentPage]);
 
   const counts = useMemo(() => {
     return {
-      all: BRANDS.length,
-      optimized: BRANDS.filter((b) => b.status === BrandStatus.OPTIMIZED)
-        .length,
-      pending: BRANDS.filter((b) => b.status === BrandStatus.PENDING).length,
-      recalibrate: BRANDS.filter((b) => b.status === BrandStatus.RECALIBRATE)
-        .length,
+      all: BrandContexts?.dataBrand.length ?? 0,
+      optimized: BrandContexts?.dataBrand.filter((b) => b.status === BrandStatus.OPTIMIZED)
+        .length ?? 0,
+      pending: BrandContexts?.dataBrand.filter((b) => b.status === BrandStatus.PENDING).length ?? 0,
+      recalibrate: BrandContexts?.dataBrand.filter((b) => b.status === BrandStatus.RECALIBRATE)
+        .length ?? 0,
     };
   }, []);
 
@@ -111,10 +112,10 @@ export default function Page() {
             />
 
             <section className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {currentBrands.map((brand) => (
+              {BrandContexts?.dataBrand.map((brand) => (
                 <BrandCard key={brand.id} brand={brand} />
               ))}
-              {currentBrands.length === 0 && (
+              {BrandContexts?.dataBrand.length === 0 && (
                 <div className="py-12 font-mono text-center border border-dashed col-span-full border-border-sepia text-text-muted">
                   NO BRANDS FOUND MATCHING CRITERIA
                 </div>

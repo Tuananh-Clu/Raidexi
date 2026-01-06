@@ -39,12 +39,13 @@ export interface Brand {
   metricLabel: string; 
   metricValue: string; 
   icon: string; 
+  category: string;
 }
 
 export interface PaginationProps {
   currentPage: number;
   totalPages: number;
-  totalItems: number;
+  totalItems: number|undefined;
   itemsPerPage: number;
   onPageChange: (page: number) => void;
 }

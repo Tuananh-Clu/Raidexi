@@ -3,12 +3,14 @@ using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
+using MongoDB.Driver;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Raidexi.Domain.Interfaces;
 using Raidexi.Infrastructure.Persistence;
 using Raidexi.Infrastructure.Security;
 using Raidexi.Presentation.Services;
 using System;
+using System.Xml.Linq;
 DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +32,7 @@ builder.Services.AddScoped<ITokenServices, TokenGenerate>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddScoped<ISizeMapping,MappingSizeRepo>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -69,6 +72,18 @@ builder.Services.AddCors(options =>
         .AllowCredentials();
     });
 });
+var mongourl = Environment.GetEnvironmentVariable("MongoUrl");
+var mongoDataBaseName = Environment.GetEnvironmentVariable("Databasename");
+builder.Services.AddSingleton<IMongoClient>(sp =>
+    {
+        return new MongoClient(mongourl);
+});
+builder.Services.AddSingleton<IMongoDatabase>(sp =>
+{
+    var client = sp.GetRequiredService<IMongoClient>();
+    return client.GetDatabase(mongoDataBaseName);
+});
+builder.Services.AddSingleton<MongoDbContext>();
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {

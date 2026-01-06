@@ -2,7 +2,6 @@
 import React, { useContext } from "react";
 import { SquareActivity } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
-import { useAuthentication } from "@/features/Auth/Hook/Authentication";
 import { AuthContext } from "@/provider/AuthProvider";
 
 export const NavBar: React.FC = () => {
@@ -91,7 +90,7 @@ export const NavBar: React.FC = () => {
             <div className="w-px h-6 bg-gray-400/50" />
             <a
               href="/SignUp"
-              className="px-6 py-2 font-mono text-xs font-bold uppercase text-white border-2 border-primary hover:bg-primary-dim hover:shadow-lg hover:shadow-primary/50 hover:-translate-y-0.5 transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90"
+              className="px-6 py-2 font-mono text-xs font-bold uppercase text-white border-2 border-primary hover:bg-primary-dim hover:shadow-lg hover:shadow-primary/50 hover:-translate-y-0.5 transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none bg-linear-to-r from-primary to-primary/80 hover:from-primary/90"
             >
               Sign Up
             </a>

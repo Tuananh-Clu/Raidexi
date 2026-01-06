@@ -62,7 +62,7 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand }) => {
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <div className={`w-10 h-10 bg-white/5 flex items-center justify-center border border-white/10 transition-all ${config.iconGrayscale}`}>
-            <span className="material-symbols-outlined text-white/50">{icon}</span>
+            <img src={icon} alt={`${name} icon`} className="object-contain w-6 h-6" />
           </div>
           <div>
             <h3 className="text-lg font-bold leading-none">{name}</h3>

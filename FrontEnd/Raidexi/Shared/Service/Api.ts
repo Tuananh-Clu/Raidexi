@@ -7,6 +7,9 @@ export const API={
         "Register":"/api/User/Register",
         "GetDataUser":"/api/User/GetUserData",
         "LoginWithFirebase":"/api/User/LoginWithFirebase"
+    },
+    "Brand":{
+        "GetBrandProfile":"/api/MappingSize/brand-profiles",
     }
 }
 export const BASE_URL="https://localhost:7133"

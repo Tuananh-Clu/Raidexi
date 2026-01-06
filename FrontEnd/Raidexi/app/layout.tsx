@@ -3,12 +3,9 @@ import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import { AuthProvider } from "@/provider/AuthProvider";
 import type { ReactNode } from "react";
+import { BrandProvider } from "@/provider/BrandProvider";
 
-export default function RootLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
@@ -36,7 +33,9 @@ export default function RootLayout({
       </head>
       <body>
         <Toaster position="top-right" />
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <BrandProvider>{children}</BrandProvider>
+        </AuthProvider>
       </body>
     </html>
   );

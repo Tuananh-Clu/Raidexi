@@ -5,6 +5,218 @@
     "version": "v1"
   },
   "paths": {
+    "/api/MappingSize/brand-profiles": {
+      "get": {
+        "tags": [
+          "MappingSize"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/MappingSize/AddBrandProfile": {
+      "post": {
+        "tags": [
+          "MappingSize"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/BrandProfile"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/BrandProfile"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/BrandProfile"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/MappingSize/AddSizeMapping": {
+      "post": {
+        "tags": [
+          "MappingSize"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SizeMapping"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SizeMapping"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SizeMapping"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/MappingSize/AddUniversalSize": {
+      "post": {
+        "tags": [
+          "MappingSize"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/UniversalSize"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/UniversalSize"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/UniversalSize"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/MappingSize/AddCategoryRule": {
+      "post": {
+        "tags": [
+          "MappingSize"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CategoryRule"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CategoryRule"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CategoryRule"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/MappingSize/AddBrandRule": {
+      "post": {
+        "tags": [
+          "MappingSize"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/BrandRule"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/BrandRule"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/BrandRule"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/User/Login": {
       "post": {
         "tags": [
@@ -115,6 +327,94 @@
   },
   "components": {
     "schemas": {
+      "BrandProfile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "refCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/BrandStatus"
+          },
+          "lastSync": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "metricLabel": {
+            "type": "string",
+            "nullable": true
+          },
+          "metricValue": {
+            "type": "string",
+            "nullable": true
+          },
+          "icon": {
+            "type": "string",
+            "nullable": true
+          },
+          "category": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BrandRule": {
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "string",
+            "nullable": true
+          },
+          "chest": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "waist": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hip": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BrandStatus": {
+        "enum": [
+          "OPTIMIZED",
+          "PENDING",
+          "RECALIBRATE"
+        ],
+        "type": "string"
+      },
+      "CategoryRule": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "LoginDto": {
         "type": "object",
         "properties": {
@@ -146,10 +446,65 @@
           }
         },
         "additionalProperties": false
+      },
+      "SizeMapping": {
+        "type": "object",
+        "properties": {
+          "universal": {
+            "type": "string",
+            "nullable": true
+          },
+          "vn": {
+            "type": "string",
+            "nullable": true
+          },
+          "us": {
+            "type": "string",
+            "nullable": true
+          },
+          "eu": {
+            "type": "string",
+            "nullable": true
+          },
+          "jp": {
+            "type": "string",
+            "nullable": true
+          },
+          "kr": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UniversalSize": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "chest": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "waist": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hip": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
       }
     }
   },
   "tags": [
+    {
+      "name": "MappingSize"
+    },
     {
       "name": "User"
     }

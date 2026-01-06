@@ -1,5 +1,101 @@
 [
   {
+    "ContainingType": "Raidexi.Presentation.Controller.MappingSizeController",
+    "Method": "AddBrandProfile",
+    "RelativePath": "api/MappingSize/AddBrandProfile",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "brandProfile",
+        "Type": "System.Collections.Generic.List\u00601[[Raidexi.Domain.Entities.MappingSize\u002BBrandProfile, Raidexi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Raidexi.Presentation.Controller.MappingSizeController",
+    "Method": "AddBrandRule",
+    "RelativePath": "api/MappingSize/AddBrandRule",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "brandRule",
+        "Type": "System.Collections.Generic.List\u00601[[Raidexi.Domain.Entities.MappingSize\u002BBrandRule, Raidexi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Raidexi.Presentation.Controller.MappingSizeController",
+    "Method": "AddCategoryRule",
+    "RelativePath": "api/MappingSize/AddCategoryRule",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "categoryRule",
+        "Type": "System.Collections.Generic.List\u00601[[Raidexi.Domain.Entities.MappingSize\u002BCategoryRule, Raidexi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Raidexi.Presentation.Controller.MappingSizeController",
+    "Method": "AddSizeMapping",
+    "RelativePath": "api/MappingSize/AddSizeMapping",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sizeMapping",
+        "Type": "System.Collections.Generic.List\u00601[[Raidexi.Domain.Entities.MappingSize\u002BSizeMapping, Raidexi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Raidexi.Presentation.Controller.MappingSizeController",
+    "Method": "AddUniversalSize",
+    "RelativePath": "api/MappingSize/AddUniversalSize",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "universalSize",
+        "Type": "System.Collections.Generic.List\u00601[[Raidexi.Domain.Entities.MappingSize\u002BUniversalSize, Raidexi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Raidexi.Presentation.Controller.MappingSizeController",
+    "Method": "Getbrandprofiles",
+    "RelativePath": "api/MappingSize/brand-profiles",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Raidexi.Presentation.Controller.UserController",
     "Method": "GetUserData",
     "RelativePath": "api/User/GetUserData",
