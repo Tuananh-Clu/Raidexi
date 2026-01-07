@@ -1,9 +1,10 @@
-import { Footer } from "@/features/Home/components/Footer";
-import { NavBar } from "@/Shared/Components/NavBar";
+
 import Hero from "@/features/WorkFlow/Components/Hero";
 import LayerGrid from "@/features/WorkFlow/Components/LayoutGrid";
 import { LogicDiagram } from "@/features/WorkFlow/Components/LogicDiagram";
 import SpecsTable from "@/features/WorkFlow/Components/SpecsTable";
+import { Footer } from "@/Shared/Components/components/Footer";
+import { NavBar } from "@/Shared/Components/components/NavBar";
 
 export default function Page() {
   return (

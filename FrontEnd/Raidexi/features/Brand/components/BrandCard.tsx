@@ -1,5 +1,8 @@
-import React from 'react';
+"use client";
+import React, { useContext } from 'react';
 import { Brand, BrandStatus } from '../types';
+import { SizeCustomizer } from '../Ui/SizeCustomizer';
+import { BrandContext, BrandProvider } from '@/provider/BrandProvider';
 
 interface BrandCardProps {
   brand: Brand;
@@ -7,6 +10,12 @@ interface BrandCardProps {
 
 const BrandCard: React.FC<BrandCardProps> = ({ brand }) => {
   const { name, refCode, status, lastSync, metricLabel, metricValue, icon } = brand;
+  const context=useContext(BrandContext);
+  const {popUpSettings,setPopUpSettings}=context;
+
+  const handleClick = () => {
+    setPopUpSettings({isopened:true,brandrefcode:refCode,gender:"",productType:"",sizeSystem:""});
+  };
   const getConfig = (status: BrandStatus) => {
     switch (status) {
       case BrandStatus.OPTIMIZED:
@@ -56,7 +65,8 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand }) => {
   const config = getConfig(status);
 
   return (
-    <article className={`bg-surface-dark border border-border-sepia p-5 flex flex-col gap-4 group transition-colors relative overflow-hidden ${config.borderColor}`}>
+    <>
+        <article className={`bg-surface-dark border border-border-sepia p-5 flex flex-col gap-4 group transition-colors relative overflow-hidden ${config.borderColor}`}>
       {config.cornerTag}
       
       <div className="flex items-start justify-between">
@@ -88,12 +98,14 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand }) => {
       </div>
 
       <div className="pt-2 mt-auto">
-        <button className={`w-full h-9 uppercase text-xs font-bold tracking-wider font-mono transition-all flex items-center justify-center gap-2 ${config.buttonStyles}`}>
-          {config.buttonText}
+        <button onClick={handleClick} className={`w-full h-9 uppercase text-xs font-bold tracking-wider font-mono transition-all flex items-center justify-center gap-2 ${config.buttonStyles}`}>
+          <h1 className=''>Estimate Brand</h1>
           <span className="material-symbols-outlined !text-[16px]">{config.buttonIcon}</span>
         </button>
       </div>
     </article>
+    </>
+
   );
 };
 

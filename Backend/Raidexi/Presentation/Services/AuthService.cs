@@ -150,7 +150,7 @@ namespace Raidexi.Presentation.Services
             };
         }
 
-        public async Task<User> GetDataUser()
+        public async Task<AuthResult> GetDataUser()
         {
             var token = _httpContextAccessor.HttpContext?.Request.Cookies[$"access_token_client"];
             if(token==null)
@@ -160,7 +160,12 @@ namespace Raidexi.Presentation.Services
             var jwt =new JwtSecurityTokenHandler().ReadJwtToken(token);
             var userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
             var user = await _userRepository.GetByIdAsync(userId);
-            return user;
+            return new AuthResult
+            {
+                IsSuccess = true,
+                ErrorMessage = null,
+                User = user
+            };
         }
         public async Task LogOut()
         {

@@ -12,17 +12,15 @@ export interface FilterBarProps {
   onSearchChange: (query: string) => void;
   counts: {
     all: number;
-    optimized: number;
-    pending: number;
-    recalibrate: number;
+    international: number;
+    VietNam: number;
   };
 }
 
 export enum FilterType {
   ALL = 'ALL',
-  OPTIMIZED = 'OPTIMIZED',
-  PENDING = 'PENDING',
-  RECALIBRATE = 'RECALIBRATE'
+  International = 'International',
+  VietNam = 'VietNam'
 }
 export enum BrandStatus {
   OPTIMIZED = 'OPTIMIZED',
@@ -48,4 +46,49 @@ export interface PaginationProps {
   totalItems: number|undefined;
   itemsPerPage: number;
   onPageChange: (page: number) => void;
+}
+export enum Gender {
+  MALE = 'NAM',
+  FEMALE = 'NỮ'
+}
+
+export enum ProductType {
+  TOP = 'ÁO',
+  BOTTOM = 'QUẦN',
+  DRESS = 'ĐẦM'
+}
+
+export enum SizeSystem {
+  UK = 'ANH',
+  US = 'MỸ',
+  VN = 'VN',
+  EU = 'CHÂU ÂU'
+}
+
+export interface SizePreferences {
+  gender: Gender;
+  productType: ProductType;
+  sizeSystem: SizeSystem;
+}
+export interface UserMeasurements {
+  chest: number;
+  waist: number;
+  hips: number;
+  height: number;
+}
+
+
+
+export enum RegionSystem {
+  UK = 'ANH (UK)',
+  US = 'MỸ (US)',
+  VN = 'VN',
+  EU = 'CHÂU ÂU (EU)'
+}
+
+export interface SizeChartRow {
+  size: string;
+  chestRange: string;
+  shoulderRange: string;
+  fitStatus: 'Chật' | 'MATCH' | 'Rộng';
 }

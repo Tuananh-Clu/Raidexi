@@ -1,13 +1,8 @@
 import React from 'react';
-import { Button } from '../../../features/Home/Ui/Button';
 
 export const Footer: React.FC = () => {
   return (
     <>
-      <section className="relative flex flex-col items-center justify-center px-6 py-32 text-center bg-background-dark">
-        <h2 className="mb-8 text-4xl font-medium tracking-tight text-white md:text-5xl">Ready to measure.</h2>
-        <Button className="px-10 py-5 min-w-60">Start Measurement</Button>
-      </section>
 
       <footer className="px-6 py-12 border-t border-border-subtle bg-surface-dark">
         <div className="flex flex-col items-start justify-between gap-8 mx-auto max-w-7xl md:flex-row md:items-center">

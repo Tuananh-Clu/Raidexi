@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/provider/AuthProvider";
 import type { ReactNode } from "react";
 import { BrandProvider } from "@/provider/BrandProvider";
+import { BodyMeasureEstimateProvider } from "@/Shared/Service/BodyMeasureEstimate";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -30,11 +31,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           rel="stylesheet"
         />
         <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+       
       </head>
+
       <body>
         <Toaster position="top-right" />
         <AuthProvider>
+          <BodyMeasureEstimateProvider>
           <BrandProvider>{children}</BrandProvider>
+          </BodyMeasureEstimateProvider>
         </AuthProvider>
       </body>
     </html>

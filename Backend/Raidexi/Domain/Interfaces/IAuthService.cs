@@ -6,7 +6,7 @@ namespace Raidexi.Domain.Interfaces
     {
         Task<AuthResult> RegisterAsync(string email, string password, string fullName);
         Task<AuthResult> LoginAsync(string email, string password);
-        Task<User> GetDataUser();
+        Task<AuthResult> GetDataUser();
         Task<AuthResult> LoginWithFirebase(string token);
         Task LogOut();
 

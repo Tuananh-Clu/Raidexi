@@ -1,8 +1,6 @@
 import React from 'react';
 import { FilterBarProps, FilterType } from '../types';
 
-
-
 const FilterBar: React.FC<FilterBarProps> = ({ 
   activeFilter, 
   onFilterChange, 
@@ -20,7 +18,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
 
   return (
     <section className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-      {/* Search */}
       <div className="relative lg:col-span-4 group">
         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
           <span className="transition-colors material-symbols-outlined text-text-muted group-focus-within:text-primary">search</span>
@@ -33,8 +30,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
           placeholder="SEARCH BRANDS OR ID_REF..." 
         />
       </div>
-
-      {/* Filter Chips */}
       <div className="flex flex-wrap items-center gap-2 lg:col-span-8">
         <span className="mr-2 font-mono text-xs tracking-wide uppercase text-text-muted">Filter:</span>
         
@@ -46,25 +41,18 @@ const FilterBar: React.FC<FilterBarProps> = ({
         </button>
         
         <button 
-          onClick={() => onFilterChange(FilterType.OPTIMIZED)}
-          className={`h-10 px-4 font-mono text-xs uppercase tracking-wider flex items-center border transition-all ${getButtonStyles(FilterType.OPTIMIZED)}`}
+          onClick={() => onFilterChange(FilterType.International)}
+          className={`h-10 px-4 font-mono text-xs uppercase tracking-wider flex items-center border transition-all ${getButtonStyles(FilterType.International)}`}
         >
-          Optimized [{counts.optimized}]
+          International [{counts.international}]
+        </button>
+          <button 
+          onClick={() => onFilterChange(FilterType.VietNam)}
+          className={`h-10 px-4 font-mono text-xs uppercase tracking-wider flex items-center border transition-all ${getButtonStyles(FilterType.VietNam)}`}
+        >
+          VietNam [{counts.VietNam}]
         </button>
         
-        <button 
-          onClick={() => onFilterChange(FilterType.PENDING)}
-          className={`h-10 px-4 font-mono text-xs uppercase tracking-wider flex items-center border transition-all ${getButtonStyles(FilterType.PENDING)}`}
-        >
-          Pending Input [{counts.pending}]
-        </button>
-        
-        <button 
-          onClick={() => onFilterChange(FilterType.RECALIBRATE)}
-          className={`h-10 px-4 font-mono text-xs uppercase tracking-wider flex items-center border transition-all ${getButtonStyles(FilterType.RECALIBRATE)}`}
-        >
-          Recalibration [{counts.recalibrate}]
-        </button>
       </div>
     </section>
   );

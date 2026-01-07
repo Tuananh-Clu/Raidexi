@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Raidexi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+da0952fdf88c11a113a904137f2d7c8663c03955")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7bf95b7e84a28b81710dfe9fc9c29edb12aac125")]
 [assembly: System.Reflection.AssemblyProductAttribute("Raidexi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Raidexi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

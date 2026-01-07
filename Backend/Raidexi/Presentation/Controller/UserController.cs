@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Raidexi.Application.Dtos;
+using Raidexi.Domain.Entities;
 using Raidexi.Domain.Interfaces;
 using Raidexi.Presentation.Services;
 
@@ -25,9 +26,16 @@ namespace Raidexi.Presentation.Controller
             }
             return Ok(new
             {
-                isSuccess =true,
+                isSuccess = true,
                 message = result.ErrorMessage,
-                user = result.User
+                user = new User
+                {
+                    Id = result.User.Id,
+                    FullName = result.User.FullName,
+                    Email = result.User.Email,
+                    CreatedAt = result.User.CreatedAt,
+                    HashPassword = ""
+                }
             });
         }
         [HttpPost("Register")]
@@ -50,7 +58,19 @@ namespace Raidexi.Presentation.Controller
         public async Task<IActionResult> GetUserData()
         {
             var result = await authService.GetDataUser();
-            return Ok(result);
+            return Ok(new
+            {
+                isSuccess = true,
+                message = "Error Fetch Data",
+                user = new User
+                {
+                    Id = result.User.Id,
+                    FullName = result.User.FullName,
+                    Email = result.User.Email,
+                    CreatedAt = result.User.CreatedAt,
+                    HashPassword = ""
+                }
+            });
         }
         [HttpPost("Logout")]
         public async Task<IActionResult> Logout()
@@ -70,7 +90,14 @@ namespace Raidexi.Presentation.Controller
             {
                 isSuccess = true,
                 message = result.ErrorMessage,
-                user = result.User
+                user = new User
+                {
+                    Id = result.User.Id,
+                    FullName = result.User.FullName,
+                    Email = result.User.Email,
+                    CreatedAt = result.User.CreatedAt,
+                    HashPassword = ""
+                }
             });
         }
     }

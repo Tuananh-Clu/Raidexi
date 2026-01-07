@@ -10,6 +10,19 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+           gold: {
+                400: '#FACC15',
+                500: '#EAB308', 
+                600: '#CA8A04',
+                700: '#A16207',
+                accent: '#E6B325',
+              },
+              dark: {
+                900: '#0a0a0a',
+                800: '#121212',
+                700: '#1a1a1a',
+              }
+      },
         primary: "#f2a60d",
         "background-light": "#f8f7f5",
         "background-dark": "#1a1612",
@@ -37,7 +50,7 @@ module.exports = {
         "border-highlight": "#544b3b",
         "text-main": "#f2f0ed",
         "text-muted": "#b9af9d",
-      },
+      
       fontFamily: {
         display: ["Newsreader", "serif"],
         mono: ["JetBrains Mono", "monospace"],
