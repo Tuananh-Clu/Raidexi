@@ -1,9 +1,12 @@
 "use client";
-import  { useState } from "react";
+import  { useContext, useState } from "react";
 import { MeasurementData, SystemStatus } from "../../features/Camera/types";
 import ControlPanel from "@/features/Camera/components/ControlPanel";
-import Viewport from "@/features/Camera/components/ViewPort";
 import { NavBar } from "@/Shared/Components/components/NavBar";
+import Viewport from "@/features/Camera/components/ViewPort";
+import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
+
+
 
 const INITIAL_DATA: MeasurementData = {
   metrics: [
@@ -24,26 +27,38 @@ const INITIAL_STATUS: SystemStatus = {
   location: "BERLIN_HQ_01",
 };
 
-export function page() {
+export function Page() {
   const [showGrid, setShowGrid] = useState(false);
-  const [flashEnabled, setFlashEnabled] = useState(false);
-  const [triggerFlash, setTriggerFlash] = useState(false);
+  const [, setFlashEnabled] = useState(false);
+  const [triggerFlash] = useState(false);
   const [openCamera, setOpenCamera] = useState<boolean>(false);
-  const [data, setData] = useState<MeasurementData>(INITIAL_DATA);
-  const [status, setStatus] = useState<SystemStatus>(INITIAL_STATUS);
+  const context=useContext(BodyMeasureEstimateContext)
+  const [status] = useState<SystemStatus>(INITIAL_STATUS);
 
   return (
     <div className="flex flex-col w-full h-screen overflow-hidden bg-background-dark text-paper font-display selection:bg-brass-light selection:text-background-dark">
       <NavBar />
 
       <main className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_360px] h-[calc(100vh-64px)] overflow-hidden">
-        <Viewport showGrid={showGrid} triggerFlash={triggerFlash} openCamera={openCamera} />
-
+        <Viewport 
+          openCamera={openCamera}
+          showGrid={showGrid}
+          triggerFlash={triggerFlash}
+        />
         <ControlPanel
           openCamera={openCamera}
           setOpenCamera={setOpenCamera}
           status={status}
-          data={data}
+          data={context.dataMeasured ? {
+            metrics: Object.entries(context.dataMeasured).map(([key, value]) => ({
+              id: key,
+              label: key.charAt(0).toUpperCase() + key.slice(1),
+              value,
+              unit: "CM",
+            })),
+            estimatedSize: "Unknown",
+            sizeIndex: 0,
+          } : INITIAL_DATA}
           onToggleGrid={setShowGrid}
           onToggleFlash={setFlashEnabled}
         />
@@ -52,4 +67,4 @@ export function page() {
   );
 }
 
-export default page;
+export default Page;

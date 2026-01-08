@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { MeasurementData, SystemStatus } from "../types";
-import { BodyMeasureEstimateContext } from "@/Shared/Service/BodyMeasureEstimate";
+import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 import { ToasterUi } from "@/Shared/Ui/ToasterUi";
 
 interface ControlPanelProps {
@@ -23,8 +23,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   const [gridEnabled, setGridEnabled] = useState(false);
   const [flashEnabled, setFlashEnabled] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [heightInput, setHeightInput] = useState<number>();
-  const context=useContext(BodyMeasureEstimateContext);
+  const [heightInput, setHeightInput] = useState<string>("");
+  const context = useContext(BodyMeasureEstimateContext);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -90,7 +90,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         <div className="space-y-3">
           <div className="flex items-end justify-between">
             <p className="text-xs font-mono text-[#8a806d] tracking-widest uppercase">
-             Time to Measure
+              Time to Measure
             </p>
             <p className="font-mono text-sm font-bold text-brass-light">
               {context.countdown?.toFixed(0)}s
@@ -100,10 +100,10 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             {Array.from({ length: 15 }).map((_, i) => (
               <div
                 key={i}
-                className={`flex-1 transition-all duration-300 ${
-                  i < context.countdown!
-                    ? "bg-brass-light opacity-100 shadow-[0_0_8px_rgba(242,166,13,0.4)]"
-                    : "bg-brass-light opacity-20"
+                className={`flex-1 transition-all duration-300 shadow-[0_0_8px_rgba(242,166,13,0.4)] ${
+                  i >= context.countdown!
+                    ? "bg-white opacity-100 "
+                    : "bg-primary opacity-50"
                 }`}
               />
             ))}
@@ -142,11 +142,11 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             <div className="flex flex-col ">
               <p className="">Height</p>
               <input
-              value={heightInput}
+                value={heightInput}
                 className="px-3 font-mono text-xl outline-none"
                 type="number"
                 placeholder="Vui Lòng Nhập Số Đo"
-                onChange={(e) => setHeightInput(Number(e.target.value))}
+                onChange={(e) => setHeightInput(e.target.value)}
               />
             </div>
             <span className="text-3xl material-symbols-outlined text-brass">
@@ -154,22 +154,6 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             </span>
           </div>
         </div>
-
-        <button
-          onClick={() => {
-            if(heightInput==undefined)
-              {
-                ToasterUi("Vui Lòng Nhập Chiều Cao Trước Khi Đo!", "error");
-                return;
-              };
-            context.setMeasuring!(true);
-            context.setCountdown!(15);
-          }}
-          className="w-full h-14 bg-brass-light text-background-dark text-lg font-bold font-mono tracking-widest border border-transparent hover:bg-white hover:border-brass-light hover:shadow-[0_0_20px_rgba(242,166,13,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
-        >
-          <span className="material-symbols-outlined">camera_alt</span>
-          Bắt Đầu Đo
-        </button>
       </div>
 
       <div className="p-6 mt-auto space-y-4 border-t border-grid-line bg-background-dark">
@@ -222,14 +206,37 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             </span>
           </label>
         </div>
-
-        <button
-          onClick={() => setOpenCamera((a: boolean) => !a)}
-          className="w-full h-14 bg-brass-light text-background-dark text-lg font-bold font-mono tracking-widest border border-transparent hover:bg-white hover:border-brass-light hover:shadow-[0_0_20px_rgba(242,166,13,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
-        >
-          <span className="material-symbols-outlined">camera_alt</span>
-          {openCamera ? "CLOSE CAMERA" : "CAPTURE IMAGE"}
-        </button>
+        <div className="space-y-4">
+          <button
+            onClick={() => {
+              const height = Number(heightInput);
+              if (!height || Number.isNaN(height) || height <= 0) {
+                ToasterUi("Vui Lòng Nhập Chiều Cao Hợp Lệ", "error");
+                return;
+              }
+              if (openCamera === false) {
+                setOpenCamera(true);
+                return;
+              }
+              context?.setMeasuring?.(true);
+            }}
+            className="w-full h-14 cursor-pointer bg-primary text-background-dark text-lg font-bold font-mono tracking-widest border border-transparent hover:bg-white hover:border-brass-light hover:shadow-[0_0_20px_rgba(242,166,13,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+          >
+            <span className="material-symbols-outlined">camera_alt</span>
+            {openCamera ? "START ESTIMATE" : "CAPTURE IMAGE"}
+          </button>
+          {openCamera && (
+            <button
+              onClick={() => {
+                setOpenCamera(false);
+                context?.setMeasuring?.(false);
+              }}
+              className="w-full mb-3 h-14 cursor-pointer bg-red-600 text-white text-lg font-bold font-mono tracking-widest border border-transparent hover:bg-red-700 hover:shadow-[0_0_20px_rgba(255,0,0,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+            >
+              OFF
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

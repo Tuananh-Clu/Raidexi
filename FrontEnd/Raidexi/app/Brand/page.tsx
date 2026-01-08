@@ -85,7 +85,7 @@ export default function Page() {
           <section className="flex flex-col items-start justify-between gap-6 pb-6 border-b md:flex-row md:items-end border-border-sepia">
             <div className="max-w-2xl">
               <h2 className="mb-2 text-4xl font-medium tracking-tight text-white md:text-5xl font-display">
-                Brand Directory & Calibration
+                Brand Estimate
               </h2>
               <p className="text-lg font-light text-text-muted font-display">
                 Manage your personal sizing profiles across partner
@@ -95,20 +95,7 @@ export default function Page() {
                 </span>
               </p>
             </div>
-            <div className="flex gap-3">
-              <button className="bg-[#2a2620] hover:bg-[#343029] text-text-paper border border-border-sepia h-10 px-4 flex items-center gap-2 text-sm font-mono transition-all">
-                <span className="material-symbols-outlined !text-[18px]">
-                  history
-                </span>
-                HISTORY
-              </button>
-              <button className="flex items-center h-10 gap-2 px-6 font-mono text-sm font-bold tracking-wide uppercase transition-all bg-primary hover:bg-primary-dark text-background-dark">
-                <span className="material-symbols-outlined !text-[18px]">
-                  add
-                </span>
-                New Profile
-              </button>
-            </div>
+           
           </section>
 
           <FilterBar

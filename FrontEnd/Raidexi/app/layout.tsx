@@ -4,7 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/provider/AuthProvider";
 import type { ReactNode } from "react";
 import { BrandProvider } from "@/provider/BrandProvider";
-import { BodyMeasureEstimateProvider } from "@/Shared/Service/BodyMeasureEstimate";
+import { BodyMeasureEstimateProvider } from "@/provider/BodyMeasureEstimate";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
