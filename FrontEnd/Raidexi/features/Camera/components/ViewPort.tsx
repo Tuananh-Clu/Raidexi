@@ -45,13 +45,13 @@ function extractAxis(frames: any, type: any, L: any, R: any) {
   return values[Math.floor(values.length / 2)];
 }
 
-function Scale(lm: Landmark[], realHeight: number) {
+function Scale(lm: Landmark[], realHeight: number|undefined) {
   {
     const nose = lm[0];
     const ankleL = lm[27];
     const ankleR = lm[28];
     const avgAnkleY = (ankleL.y + ankleR.y) / 2;
-    return realHeight / (avgAnkleY - nose.y);
+    return realHeight ? realHeight / (avgAnkleY - nose.y) : undefined;
   }
 }
 function calculateEllipseCircumference(a: number, b: number) {
@@ -60,7 +60,49 @@ function calculateEllipseCircumference(a: number, b: number) {
     Math.PI * (a + b) * (1 + (3 * h) / (10 + Math.sqrt(4 - 3 * h)));
   return circumference;
 }
+function getWaistLandmarks(lm: Landmark[], type: string) {
+  const shoulderX = (lm[11].x + lm[12].x) / 2;
+  const shoulderY = (lm[11].y + lm[12].y) / 2;
+  const shoulderZ = (lm[11].z + lm[12].z) / 2;
 
+  const hipX = (lm[23].x + lm[24].x) / 2;
+  const hipY = (lm[23].y + lm[24].y) / 2;
+  const hipZ = (lm[23].z + lm[24].z) / 2;
+
+  const waistX = (shoulderX + hipX) / 2;
+  const waistY = (shoulderY + hipY) / 2;
+  const waistZ = (shoulderZ + hipZ) / 2;
+
+  const shoulderWidth = Math.abs(lm[11].x - lm[12].x);
+  const hipWidth = Math.abs(lm[23].x - lm[24].x);
+  const waistHalfWidth = (shoulderWidth + hipWidth) / 2 / 2;
+
+  const shoulderDepth = Math.abs(lm[11].z - lm[12].z);
+  const hipDepth = Math.abs(lm[23].z - lm[24].z);
+  const waistHalfDepth = (shoulderDepth + hipDepth) / 2 / 2;
+
+  if (type === "FRONT") {
+    return {
+      left: { x: waistX - waistHalfWidth, y: waistY, z: waistZ, visibility: 1 },
+      right: {
+        x: waistX + waistHalfWidth,
+        y: waistY,
+        z: waistZ,
+        visibility: 1,
+      },
+    };
+  } else {
+    return {
+      left: { x: waistX, y: waistY, z: waistZ - waistHalfDepth, visibility: 1 },
+      right: {
+        x: waistX,
+        y: waistY,
+        z: waistZ + waistHalfDepth,
+        visibility: 1,
+      },
+    };
+  }
+}
 const Viewport: React.FC<ViewportProps> = ({
   showGrid,
   triggerFlash,
@@ -75,7 +117,15 @@ const Viewport: React.FC<ViewportProps> = ({
   const [countDowns, setCountDowns] = useState(3);
   const FrontBuffer = useRef<Landmark[][]>([]);
   const SideBuffer = useRef<Landmark[][]>([]);
-
+  const isActive=useRef<boolean|undefined>(false);
+  const UserHeight=useRef<number|undefined>(undefined);
+  useEffect(() => {
+    isActive.current=context.measuring;
+  }, [context.measuring]);
+  useEffect(() => {
+    UserHeight.current=context.userHeight;
+  }
+  , [context.userHeight]);
   useEffect(() => {
     if (triggerFlash) {
       setFlashActive(true);
@@ -87,7 +137,7 @@ const Viewport: React.FC<ViewportProps> = ({
   useEffect(() => {
     if (!context.measuring) {
       setCountDowns(3);
-       context?.setCountdown?.(15);
+      context?.setCountdown?.(15);
       return;
     }
 
@@ -97,14 +147,14 @@ const Viewport: React.FC<ViewportProps> = ({
       setCountDowns(count);
       if (count <= 0) {
         clearInterval(countdownInterval);
-         context?.setCountdown?.(15);
+        context?.setCountdown?.(15);
       }
     }, 1000);
 
     return () => {
       clearInterval(countdownInterval);
     };
-  }, [context.measuring]);
+  }, [context.measuring, context.setCountdown]);
   useEffect(() => {
     if (countDowns === 0) {
       const er = setInterval(() => {
@@ -117,7 +167,7 @@ const Viewport: React.FC<ViewportProps> = ({
       }, 1000);
       return () => clearInterval(er);
     }
-  }, [countDowns, context]);
+  }, [countDowns, context.countdown, context.setCountdown]);
   const onResults = useCallback(
     (results: any) => {
       if (!results.poseLandmarks) return;
@@ -152,7 +202,7 @@ const Viewport: React.FC<ViewportProps> = ({
         canvasCtx.arc(x, y, 5, 0, 2 * Math.PI);
         canvasCtx.fill();
       }
-      if (results) {
+      if (isActive.current&& context.countdown! > 0) {
         var type = detectPose(results.poseLandmarks);
         const safeCountdown = context?.countdown ?? 0;
         if (type == "FRONT" && safeCountdown > 10) {
@@ -161,58 +211,86 @@ const Viewport: React.FC<ViewportProps> = ({
             results.poseLandmarks,
             FrontBuffer.current
           );
-          if(FrontBuffer.current.length>0){
+          if (FrontBuffer.current.length > 0) {
             canvasCtx.font = "46px Arial";
             canvasCtx.fillText(`Đang Thu Thập Dữ Liệu FRONT`, 10, 150);
-            
           }
-           if(FrontBuffer.current.length>=10){
+          if (FrontBuffer.current.length >= 10) {
             canvasCtx.font = "26px Arial";
             canvasCtx.fillText(`Đã Thu Thập Đủ Dữ Liệu FRONT`, 10, 150);
             canvasCtx.fillText(`Vui Lòng Chuyển Sang Tư Thế SIDE`, 10, 210);
           }
-        }
-        else{
+        } else {
           pushFrameToPoseEstimator(
             "SIDE",
             results.poseLandmarks,
             SideBuffer.current
           );
-          if(SideBuffer.current.length>0){
+          if (SideBuffer.current.length > 0) {
             canvasCtx.font = "46px Arial";
             canvasCtx.fillText(`Đang Thu Thập Dữ Liệu SIDE`, 10, 150);
           }
-          if(SideBuffer.current.length>=10){
+          if (SideBuffer.current.length >= 10) {
             canvasCtx.font = "26px Arial";
             canvasCtx.fillText(`Đã Thu Thập Đủ Dữ Liệu SIDE`, 10, 150);
-            canvasCtx.fillText(`Vui Lòng Giữ Nguyên Tư Thế Đến Khi Kết Thúc`, 10, 210);
+            canvasCtx.fillText(
+              `Vui Lòng Giữ Nguyên Tư Thế Đến Khi Kết Thúc`,
+              10,
+              210
+            );
           }
         }
 
         if (
           FrontBuffer.current.length >= 10 &&
-          SideBuffer.current.length >= 10 
-          ) {
-          const realHeight = 180;
-          const frontShoulderWidth =
-            extractAxis(FrontBuffer.current, "FRONT", 11, 12) *
-            Scale(FrontBuffer.current[0], realHeight);
-          const frontHipWidth =
-            extractAxis(FrontBuffer.current, "FRONT", 23, 24) *
-            Scale(FrontBuffer.current[0], realHeight);
-          const sideChestDepth =
-            extractAxis(SideBuffer.current, "SIDE", 11, 12) *
-            Scale(SideBuffer.current[0], realHeight);
-          const sideHipDepth =
-            extractAxis(SideBuffer.current, "SIDE", 23, 24) *
-            Scale(SideBuffer.current[0], realHeight);
-          const frontWaistWidth =
-            extractAxis(FrontBuffer.current, "FRONT", 25, 26) *
-            Scale(FrontBuffer.current[0], realHeight);
-          const sideWaistDepth =
-            extractAxis(SideBuffer.current, "SIDE", 25, 26) *
-            Scale(SideBuffer.current[0], realHeight);
+          SideBuffer.current.length >= 10
+        ) {
+          const realHeight = UserHeight.current;
+          const frontBufferWithWaist = FrontBuffer.current.map((frame) => {
+            const waist = getWaistLandmarks(frame, "FRONT");
+            const newFrame = [...frame];
+            newFrame[25] = waist.left;
+            newFrame[26] = waist.right;
+            return newFrame;
+          });
 
+          const sideBufferWithWaist = SideBuffer.current.map((frame) => {
+            const waist = getWaistLandmarks(frame, "SIDE");
+            const newFrame = [...frame];
+            newFrame[25] = waist.left;
+            newFrame[26] = waist.right;
+            return newFrame;
+          });
+          const frontShoulderWidth = extractAxis(
+            FrontBuffer.current,
+            "FRONT",
+            11,
+            12
+          );
+          const frontHipWidth = extractAxis(
+            FrontBuffer.current,
+            "FRONT",
+            23,
+            24
+          );
+          const sideChestDepth = extractAxis(
+            SideBuffer.current,
+            "SIDE",
+            11,
+            12
+          );
+          const sideHipDepth = extractAxis(SideBuffer.current, "SIDE", 23, 24);
+          const frontWaistWidth = extractAxis(frontBufferWithWaist, "FRONT",25, 26);
+          const sideWaistDepth = extractAxis(sideBufferWithWaist, "SIDE",25, 26);
+          console.log({
+            frontShoulderWidth,
+            frontHipWidth,
+            sideChestDepth,
+            sideHipDepth,
+            frontWaistWidth,
+            sideWaistDepth,
+            Scale: Scale(FrontBuffer.current[0], realHeight),
+          });
           const chestCircumference = calculateEllipseCircumference(
             frontShoulderWidth / 2,
             sideChestDepth / 2
@@ -225,11 +303,15 @@ const Viewport: React.FC<ViewportProps> = ({
             frontWaistWidth / 2,
             sideWaistDepth / 2
           );
+          const scale = Scale(FrontBuffer.current[0], realHeight) ?? 1;
+          const scaledChest = chestCircumference * scale;
+          const scaledHip = hipCircumference * scale;
+          const scaledWaist = waistCircumference * scale;
 
           context?.setDataMeasured?.({
-            chest: chestCircumference,
-            hip: hipCircumference,
-            waist: waistCircumference,
+            chest: scaledChest  ,
+            hip: scaledHip ,
+            waist: scaledWaist,
           });
           console.log("Measured Data:", {
             chest: chestCircumference,
@@ -289,6 +371,44 @@ const Viewport: React.FC<ViewportProps> = ({
       }
     };
   }, [openCamera]);
+
+
+
+  useEffect(() => {
+    if (context.capturedFallback) {
+      if (mpCameraRef.current) {
+        const track = mpCameraRef.current.video.srcObject
+          ?.getTracks()
+          .find((t: any) => t.kind === "video");
+        track?.stop();
+        mpCameraRef.current.stop();
+        mpCameraRef.current = null;
+      }
+      if (poseRef.current) {
+        poseRef.current = null;
+      }
+      FrontBuffer.current = [];
+      SideBuffer.current = [];
+      setCountDowns(3);
+      if (context.setMeasuring) {
+        context.setMeasuring(false);
+      }
+      if (context.setCountdown) {
+        context.setCountdown(15);
+      }
+      if (context.setDataMeasured) {
+        context.setDataMeasured({});
+      }
+      if (context.setCapturedFallback) {
+        context.setCapturedFallback(false);
+      }
+      canvasRef.current?.getContext("2d")?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      
+      setTimeout(() => {
+        initPose();
+      }, 100);
+    }
+  }, [context.capturedFallback, context.setMeasuring, context.setCountdown, context.setDataMeasured, context.setCapturedFallback]);
 
   const gridItems = useMemo(
     () =>

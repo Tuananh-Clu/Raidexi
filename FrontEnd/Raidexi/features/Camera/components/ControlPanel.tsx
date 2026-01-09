@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { MeasurementData, SystemStatus } from "../types";
-import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 import { ToasterUi } from "@/Shared/Ui/ToasterUi";
+import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 
 interface ControlPanelProps {
   status: SystemStatus;
@@ -23,7 +23,6 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   const [gridEnabled, setGridEnabled] = useState(false);
   const [flashEnabled, setFlashEnabled] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [heightInput, setHeightInput] = useState<string>("");
   const context = useContext(BodyMeasureEstimateContext);
 
   useEffect(() => {
@@ -142,11 +141,11 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             <div className="flex flex-col ">
               <p className="">Height</p>
               <input
-                value={heightInput}
+                value={context.userHeight}
                 className="px-3 font-mono text-xl outline-none"
                 type="number"
                 placeholder="Vui Lòng Nhập Số Đo"
-                onChange={(e) => setHeightInput(e.target.value)}
+                onChange={(e) => context?.setUserHeight?.(Number(e.target.value))}
               />
             </div>
             <span className="text-3xl material-symbols-outlined text-brass">
@@ -209,7 +208,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         <div className="space-y-4">
           <button
             onClick={() => {
-              const height = Number(heightInput);
+              const height = Number(context.userHeight);
               if (!height || Number.isNaN(height) || height <= 0) {
                 ToasterUi("Vui Lòng Nhập Chiều Cao Hợp Lệ", "error");
                 return;
@@ -226,15 +225,27 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             {openCamera ? "START ESTIMATE" : "CAPTURE IMAGE"}
           </button>
           {openCamera && (
-            <button
-              onClick={() => {
-                setOpenCamera(false);
-                context?.setMeasuring?.(false);
-              }}
-              className="w-full mb-3 h-14 cursor-pointer bg-red-600 text-white text-lg font-bold font-mono tracking-widest border border-transparent hover:bg-red-700 hover:shadow-[0_0_20px_rgba(255,0,0,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
-            >
-              OFF
-            </button>
+            <div>
+              <button
+                onClick={() => {
+                  setOpenCamera(false);
+                  context?.setMeasuring?.(false);
+                }}
+                className="w-full mb-3 h-14 cursor-pointer bg-red-600 text-white text-lg font-bold font-mono tracking-widest border border-transparent hover:bg-red-700 hover:shadow-[0_0_20px_rgba(255,0,0,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+              >
+                OFF
+              </button>
+              {context.dataMeasured && Object.keys(context.dataMeasured).length > 0 && (
+                <button 
+                  className="w-full mb-3 h-14 cursor-pointer bg-gray-800 text-white text-lg font-bold font-mono tracking-widest border border-transparent hover:bg-primary hover:shadow-[0_0_20px_rgba(255,255,0,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]" 
+                  onClick={() => {
+                    context?.setCapturedFallback?.(true);
+                  }}
+                >
+                  RESTART
+                </button>
+              )}
+            </div>
           )}
         </div>
       </div>
