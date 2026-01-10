@@ -1,6 +1,5 @@
 "use client";
 import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
-import { Landmark } from "@mediapipe/pose";
 import React, {
   useState,
   useEffect,
@@ -9,123 +8,24 @@ import React, {
   useContext,
   useMemo,
 } from "react";
+import { DrawPointLandmark } from "../hook/DrawCanvas";
+import { HandleMeasureEstimate } from "../hook/HandleMeasureEstimate";
+import { detectPose } from "../hook/DetermineMeasure";
 
 interface ViewportProps {
   showGrid: boolean;
   triggerFlash: boolean;
-  openCamera: boolean;
 }
 
-function detectPose(lm: any) {
-  const ls = lm[11],
-    rs = lm[12];
-
-  if (ls.visibility < 0.9 || rs.visibility < 0.9) return "INVALID";
-
-  const dx = Math.abs(ls.x - rs.x);
-  const dz = Math.abs(ls.z - rs.z);
-
-  if (dz / (dx + 1e-4) > 2.2 && dx < 0.04) return "SIDE";
-
-  if (dz < 0.05) return "FRONT";
-
-  return "UNKNOWN";
-}
-
-function pushFrameToPoseEstimator(type: any, lm: any, buffer: any[]) {
-  if (detectPose(lm) === type) buffer.push(lm);
-  if (buffer.length > 20) buffer.shift();
-}
-
-function extractAxis(frames: any, type: any, L: any, R: any) {
-  const values = frames.map((lm: any) =>
-    type === "FRONT" ? Math.abs(lm[L].x - lm[R].x) : Math.abs(lm[L].z - lm[R].z)
-  );
-  values.sort((a: any, b: any) => a - b);
-  return values[Math.floor(values.length / 2)];
-}
-
-function Scale(lm: Landmark[], realHeight: number|undefined) {
-  {
-    const nose = lm[0];
-    const ankleL = lm[27];
-    const ankleR = lm[28];
-    const avgAnkleY = (ankleL.y + ankleR.y) / 2;
-    return realHeight ? realHeight / (avgAnkleY - nose.y) : undefined;
-  }
-}
-function calculateEllipseCircumference(a: number, b: number) {
-  const h = Math.pow(a - b, 2) / Math.pow(a + b, 2);
-  const circumference =
-    Math.PI * (a + b) * (1 + (3 * h) / (10 + Math.sqrt(4 - 3 * h)));
-  return circumference;
-}
-function getWaistLandmarks(lm: Landmark[], type: string) {
-  const shoulderX = (lm[11].x + lm[12].x) / 2;
-  const shoulderY = (lm[11].y + lm[12].y) / 2;
-  const shoulderZ = (lm[11].z + lm[12].z) / 2;
-
-  const hipX = (lm[23].x + lm[24].x) / 2;
-  const hipY = (lm[23].y + lm[24].y) / 2;
-  const hipZ = (lm[23].z + lm[24].z) / 2;
-
-  const waistX = (shoulderX + hipX) / 2;
-  const waistY = (shoulderY + hipY) / 2;
-  const waistZ = (shoulderZ + hipZ) / 2;
-
-  const shoulderWidth = Math.abs(lm[11].x - lm[12].x);
-  const hipWidth = Math.abs(lm[23].x - lm[24].x);
-  const waistHalfWidth = (shoulderWidth + hipWidth) / 2 / 2;
-
-  const shoulderDepth = Math.abs(lm[11].z - lm[12].z);
-  const hipDepth = Math.abs(lm[23].z - lm[24].z);
-  const waistHalfDepth = (shoulderDepth + hipDepth) / 2 / 2;
-
-  if (type === "FRONT") {
-    return {
-      left: { x: waistX - waistHalfWidth, y: waistY, z: waistZ, visibility: 1 },
-      right: {
-        x: waistX + waistHalfWidth,
-        y: waistY,
-        z: waistZ,
-        visibility: 1,
-      },
-    };
-  } else {
-    return {
-      left: { x: waistX, y: waistY, z: waistZ - waistHalfDepth, visibility: 1 },
-      right: {
-        x: waistX,
-        y: waistY,
-        z: waistZ + waistHalfDepth,
-        visibility: 1,
-      },
-    };
-  }
-}
-const Viewport: React.FC<ViewportProps> = ({
-  showGrid,
-  triggerFlash,
-  openCamera,
-}) => {
+const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
   const [flashActive, setFlashActive] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const mpCameraRef = useRef<any | null>(null);
   const poseRef = useRef<any>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null!);
   const context = useContext(BodyMeasureEstimateContext);
   const [countDowns, setCountDowns] = useState(3);
-  const FrontBuffer = useRef<Landmark[][]>([]);
-  const SideBuffer = useRef<Landmark[][]>([]);
-  const isActive=useRef<boolean|undefined>(false);
-  const UserHeight=useRef<number|undefined>(undefined);
-  useEffect(() => {
-    isActive.current=context.measuring;
-  }, [context.measuring]);
-  useEffect(() => {
-    UserHeight.current=context.userHeight;
-  }
-  , [context.userHeight]);
+
   useEffect(() => {
     if (triggerFlash) {
       setFlashActive(true);
@@ -154,7 +54,8 @@ const Viewport: React.FC<ViewportProps> = ({
     return () => {
       clearInterval(countdownInterval);
     };
-  }, [context.measuring, context.setCountdown]);
+  }, [context.measuring]);
+
   useEffect(() => {
     if (countDowns === 0) {
       const er = setInterval(() => {
@@ -168,165 +69,65 @@ const Viewport: React.FC<ViewportProps> = ({
       return () => clearInterval(er);
     }
   }, [countDowns, context.countdown, context.setCountdown]);
+
   const onResults = useCallback(
     (results: any) => {
-      if (!results.poseLandmarks) return;
-      if (!canvasRef.current || !videoRef.current) return;
+      if (!results?.poseLandmarks) return;
+      if (!canvasRef.current || !videoRef.current || !poseRef.current) return;
+
       const canvasCtx = canvasRef.current.getContext("2d");
       if (!canvasCtx) return;
-      canvasRef.current.width = videoRef.current.videoWidth;
-      canvasRef.current.height = videoRef.current.videoHeight;
-      canvasCtx.clearRect(
-        0,
-        0,
-        canvasRef.current.width,
-        canvasRef.current.height
-      );
+      const videoWidth = videoRef.current.videoWidth;
+      const videoHeight = videoRef.current.videoHeight;
+
+      if (videoWidth === 0 || videoHeight === 0) {
+        console.warn("⚠️ Video dimensions not ready");
+        return;
+      }
+      if (
+        canvasRef.current.width !== videoWidth ||
+        canvasRef.current.height !== videoHeight
+      ) {
+        canvasRef.current.width = videoWidth;
+        canvasRef.current.height = videoHeight;
+      }
+      canvasCtx.clearRect(0, 0, videoWidth, videoHeight);
       canvasCtx.save();
 
-      const Landmarks = [
-        results.poseLandmarks?.[0],
-        results.poseLandmarks?.[11],
-        results.poseLandmarks?.[12],
-        results.poseLandmarks?.[23],
-        results.poseLandmarks?.[24],
-        results.poseLandmarks?.[25],
-        results.poseLandmarks?.[26],
-      ];
-      canvasCtx.fillStyle = "rgba(255,255,0,0.8)";
-      for (const landmark of Landmarks) {
-        if (!landmark) continue;
-        const x = landmark.x * canvasRef.current.width;
-        const y = landmark.y * canvasRef.current.height;
-        canvasCtx.beginPath();
-        canvasCtx.arc(x, y, 5, 0, 2 * Math.PI);
-        canvasCtx.fill();
+      try {
+        DrawPointLandmark(
+          canvasCtx,
+          "rgba(0, 255, 0, 0.8)",
+          results,
+          canvasRef
+        );
+      } catch (error) {
+        console.error("❌ Error drawing landmarks:", error);
       }
-      if (isActive.current&& context.countdown! > 0) {
-        var type = detectPose(results.poseLandmarks);
-        const safeCountdown = context?.countdown ?? 0;
-        if (type == "FRONT" && safeCountdown > 10) {
-          pushFrameToPoseEstimator(
-            "FRONT",
-            results.poseLandmarks,
-            FrontBuffer.current
-          );
-          if (FrontBuffer.current.length > 0) {
-            canvasCtx.font = "46px Arial";
-            canvasCtx.fillText(`Đang Thu Thập Dữ Liệu FRONT`, 10, 150);
-          }
-          if (FrontBuffer.current.length >= 10) {
-            canvasCtx.font = "26px Arial";
-            canvasCtx.fillText(`Đã Thu Thập Đủ Dữ Liệu FRONT`, 10, 150);
-            canvasCtx.fillText(`Vui Lòng Chuyển Sang Tư Thế SIDE`, 10, 210);
-          }
-        } else {
-          pushFrameToPoseEstimator(
-            "SIDE",
-            results.poseLandmarks,
-            SideBuffer.current
-          );
-          if (SideBuffer.current.length > 0) {
-            canvasCtx.font = "46px Arial";
-            canvasCtx.fillText(`Đang Thu Thập Dữ Liệu SIDE`, 10, 150);
-          }
-          if (SideBuffer.current.length >= 10) {
-            canvasCtx.font = "26px Arial";
-            canvasCtx.fillText(`Đã Thu Thập Đủ Dữ Liệu SIDE`, 10, 150);
-            canvasCtx.fillText(
-              `Vui Lòng Giữ Nguyên Tư Thế Đến Khi Kết Thúc`,
-              10,
-              210
-            );
-          }
-        }
+      if (context.measuring === true && countDowns < 1) {
+        try {
+          const type = detectPose(results.poseLandmarks);
 
-        if (
-          FrontBuffer.current.length >= 10 &&
-          SideBuffer.current.length >= 10
-        ) {
-          const realHeight = UserHeight.current;
-          const frontBufferWithWaist = FrontBuffer.current.map((frame) => {
-            const waist = getWaistLandmarks(frame, "FRONT");
-            const newFrame = [...frame];
-            newFrame[25] = waist.left;
-            newFrame[26] = waist.right;
-            return newFrame;
+          HandleMeasureEstimate({
+            context,
+            canvasCtx,
+            results,
+            type,
           });
-
-          const sideBufferWithWaist = SideBuffer.current.map((frame) => {
-            const waist = getWaistLandmarks(frame, "SIDE");
-            const newFrame = [...frame];
-            newFrame[25] = waist.left;
-            newFrame[26] = waist.right;
-            return newFrame;
-          });
-          const frontShoulderWidth = extractAxis(
-            FrontBuffer.current,
-            "FRONT",
-            11,
-            12
-          );
-          const frontHipWidth = extractAxis(
-            FrontBuffer.current,
-            "FRONT",
-            23,
-            24
-          );
-          const sideChestDepth = extractAxis(
-            SideBuffer.current,
-            "SIDE",
-            11,
-            12
-          );
-          const sideHipDepth = extractAxis(SideBuffer.current, "SIDE", 23, 24);
-          const frontWaistWidth = extractAxis(frontBufferWithWaist, "FRONT",25, 26);
-          const sideWaistDepth = extractAxis(sideBufferWithWaist, "SIDE",25, 26);
-          console.log({
-            frontShoulderWidth,
-            frontHipWidth,
-            sideChestDepth,
-            sideHipDepth,
-            frontWaistWidth,
-            sideWaistDepth,
-            Scale: Scale(FrontBuffer.current[0], realHeight),
-          });
-          const chestCircumference = calculateEllipseCircumference(
-            frontShoulderWidth / 2,
-            sideChestDepth / 2
-          );
-          const hipCircumference = calculateEllipseCircumference(
-            frontHipWidth / 2,
-            sideHipDepth / 2
-          );
-          const waistCircumference = calculateEllipseCircumference(
-            frontWaistWidth / 2,
-            sideWaistDepth / 2
-          );
-          const scale = Scale(FrontBuffer.current[0], realHeight) ?? 1;
-          const scaledChest = chestCircumference * scale;
-          const scaledHip = hipCircumference * scale;
-          const scaledWaist = waistCircumference * scale;
-
-          context?.setDataMeasured?.({
-            chest: scaledChest  ,
-            hip: scaledHip ,
-            waist: scaledWaist,
-          });
-          console.log("Measured Data:", {
-            chest: chestCircumference,
-            hip: hipCircumference,
-            waist: waistCircumference,
-          });
-
-          FrontBuffer.current = [];
-          SideBuffer.current = [];
+        } catch (error) {
+          console.error("❌ Error in measurement:", error);
         }
       }
+
       canvasCtx.restore();
     },
-    [context.measuring, context.countdown, context.setDataMeasured]
+    [context, countDowns]
   );
+  useEffect(() => {
+    if(poseRef.current){
+      poseRef.current.onResults(onResults);
+    }
+  }, [onResults]);
   const initPose = async () => {
     if (poseRef.current) return;
     const mpPose = await import("@mediapipe/pose");
@@ -350,17 +151,40 @@ const Viewport: React.FC<ViewportProps> = ({
           if (poseRef.current)
             await poseRef.current.send({ image: videoRef.current! });
         },
-        width: 640,
-        height: 480,
+        width: 1280,
+        height: 720,
       });
       mpCameraRef.current.start();
     }
   };
-  useEffect(() => {
-    if (openCamera) {
-      initPose();
+  const cleanup = () => {
+    if (mpCameraRef.current) {
+      const track = mpCameraRef.current.video.srcObject
+        ?.getTracks()
+        .find((t: any) => t.kind === "video");
+      track?.stop();
+      mpCameraRef.current.stop();
+      mpCameraRef.current = null;
     }
+    if (poseRef.current) {
+      poseRef.current.close();
+      poseRef.current = null;
+    }
+  };
+  useEffect(() => {
+    const run = async () => {
+      if (context.openCamera || context.measuring) {
+        cleanup();
+        await initPose();
+      }
+    };
+    run();
     return () => {
+      if (canvasRef.current) {
+        canvasRef.current
+          .getContext("2d")
+          ?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      }
       if (mpCameraRef.current) {
         const track = mpCameraRef.current.video.srcObject
           ?.getTracks()
@@ -370,45 +194,25 @@ const Viewport: React.FC<ViewportProps> = ({
         mpCameraRef.current = null;
       }
     };
-  }, [openCamera]);
-
-
+  }, [context.openCamera]);
 
   useEffect(() => {
-    if (context.capturedFallback) {
-      if (mpCameraRef.current) {
-        const track = mpCameraRef.current.video.srcObject
-          ?.getTracks()
-          .find((t: any) => t.kind === "video");
-        track?.stop();
-        mpCameraRef.current.stop();
-        mpCameraRef.current = null;
-      }
-      if (poseRef.current) {
-        poseRef.current = null;
-      }
-      FrontBuffer.current = [];
-      SideBuffer.current = [];
+    if (!context.capturedFallback) return;
+    (async () => {
+      await cleanup();
+      context.frontBuffer!.current = [];
+      context.sideBuffer!.current = [];
       setCountDowns(3);
-      if (context.setMeasuring) {
-        context.setMeasuring(false);
-      }
-      if (context.setCountdown) {
-        context.setCountdown(15);
-      }
-      if (context.setDataMeasured) {
-        context.setDataMeasured({});
-      }
-      if (context.setCapturedFallback) {
-        context.setCapturedFallback(false);
-      }
-      canvasRef.current?.getContext("2d")?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-      
-      setTimeout(() => {
-        initPose();
-      }, 100);
-    }
-  }, [context.capturedFallback, context.setMeasuring, context.setCountdown, context.setDataMeasured, context.setCapturedFallback]);
+      context?.setMeasuring!(false);
+      context.setCountdown!(15);
+      context.setDataMeasured!({});
+      context.setCapturedFallback!(false);
+      const ctx = canvasRef.current?.getContext("2d");
+      ctx?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+
+      await initPose();
+    })();
+  }, [context.capturedFallback]);
 
   const gridItems = useMemo(
     () =>
@@ -419,14 +223,23 @@ const Viewport: React.FC<ViewportProps> = ({
   );
 
   return (
-    <div className="relative bg-[#0d0c0a] flex items-center justify-center p-4 lg:p-8 border-r border-grid-line overflow-hidden group h-full">
+    <div className="relative bg-gradient-to-br from-[#0a0908] via-[#0d0c0a] to-[#121110] flex items-center justify-center p-4 lg:p-8 border-r border-grid-line overflow-hidden group h-full">
       {context.measuring && countDowns > 0 && (
-        <div className="absolute flex items-center justify-center w-full h-full font-mono text-center bg-black/80 pointer-events-none z-[54] text-brass-light">
-          <h1 className="text-6xl font-bold animate-pulse">{countDowns}</h1>
+        <div className="absolute flex items-center justify-center w-full h-full font-mono text-center bg-gradient-to-b from-black/90 via-black/80 to-black/90 pointer-events-none z-[54] backdrop-blur-sm">
+          <div className="relative">
+            <div className="absolute inset-0 rounded-full bg-brass-light/20 blur-3xl animate-pulse"></div>
+            <h1 className="relative text-8xl font-bold text-brass-light drop-shadow-[0_0_30px_rgba(212,175,55,0.5)] animate-pulse">
+              {countDowns}
+            </h1>
+            <div className="absolute text-sm tracking-widest -translate-x-1/2 -bottom-8 left-1/2 text-brass-light/70">
+              GET READY
+            </div>
+          </div>
         </div>
       )}
+      <div className="relative flex items-center justify-center w-full h-full overflow-hidden bg-black border-2 rounded-lg shadow-2xl border-brass-light/20">
+        <div className="absolute inset-0 z-10 pointer-events-none bg-gradient-to-t from-black/50 via-transparent to-black/30"></div>
 
-      <div className="relative flex items-center justify-center w-full h-full overflow-hidden bg-black border shadow-2xl border-grid-line">
         <canvas
           ref={canvasRef}
           className="absolute inset-0 object-cover w-full h-full z-5"
@@ -440,20 +253,22 @@ const Viewport: React.FC<ViewportProps> = ({
         />
 
         <div
-          className={`absolute inset-0 bg-white pointer-events-none z-50 transition-opacity duration-75 ${
-            flashActive ? "opacity-80" : "opacity-0"
+          className={`absolute inset-0 bg-gradient-radial from-white via-white/80 to-transparent pointer-events-none z-50 transition-opacity duration-75 ${
+            flashActive ? "opacity-90" : "opacity-0"
           }`}
         />
 
-        <div className="absolute z-20 border pointer-events-none inset-4 lg:inset-8 border-brass-light/30">
-          <div className="absolute top-0 left-0 border-t-2 border-l-2 size-4 border-brass-light" />
-          <div className="absolute top-0 right-0 border-t-2 border-r-2 size-4 border-brass-light" />
-          <div className="absolute bottom-0 left-0 border-b-2 border-l-2 size-4 border-brass-light" />
-          <div className="absolute bottom-0 right-0 border-b-2 border-r-2 size-4 border-brass-light" />
+        <div className="absolute z-20 border-2 rounded-sm pointer-events-none inset-4 lg:inset-8 border-brass-light/40">
+          <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 rounded-tl-sm border-brass-light animate-pulse"></div>
+          <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 rounded-tr-sm border-brass-light animate-pulse"></div>
+          <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 rounded-bl-sm border-brass-light animate-pulse"></div>
+          <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 rounded-br-sm border-brass-light animate-pulse"></div>
 
-          <div className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 size-12 opacity-80">
-            <div className="absolute top-1/2 left-0 w-full h-[1px] bg-brass-light/50" />
-            <div className="absolute left-1/2 top-0 h-full w-[1px] bg-brass-light/50" />
+          <div className="absolute w-16 h-16 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 opacity-80">
+            <div className="absolute top-1/2 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-brass-light to-transparent shadow-lg shadow-brass-light/50"></div>
+            <div className="absolute left-1/2 top-0 h-full w-[2px] bg-gradient-to-b from-transparent via-brass-light to-transparent shadow-lg shadow-brass-light/50"></div>
+            <div className="absolute w-3 h-3 -translate-x-1/2 -translate-y-1/2 rounded-full shadow-lg top-1/2 left-1/2 bg-brass-light shadow-brass-light/50 animate-ping"></div>
+            <div className="absolute w-2 h-2 -translate-x-1/2 -translate-y-1/2 rounded-full top-1/2 left-1/2 bg-brass-light"></div>
           </div>
 
           {showGrid && (
@@ -462,23 +277,52 @@ const Viewport: React.FC<ViewportProps> = ({
             </div>
           )}
 
-          <div className="absolute top-[10%] left-[30%] right-[30%] bottom-[10%] border border-dashed border-brass-light/60">
-            <div className="absolute -top-6 left-0 bg-brass-light text-black px-2 py-0.5 text-[10px] font-mono font-bold tracking-widest">
-              TARGET_LOCKED
+          <div className="absolute top-[10%] left-[30%] right-[30%] bottom-[10%] border-2 border-dashed border-brass-light/70 rounded-sm shadow-inner">
+            <div className="absolute -top-7 left-0 bg-gradient-to-r from-brass-light via-brass-light to-brass-light/80 text-black px-3 py-1 text-[11px] font-mono font-bold tracking-widest rounded-sm shadow-lg shadow-brass-light/30">
+              <span className="animate-pulse">●</span> TARGET_LOCKED
             </div>
-            <div className="absolute text-center -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 mix-blend-difference">
-              <span className="font-mono text-4xl font-thin tracking-widest lg:text-5xl text-brass-light opacity-60">
-                300<span className="mx-2">×</span>300
+            <div className="absolute text-center -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 mix-blend-screen">
+              <span className="font-mono text-5xl font-thin tracking-widest lg:text-6xl text-brass-light opacity-70 drop-shadow-[0_0_20px_rgba(212,175,55,0.6)]">
+                300<span className="mx-3 text-brass-light/50">×</span>300
               </span>
+            </div>
+            <div className="absolute inset-0 rounded-sm bg-brass-light/5"></div>
+          </div>
+
+          <div className="absolute flex gap-2 top-4 right-4">
+            <div className="w-2 h-2 bg-red-500 rounded-full shadow-lg animate-pulse shadow-red-500/50"></div>
+            <div className="font-mono text-[10px] text-brass-light/70 tracking-wider">
+              REC
             </div>
           </div>
         </div>
 
-        <div className="absolute z-30 px-4 py-2 -translate-x-1/2 border shadow-lg bottom-12 left-1/2 bg-black/80 border-brass-light backdrop-blur-sm">
-          <p className="text-brass-light font-mono text-xs tracking-[0.2em]">
+        <div className="absolute z-30 px-6 py-3 -translate-x-1/2 border-2 rounded-sm shadow-2xl bottom-12 left-1/2 bg-black/90 border-brass-light/60 backdrop-blur-md">
+          <div className="absolute inset-0 rounded-sm bg-gradient-to-r from-brass-light/10 via-transparent to-brass-light/10"></div>
+          <p className="relative text-brass-light font-mono text-xs tracking-[0.25em] flex items-center gap-2">
+            <span className="w-1.5 h-1.5 bg-brass-light rounded-full animate-pulse"></span>
             ALIGN SUBJECT WITHIN FRAME
           </p>
         </div>
+
+        <div className="absolute top-4 left-4 z-30 font-mono text-[10px] text-brass-light/60 tracking-wider space-y-1">
+          <div>CAM_01</div>
+          <div className="flex gap-2">
+            <span>FPS: 30</span>
+            <span>|</span>
+            <span>HD</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute z-30 flex gap-1 bottom-4 right-4">
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={i}
+            className="w-0.5 bg-brass-light/30"
+            style={{ height: `${Math.random() * 20 + 10}px` }}
+          ></div>
+        ))}
       </div>
     </div>
   );

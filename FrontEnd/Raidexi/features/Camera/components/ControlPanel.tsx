@@ -8,8 +8,6 @@ interface ControlPanelProps {
   data: MeasurementData;
   onToggleGrid: (enabled: boolean) => void;
   onToggleFlash: (enabled: boolean) => void;
-  openCamera: boolean;
-  setOpenCamera: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ControlPanel: React.FC<ControlPanelProps> = ({
@@ -17,8 +15,6 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   data,
   onToggleGrid,
   onToggleFlash,
-  openCamera,
-  setOpenCamera,
 }) => {
   const [gridEnabled, setGridEnabled] = useState(false);
   const [flashEnabled, setFlashEnabled] = useState(false);
@@ -50,7 +46,9 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
       second: "2-digit",
     });
   };
-
+  useEffect(() => {
+    console.log("Render Control Panel", context.openCamera);
+  }, [context.openCamera]);
   return (
     <div className="bg-panel-dark flex flex-col h-full border-l border-grid-line relative z-10 w-full lg:w-[360px] shrink-0">
       <div className="p-6 border-b border-grid-line">
@@ -71,17 +69,17 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           <div className="flex items-center gap-3 p-3 border shadow-inner border-grid-line bg-background-dark">
             <span
               className={`material-symbols-outlined text-xl ${
-                openCamera ? "animate-pulse text-green-500" : "text-red-500"
+                context.openCamera ? "animate-pulse text-green-500" : "text-red-500"
               }`}
             >
               sensors
             </span>
             <span
               className={`font-mono text-sm font-bold tracking-widest ${
-                openCamera ? "text-brass-light" : "text-[#8a806d]"
+                context.openCamera ? "text-brass-light" : "text-[#8a806d]"
               }`}
             >
-              {openCamera ? "LIVE FEED ACTIVE" : "OFFLINE"}
+              {context. openCamera ? "LIVE FEED ACTIVE" : "OFFLINE"}
             </span>
           </div>
         </div>
@@ -213,22 +211,24 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                 ToasterUi("Vui Lòng Nhập Chiều Cao Hợp Lệ", "error");
                 return;
               }
-              if (openCamera === false) {
-                setOpenCamera(true);
+              if (context.openCamera === false) {
+                context?.setOpenCamera?.(true);
                 return;
               }
+
+              
               context?.setMeasuring?.(true);
             }}
             className="w-full h-14 cursor-pointer bg-primary text-background-dark text-lg font-bold font-mono tracking-widest border border-transparent hover:bg-white hover:border-brass-light hover:shadow-[0_0_20px_rgba(242,166,13,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
           >
             <span className="material-symbols-outlined">camera_alt</span>
-            {openCamera ? "START ESTIMATE" : "CAPTURE IMAGE"}
+            {context.openCamera ? "START ESTIMATE" : "CAPTURE IMAGE"}
           </button>
-          {openCamera && (
+          {context.openCamera && (
             <div>
               <button
                 onClick={() => {
-                  setOpenCamera(false);
+                  context?.setOpenCamera?.(false);
                   context?.setMeasuring?.(false);
                 }}
                 className="w-full mb-3 h-14 cursor-pointer bg-red-600 text-white text-lg font-bold font-mono tracking-widest border border-transparent hover:bg-red-700 hover:shadow-[0_0_20px_rgba(255,0,0,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"

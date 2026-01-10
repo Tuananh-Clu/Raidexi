@@ -31,7 +31,6 @@ export function Page() {
   const [showGrid, setShowGrid] = useState(false);
   const [, setFlashEnabled] = useState(false);
   const [triggerFlash] = useState(false);
-  const [openCamera, setOpenCamera] = useState<boolean>(false);
   const context=useContext(BodyMeasureEstimateContext)
   const [status] = useState<SystemStatus>(INITIAL_STATUS);
 
@@ -41,13 +40,10 @@ export function Page() {
 
       <main className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_360px] h-[calc(100vh-64px)] overflow-hidden">
         <Viewport 
-          openCamera={openCamera}
           showGrid={showGrid}
           triggerFlash={triggerFlash}
         />
         <ControlPanel
-          openCamera={openCamera}
-          setOpenCamera={setOpenCamera}
           status={status}
           data={context.dataMeasured ? {
             metrics: Object.entries(context.dataMeasured).map(([key, value]) => ({
