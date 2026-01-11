@@ -24,7 +24,7 @@ const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
   const poseRef = useRef<any>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null!);
   const context = useContext(BodyMeasureEstimateContext);
-  const [countDowns, setCountDowns] = useState(3);
+  const [countDowns, setCountDowns] = useState(5);
 
   useEffect(() => {
     if (triggerFlash) {
@@ -36,12 +36,12 @@ const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
 
   useEffect(() => {
     if (!context.measuring) {
-      setCountDowns(3);
-      context?.setCountdown?.(15);
+      setCountDowns(5);
+      context?.setCountdown?.(20);
       return;
     }
 
-    let count = 3;
+    let count = 5;
     const countdownInterval = setInterval(() => {
       count--;
       setCountDowns(count);
@@ -104,7 +104,25 @@ const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
       } catch (error) {
         console.error("❌ Error drawing landmarks:", error);
       }
-      if (context.measuring === true && countDowns < 1) {
+      const Landmarks = [
+        results.poseLandmarks?.[0],
+        results.poseLandmarks?.[11],
+        results.poseLandmarks?.[12],
+        results.poseLandmarks?.[23],
+        results.poseLandmarks?.[24],
+        results.poseLandmarks?.[25],
+        results.poseLandmarks?.[26],
+        results.poseLandmarks?.[27],
+        results.poseLandmarks?.[28],
+        
+      ];
+      const allLandmarksPresent = Landmarks.every((landmark) => landmark.visibility! > 0);
+      if (!allLandmarksPresent) {
+        console.warn("⚠️ Not all required landmarks are detected.");
+        canvasCtx.restore();
+        return;
+      }
+      if (context.measuring === true && countDowns < 1 && allLandmarksPresent) {
         try {
           const type = detectPose(results.poseLandmarks);
 
@@ -124,7 +142,7 @@ const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
     [context, countDowns]
   );
   useEffect(() => {
-    if(poseRef.current){
+    if (poseRef.current) {
       poseRef.current.onResults(onResults);
     }
   }, [onResults]);

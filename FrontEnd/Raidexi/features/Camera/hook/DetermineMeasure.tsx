@@ -17,19 +17,44 @@ export function detectPose(lm: any) {
 
 export function pushFrameToPoseEstimator(type: any, lm: any, buffer: any[]) {
   if (detectPose(lm) === type) buffer.push(lm);
-  if (buffer.length > 20) buffer.shift();
+  if (buffer.length >= 51) buffer.shift();
 }
 
-export function extractAxis(frames: any, type: any, L: any, R: any) {
-  const values = frames.map((lm: any) =>
-    type === "FRONT" ? Math.abs(lm[L].x - lm[R].x) : Math.abs(lm[L].z - lm[R].z)
-  );
+export function extractAxis(
+  frames: any, 
+  type: any, 
+  L: any, 
+  R: any,
+  context: { userHeight: number | undefined }
+) {
+  const values = frames.map((lm: any) => {
+    if (type === "FRONT") {
+      return Math.abs(lm[L].x - lm[R].x);
+    } else {
+
+      const zDiffMeter = Math.abs(lm[L].z - lm[R].z);
+      
+      if (context.userHeight && lm[0] && lm[27] && lm[28]) {
+        const nose = lm[0];
+        const avgAnkleY = (lm[27].y + lm[28].y) / 2;
+        const heightNormalized = avgAnkleY - nose.y;
+        const realHeightMeter = context.userHeight / 100; 
+        
+        // Convert Z to normalized scale
+        return zDiffMeter * (heightNormalized / realHeightMeter);
+      }
+      
+      // Fallback: ước lượng nếu không có realHeight
+      return zDiffMeter * 0.4;
+    }
+  });
   values.sort((a: any, b: any) => a - b);
   return values[Math.floor(values.length / 2)];
 }
 
 export function Scale(lm: Landmark[], realHeight: number|undefined) {
   {
+
     const nose = lm[0];
     const ankleL = lm[27];
     const ankleR = lm[28];

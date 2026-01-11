@@ -15,6 +15,8 @@ export const DrawPointLandmark = (
     results.poseLandmarks?.[24],
     results.poseLandmarks?.[25],
     results.poseLandmarks?.[26],
+    results.poseLandmarks?.[27],
+    results.poseLandmarks?.[28],
   ];
 
   canvasCtx.fillStyle = color;
@@ -36,8 +38,8 @@ export const DrawCanvasTypeBody = (
   type: string,
   safeCountdown: number
 ) => {
-  if (type === "FRONT" && safeCountdown > 10) {
-    if (FrontBuffer.current.length < 10) {
+  if (type === "FRONT" && safeCountdown >= 10) {
+    if (FrontBuffer.current.length < 50) {
       pushFrameToPoseEstimator(
         "FRONT",
         results.poseLandmarks,
@@ -49,13 +51,13 @@ export const DrawCanvasTypeBody = (
     canvasCtx.strokeStyle = "black";
     canvasCtx.lineWidth = 3;
 
-    if (FrontBuffer.current.length > 0 && FrontBuffer.current.length < 10) {
-      const text = `Đang Thu Thập FRONT: ${FrontBuffer.current.length}/10`;
+    if (FrontBuffer.current.length > 0 && FrontBuffer.current.length < 50) {
+      const text = `Đang Thu Thập FRONT: ${FrontBuffer.current.length}/50`;
       canvasCtx.strokeText(text, 10, 150);
       canvasCtx.fillText(text, 10, 150);
     }
 
-    if (FrontBuffer.current.length >= 10) {
+    if (FrontBuffer.current.length >= 50) {
       canvasCtx.fillStyle = "rgba(0, 255, 255, 0.9)";
       canvasCtx.font = "bold 28px Arial";
       const text1 = `✓ Đã Thu Thập Đủ Dữ Liệu FRONT`;
@@ -66,7 +68,7 @@ export const DrawCanvasTypeBody = (
       canvasCtx.fillText(text2, 10, 200);
     }
   } else {
-    if (SideBuffer.current.length < 10) {
+    if (SideBuffer.current.length < 50) {
       pushFrameToPoseEstimator(
         "SIDE",
         results.poseLandmarks,
@@ -79,13 +81,13 @@ export const DrawCanvasTypeBody = (
     canvasCtx.strokeStyle = "black";
     canvasCtx.lineWidth = 3;
 
-    if (SideBuffer.current.length > 0 && SideBuffer.current.length < 10) {
-      const text = `Đang Thu Thập SIDE: ${SideBuffer.current.length}/10`;
+    if (SideBuffer.current.length > 0 && SideBuffer.current.length < 50) {
+      const text = `Đang Thu Thập SIDE: ${SideBuffer.current.length}/50`;
       canvasCtx.strokeText(text, 10, 150);
       canvasCtx.fillText(text, 10, 150);
     }
 
-    if (SideBuffer.current.length >= 10) {
+    if (SideBuffer.current.length >= 50) {
       canvasCtx.fillStyle = "rgba(0, 255, 255, 0.9)";
       canvasCtx.font = "bold 28px Arial";
       const text1 = `✓ Đã Thu Thập Đủ Dữ Liệu SIDE`;

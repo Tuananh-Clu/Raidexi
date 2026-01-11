@@ -30,64 +30,81 @@ export const HandleMeasureEstimate = ({
   );
 
   if (
-    context.frontBuffer!.current.length >= 10 &&
-    context.sideBuffer!.current.length >= 10
+    context.frontBuffer!.current.length >= 50 &&
+    context.sideBuffer!.current.length >= 50
   ) {
     const realHeight = context.userHeight;
 
-    const frontBufferWithWaist = context.frontBuffer!.current.map((frame: Landmark[]) => {
-      const waist = getWaistLandmarks(frame, "FRONT");
-      const newFrame = [...frame];
-      newFrame[25] = waist.left;
-      newFrame[26] = waist.right;
-      return newFrame;
-    });
+    const frontBufferWithWaist = context.frontBuffer!.current.map(
+      (frame: Landmark[]) => {
+        const waist = getWaistLandmarks(frame, "FRONT");
+        const newFrame = [...frame];
+        newFrame[25] = waist.left;
+        newFrame[26] = waist.right;
+        return newFrame;
+      }
+    );
 
-    const sideBufferWithWaist = context.sideBuffer!.current.map((frame: Landmark[]) => {
-      const waist = getWaistLandmarks(frame, "SIDE");
-      const newFrame = [...frame];
-      newFrame[25] = waist.left;
-      newFrame[26] = waist.right;
-      return newFrame;
-    });
+    const sideBufferWithWaist = context.sideBuffer!.current.map(
+      (frame: Landmark[]) => {
+        const waist = getWaistLandmarks(frame, "SIDE");
+        const newFrame = [...frame];
+        newFrame[25] = waist.left;
+        newFrame[26] = waist.right;
+        return newFrame;
+      }
+    );
 
     const frontShoulderWidth = extractAxis(
       context.frontBuffer!.current,
       "FRONT",
       11,
-      12
+      12,
+      context.userHeight
     );
     const frontHipWidth = extractAxis(
       context.frontBuffer!.current,
       "FRONT",
       23,
-      24
+      24,
+      context.userHeight
     );
     const sideChestDepth = extractAxis(
       context.sideBuffer!.current,
       "SIDE",
       11,
-      12
+      12,
+      context.userHeight
     );
     const sideHipDepth = extractAxis(
       context.sideBuffer!.current,
       "SIDE",
       23,
-      24
+      24,
+      context.userHeight
     );
-    const frontWaistWidth = extractAxis(frontBufferWithWaist, "FRONT", 25, 26);
-    const sideWaistDepth = extractAxis(sideBufferWithWaist, "SIDE", 25, 26);
+    const frontWaistWidth = extractAxis(frontBufferWithWaist, "FRONT", 25, 26, context.userHeight);
+    const sideWaistDepth = extractAxis(sideBufferWithWaist, "SIDE", 25, 26, context.userHeight);
 
     console.log({
       frontShoulderWidth,
-      frontHipWidth,
-      sideChestDepth,
-      sideHipDepth,
-      frontWaistWidth,
-      sideWaistDepth,
+      sideChestDepth, 
+      ratio: sideChestDepth / frontShoulderWidth, 
       Scale: Scale(context.frontBuffer!.current[0], realHeight),
-    });
+      nose_y: context.frontBuffer!.current[0][0].y,
+      ankle_y:
+        (context.frontBuffer!.current[0][27].y +
+          context.frontBuffer!.current[0][28].y) /
+        2,
+      height_y:
+        (context.frontBuffer!.current[0][27].y +
+          context.frontBuffer!.current[0][28].y) /
+          2 -
+        context.frontBuffer!.current[0][0].y,
 
+      nose_z: context.sideBuffer!.current[0][0].z,
+      shoulder_z: context.sideBuffer!.current[0][11].z,
+    });
     const chestCircumference = calculateEllipseCircumference(
       frontShoulderWidth / 2,
       sideChestDepth / 2
@@ -100,7 +117,6 @@ export const HandleMeasureEstimate = ({
       frontWaistWidth / 2,
       sideWaistDepth / 2
     );
-
     const scale = Scale(context.frontBuffer!.current[0], realHeight) ?? 1;
     const scaledChest = chestCircumference * scale;
     const scaledHip = hipCircumference * scale;
