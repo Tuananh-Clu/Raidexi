@@ -72,7 +72,7 @@ const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
 
   const onResults = useCallback(
     (results: any) => {
-      if (!results?.poseLandmarks) return;
+      if (!results.poseWorldLandmarks) return;
       if (!canvasRef.current || !videoRef.current || !poseRef.current) return;
 
       const canvasCtx = canvasRef.current.getContext("2d");
@@ -104,6 +104,7 @@ const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
       } catch (error) {
         console.error("❌ Error drawing landmarks:", error);
       }
+      results.poseWorldLandMarks
       const Landmarks = [
         results.poseLandmarks?.[0],
         results.poseLandmarks?.[11],
@@ -124,12 +125,14 @@ const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
       }
       if (context.measuring === true && countDowns < 1 && allLandmarksPresent) {
         try {
-          const type = detectPose(results.poseLandmarks);
+          const type = detectPose(results.poseWorldLandmarks);
 
           HandleMeasureEstimate({
             context,
             canvasCtx,
-            results,
+            results:{
+              poseWorldLandmarks: results.poseWorldLandmarks,
+            },
             type,
           });
         } catch (error) {
@@ -218,11 +221,10 @@ const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
     if (!context.capturedFallback) return;
     (async () => {
       await cleanup();
-      context.frontBuffer!.current = [];
-      context.sideBuffer!.current = [];
-      setCountDowns(3);
+      context.Buffer!.current = [];
+      setCountDowns(5);
       context?.setMeasuring!(false);
-      context.setCountdown!(15);
+      context.setCountdown!(20);
       context.setDataMeasured!({});
       context.setCapturedFallback!(false);
       const ctx = canvasRef.current?.getContext("2d");

@@ -1,5 +1,7 @@
 import { Landmark } from "@mediapipe/pose";
 import { pushFrameToPoseEstimator } from "./DetermineMeasure";
+import { buffer } from "stream/consumers";
+
 
 export const DrawPointLandmark = (
   canvasCtx: CanvasRenderingContext2D,
@@ -33,69 +35,53 @@ export const DrawPointLandmark = (
 export const DrawCanvasTypeBody = (
   canvasCtx: CanvasRenderingContext2D,
   results: any,
-  FrontBuffer: React.MutableRefObject<Landmark[][]>,
-  SideBuffer: React.MutableRefObject<Landmark[][]>,
+  Buffer: React.MutableRefObject<Landmark[][]>,
   type: string,
-  safeCountdown: number
+  safeCountdown: number,
+  canvasWidth: number,
+  canvasHeight: number
 ) => {
-  if (type === "FRONT" && safeCountdown >= 10) {
-    if (FrontBuffer.current.length < 50) {
-      pushFrameToPoseEstimator(
-        "FRONT",
-        results.poseLandmarks,
-        FrontBuffer.current
-      );
-    }
-    canvasCtx.fillStyle = "rgba(0, 255, 0, 0.9)";
-    canvasCtx.font = "bold 36px Arial";
-    canvasCtx.strokeStyle = "black";
-    canvasCtx.lineWidth = 3;
 
-    if (FrontBuffer.current.length > 0 && FrontBuffer.current.length < 50) {
-      const text = `Đang Thu Thập FRONT: ${FrontBuffer.current.length}/50`;
-      canvasCtx.strokeText(text, 10, 150);
-      canvasCtx.fillText(text, 10, 150);
-    }
+  canvasCtx.clearRect(0, 0, canvasWidth * 0.3, canvasHeight * 0.15);
 
-    if (FrontBuffer.current.length >= 50) {
-      canvasCtx.fillStyle = "rgba(0, 255, 255, 0.9)";
-      canvasCtx.font = "bold 28px Arial";
-      const text1 = `✓ Đã Thu Thập Đủ Dữ Liệu FRONT`;
-      const text2 = `→ Vui Lòng Chuyển Sang Tư Thế SIDE`;
-      canvasCtx.strokeText(text1, 10, 150);
-      canvasCtx.fillText(text1, 10, 150);
-      canvasCtx.strokeText(text2, 10, 200);
-      canvasCtx.fillText(text2, 10, 200);
-    }
-  } else {
-    if (SideBuffer.current.length < 50) {
-      pushFrameToPoseEstimator(
-        "SIDE",
-        results.poseLandmarks,
-        SideBuffer.current
-      );
-    }
 
-    canvasCtx.fillStyle = "rgba(255, 165, 0, 0.9)";
-    canvasCtx.font = "bold 36px Arial";
-    canvasCtx.strokeStyle = "black";
-    canvasCtx.lineWidth = 3;
+  canvasCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+  canvasCtx.fillRect(20, 20, canvasWidth * 0.4, canvasHeight * 0.12);
 
-    if (SideBuffer.current.length > 0 && SideBuffer.current.length < 50) {
-      const text = `Đang Thu Thập SIDE: ${SideBuffer.current.length}/50`;
-      canvasCtx.strokeText(text, 10, 150);
-      canvasCtx.fillText(text, 10, 150);
-    }
+  const messages = {
+    start: { text: 'Bắt Đầu Đo', fontSize: Math.min(48, canvasHeight * 0.08), color: '#FF4444' },
+    processing: { text: 'Đang Xử Lý...', fontSize: Math.min(48, canvasHeight * 0.08), color: '#FFAA00' },
+    success: { text: 'Đo Thành Công!', fontSize: Math.min(40, canvasHeight * 0.07), color: '#44FF44' }
+  };
 
-    if (SideBuffer.current.length >= 50) {
-      canvasCtx.fillStyle = "rgba(0, 255, 255, 0.9)";
-      canvasCtx.font = "bold 28px Arial";
-      const text1 = `✓ Đã Thu Thập Đủ Dữ Liệu SIDE`;
-      const text2 = `→ Vui Lòng Giữ Nguyên Tư Thế Đến Khi Kết Thúc`;
-      canvasCtx.strokeText(text1, 10, 150);
-      canvasCtx.fillText(text1, 10, 150);
-      canvasCtx.strokeText(text2, 10, 200);
-      canvasCtx.fillText(text2, 10, 200);
+  let status = null;
+
+  if (type === "BODY" && safeCountdown > 0 ) {
+    if(Buffer.current.length <= 51)
+    {
+       pushFrameToPoseEstimator(type, results.poseWorldLandmarks, Buffer.current);
     }
+   
+    status = messages.start;
+  } else if (Buffer.current.length < 50) {
+    status = messages.processing;
+  } else if (Buffer.current.length >= 50) {
+    status = messages.success;
+    
+  }
+
+  if (status) {
+    canvasCtx.font = `bold ${status.fontSize}px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
+    canvasCtx.fillStyle = status.color;
+    canvasCtx.textAlign = 'left';
+    canvasCtx.textBaseline = 'middle';
+    canvasCtx.fillText(status.text, 40, canvasHeight * 0.075);
+  }
+  if (Buffer.current.length <= 50 && Buffer.current.length > 0) {
+    const progress = Buffer.current.length / 50;
+    canvasCtx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    canvasCtx.fillRect(40, canvasHeight * 0.095, canvasWidth * 0.35, 8);
+    canvasCtx.fillStyle = '#44FF44';
+    canvasCtx.fillRect(40, canvasHeight * 0.095, (canvasWidth * 0.35) * progress, 8);
   }
 };

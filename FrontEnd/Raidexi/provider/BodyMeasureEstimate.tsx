@@ -13,8 +13,7 @@ export interface BodyMeasureEstimateContextType {
     React.SetStateAction<{ [key: string]: number }>
   >;
   setCapturedFallback?: React.Dispatch<React.SetStateAction<boolean>>;
-  frontBuffer?: React.MutableRefObject<Landmark[][]>;
-  sideBuffer?: React.MutableRefObject<Landmark[][]>;
+  Buffer?: React.MutableRefObject<Landmark[][]>;
   capturedFallback?: boolean;
   openCamera?: boolean;
   setOpenCamera?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -31,8 +30,7 @@ export const BodyMeasureEstimateContext =
     capturedFallback: false,
     userHeight: 170,
     setUserHeight: () => {},
-    frontBuffer: undefined,
-    sideBuffer: undefined,
+   Buffer: undefined,
     openCamera: false,
     setOpenCamera: () => {},
   });
@@ -50,8 +48,7 @@ export const BodyMeasureEstimateProvider = ({
   const [dataMeasured, setDataMeasured] = useState<{ [key: string]: number }>(
     {}
   );
-  const FrontBuffer = useRef<Landmark[][]>([]);
-  const SideBuffer = useRef<Landmark[][]>([]);
+  const Buffer = useRef<Landmark[][]>([]);
   return (
     <BodyMeasureEstimateContext.Provider
       value={{
@@ -65,8 +62,7 @@ export const BodyMeasureEstimateProvider = ({
         setCapturedFallback,
         userHeight,
         setUserHeight,
-        frontBuffer: FrontBuffer,
-        sideBuffer: SideBuffer,
+        Buffer,
         openCamera,
         setOpenCamera,
       }}
