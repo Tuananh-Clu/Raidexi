@@ -1,4 +1,4 @@
-import { Landmark } from '@mediapipe/pose';
+
 export function detectPose(lm: any) {
   const ls = lm[11],
     rs = lm[12];
@@ -36,9 +36,8 @@ const calculateEllipseCircumference = (width: number, depth: number) => {
   const h = Math.pow((a - b) / (a + b), 2);
   return Math.PI * (a + b) * (1 + (3 * h) / (10 + Math.sqrt(4 - 3 * h)));
 };
- function pushFrameToPoseEstimator(type: any, lm: any, buffer: any[]) {
-  if (detectPose(lm) === type) buffer.push(lm);
-  if (buffer.length >= 51) buffer.shift();
+function pushFrameToPoseEstimator(type: any, lm: any, buffer: any[]) {
+  buffer.push(lm);
+  if (buffer.length > 52) buffer.shift();
 }
-
 export { calculate3DDistance, calculateDepthFromZ, calculateEllipseCircumference, pushFrameToPoseEstimator };

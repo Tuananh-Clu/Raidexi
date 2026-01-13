@@ -56,8 +56,8 @@ export const DrawCanvasTypeBody = (
 
   let status = null;
 
-  if (type === "BODY" && safeCountdown > 0 ) {
-    if(Buffer.current.length <= 51)
+  if (type === "BODY" ) {
+    if(Buffer.current.length <= 49)
     {
        pushFrameToPoseEstimator(type, results.poseWorldLandmarks, Buffer.current);
     }
@@ -65,7 +65,7 @@ export const DrawCanvasTypeBody = (
     status = messages.start;
   } else if (Buffer.current.length < 50) {
     status = messages.processing;
-  } else if (Buffer.current.length >= 50) {
+  } else if (Buffer.current.length >= 49) {
     status = messages.success;
     
   }
