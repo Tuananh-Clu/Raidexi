@@ -1,16 +1,15 @@
+import { MeasurementDataResponse } from "@/features/Camera/types";
 import { Landmark } from "@mediapipe/pose";
-import { createContext, useRef, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 
 export interface BodyMeasureEstimateContextType {
   countdown?: number;
   measuring?: boolean;
-  userHeight?: number;
-  setUserHeight?: React.Dispatch<React.SetStateAction<number>>;
   setCountdown?: React.Dispatch<React.SetStateAction<number>>;
   setMeasuring?: React.Dispatch<React.SetStateAction<boolean>>;
-  dataMeasured?: { [key: string]: number };
+  dataMeasured?: MeasurementDataResponse;
   setDataMeasured?: React.Dispatch<
-    React.SetStateAction<{ [key: string]: number }>
+    React.SetStateAction<MeasurementDataResponse>
   >;
   setCapturedFallback?: React.Dispatch<React.SetStateAction<boolean>>;
   Buffer?: React.MutableRefObject<Landmark[][]>;
@@ -22,14 +21,18 @@ export const BodyMeasureEstimateContext =
   createContext<BodyMeasureEstimateContextType>({
     countdown: 15000,
     measuring: false,
-    dataMeasured: {},
+    dataMeasured: {
+      height: 0,
+      chest: 0,
+      waist: 0,
+      hip: 0,
+      shoulderWidth: 0,
+    },
     setCountdown: () => {},
     setMeasuring: () => {},
     setDataMeasured: () => {},
     setCapturedFallback: () => {},
     capturedFallback: false,
-    userHeight: 170,
-    setUserHeight: () => {},
    Buffer: undefined,
     openCamera: false,
     setOpenCamera: () => {},
@@ -40,15 +43,23 @@ export const BodyMeasureEstimateProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [userHeight, setUserHeight] = useState(170);
   const [openCamera, setOpenCamera] = useState<boolean>(false);
   const [countdown, setCountdown] = useState(20);
   const [measuring, setMeasuring] = useState(false);
   const [capturedFallback, setCapturedFallback] = useState(false);
-  const [dataMeasured, setDataMeasured] = useState<{ [key: string]: number }>(
-    {}
+  const [dataMeasured, setDataMeasured] = useState<MeasurementDataResponse>(
+    localStorage?.getItem("userMeaurements")
+      ? JSON.parse(localStorage.getItem("userMeaurements") || "{}")
+      : null
   );
+
   const Buffer = useRef<Landmark[][]>([]);
+  useEffect(() => {
+    if(dataMeasured && Object.keys(dataMeasured).length > 0)
+    {
+    localStorage.setItem("userMeaurements", JSON.stringify(dataMeasured));
+    }
+  }, [dataMeasured]);
   return (
     <BodyMeasureEstimateContext.Provider
       value={{
@@ -60,8 +71,6 @@ export const BodyMeasureEstimateProvider = ({
         setDataMeasured,
         capturedFallback,
         setCapturedFallback,
-        userHeight,
-        setUserHeight,
         Buffer,
         openCamera,
         setOpenCamera,

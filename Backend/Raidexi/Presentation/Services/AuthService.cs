@@ -16,13 +16,15 @@ namespace Raidexi.Presentation.Services
         private readonly ITokenServices _tokenService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AppDBContext appDBContext;
-        public AuthService(IUserRepository userRepository, IPassWordHash passWordHash, ITokenServices tokenService, IHttpContextAccessor httpContextAccessor, AppDBContext context)
+        private readonly MongoDbContext dbContext;
+        public AuthService(IUserRepository userRepository, IPassWordHash passWordHash, ITokenServices tokenService, IHttpContextAccessor httpContextAccessor, AppDBContext context, MongoDbContext dbContext)    
         {
             _userRepository = userRepository;
             _passWordHash = passWordHash;
             _tokenService = tokenService;
             _httpContextAccessor = httpContextAccessor;
             appDBContext = context;
+            this.dbContext = dbContext;
         }
 
         public async Task<AuthResult> LoginAsync(string email, string password)
@@ -171,6 +173,24 @@ namespace Raidexi.Presentation.Services
         {
             _httpContextAccessor.HttpContext?.Response.Cookies.Delete("access_token_client");
             await Task.CompletedTask;
+        }
+        public async Task SaveMeasure(MeasureData data)
+        {
+            var id = _httpContextAccessor.HttpContext?.Request.Cookies[$"access_token_client"];
+            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(id);
+            var userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            var datas = new SaveMeasureDataDto
+            {
+                id = userId,
+                dataMeasure = data,
+                LastUpdate = DateTime.Now
+
+            };
+            await dbContext.MeasureUserData.InsertOneAsync(datas);
+        }
+        async Task IAuthService.SaveMeaure(MeasureData data)
+        {
+            await SaveMeasure(data);
         }
     }
 }

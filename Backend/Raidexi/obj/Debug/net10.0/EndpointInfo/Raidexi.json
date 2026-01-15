@@ -323,6 +323,37 @@
           }
         }
       }
+    },
+    "/api/User/SaveMeasure": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MeasureData"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MeasureData"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MeasureData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -425,6 +456,32 @@
           "password": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MeasureData": {
+        "type": "object",
+        "properties": {
+          "shoulderWidth": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "chest": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "waist": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hip": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "height": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false

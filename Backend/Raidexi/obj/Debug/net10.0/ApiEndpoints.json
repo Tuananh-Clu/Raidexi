@@ -162,5 +162,21 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Raidexi.Presentation.Controller.UserController",
+    "Method": "SaveMeasure",
+    "RelativePath": "api/User/SaveMeasure",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "Raidexi.Domain.Entities.MeasureData",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]

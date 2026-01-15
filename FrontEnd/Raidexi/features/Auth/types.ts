@@ -16,3 +16,11 @@ export interface InputGroupProps {
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
+
+export interface UserData {
+  id: string;
+  name: string;
+  email: string;
+  hashPassword: string;
+  createdAt: string;
+}

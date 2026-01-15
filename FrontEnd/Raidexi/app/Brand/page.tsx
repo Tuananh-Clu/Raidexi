@@ -34,7 +34,7 @@ export default function Page() {
       if (activeFilter === FilterType.International)
         return brand.category === "International";
       if (activeFilter === FilterType.VietNam)
-        return brand.category === "VietNam";
+        return brand.category === "Vietnam";
 
       return true;
     });
@@ -48,6 +48,16 @@ export default function Page() {
     return BrandContexts?.dataBrand.slice(start, start + itemsPerPage);
   }, [filteredBrands, currentPage]);
 
+  const brandAl=()=>{
+    currentBrands.map((brand)=>{
+      filteredBrands.map((fBrand)=>{
+        if(brand.id==fBrand.id){
+          return brand;
+        }
+    });
+    })
+    return filteredBrands.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  }
   const counts = useMemo(() => {
     return {
       all: BrandContexts?.dataBrand.length ?? 0,
@@ -107,7 +117,7 @@ export default function Page() {
           />
 
           <section className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {currentBrands.map((brand) => (
+            {brandAl().map((brand) => (
               <BrandCard key={brand.id} brand={brand} />
             ))}
             {BrandContexts?.dataBrand.length === 0 && (

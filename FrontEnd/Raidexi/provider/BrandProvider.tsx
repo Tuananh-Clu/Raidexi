@@ -26,8 +26,8 @@ export const BrandProvider = ({children}: {children: React.ReactNode}) => {
         const fetchData = async () => {
             const data = await getBrandProfile();
             setDataBrand(data);
-            localStorage.setItem("brandData",JSON.stringify(data?.data||[]));
-            console.log(data?.data)
+            localStorage.setItem("brandData",JSON.stringify(data));
+            console.log(data);
         };
         fetchData();
     }, []);

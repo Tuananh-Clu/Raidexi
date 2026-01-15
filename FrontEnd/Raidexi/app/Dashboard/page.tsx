@@ -1,14 +1,14 @@
+"use client"
 import Dashboard from "@/features/DashboardUser/Components/Dashboard";
 import Sidebar from "@/features/DashboardUser/Components/Sidebar";
-import {
-  measurementCards,
-  measurementDetails,
-} from "@/features/DashboardUser/Constants";
-import { AuthContext } from "@/provider/AuthProvider";
+import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
+
 import { NavBar } from "@/Shared/Components/components/NavBar";
 import { useContext } from "react";
 
 export default function page() {
+  const context=useContext(BodyMeasureEstimateContext);
+  const dataMeasurements=context?.dataMeasured;
   return (
     <>
       <NavBar></NavBar>
@@ -39,7 +39,7 @@ export default function page() {
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           <Sidebar  />
-          <Dashboard cards={measurementCards} details={measurementDetails} />
+          <Dashboard dataMeasurements={dataMeasurements} />
         </div>
       </main>
     </>

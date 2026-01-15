@@ -19,3 +19,10 @@ export interface MeasurementData {
   estimatedSize: string;
   sizeIndex: number;
 }
+export type MeasurementDataResponse = {
+  height: number;
+  chest: number;
+  waist: number;
+  hip: number;
+  shoulderWidth: number;
+}

@@ -58,6 +58,10 @@ namespace Raidexi.Presentation.Controller
         public async Task<IActionResult> GetUserData()
         {
             var result = await authService.GetDataUser();
+            if (result == null)
+            {
+                return Unauthorized(new { message = "Error Fetch Data" });
+            }
             return Ok(new
             {
                 isSuccess = true,
@@ -99,6 +103,17 @@ namespace Raidexi.Presentation.Controller
                     HashPassword = ""
                 }
             });
+        }
+        [HttpPost("SaveMeasure")]
+        public async Task<IActionResult> SaveMeasure([FromBody] MeasureData data)
+        {
+            await authService.SaveMeasure(data);
+            return Ok(new
+            {
+                message = "Thêm Thành Công",
+                isSuccess=true
+            });
+
         }
     }
 }

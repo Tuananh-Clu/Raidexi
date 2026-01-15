@@ -1,4 +1,5 @@
-﻿using Raidexi.Domain.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
+using Raidexi.Domain.Entities;
 
 namespace Raidexi.Domain.Interfaces
 {
@@ -9,6 +10,7 @@ namespace Raidexi.Domain.Interfaces
         Task<AuthResult> GetDataUser();
         Task<AuthResult> LoginWithFirebase(string token);
         Task LogOut();
+        Task SaveMeaure(MeasureData data);
 
     }
     public class AuthResult

@@ -124,7 +124,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
     return data;
   }, [GetDataUser]);
-
   const contextValue = useMemo(
     () => ({
       isLoggedIn,

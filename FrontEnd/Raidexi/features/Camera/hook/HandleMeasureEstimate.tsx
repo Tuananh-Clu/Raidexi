@@ -116,14 +116,12 @@ export const HandleMeasureEstimate = ({
     const heightCm = height * CALIBRATION.HEIGHT_MULTIPLIER;
 
     const measurements = {
+      shoulderWidth: Math.round(shoulderWidth * 100),
       chest: Math.round(chest),
       waist: Math.round(waist),
       hip: Math.round(hip),
       height: Math.round(heightCm),
     };
-
-    console.log("✅ Measurements (averaged from 50 frames):", measurements);
-
     context.setDataMeasured!(measurements);
   }
 

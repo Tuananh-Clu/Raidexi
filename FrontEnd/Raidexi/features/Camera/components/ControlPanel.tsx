@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { MeasurementData, SystemStatus } from "../types";
-import { ToasterUi } from "@/Shared/Ui/ToasterUi";
 import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
+import { useDataMeasure } from "../hook/useDataMeasure";
 
 interface ControlPanelProps {
   status: SystemStatus;
@@ -20,6 +20,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   const [flashEnabled, setFlashEnabled] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const context = useContext(BodyMeasureEstimateContext);
+  const {handleSaveMeasure}=useDataMeasure();
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -69,7 +70,9 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           <div className="flex items-center gap-3 p-3 border shadow-inner border-grid-line bg-background-dark">
             <span
               className={`material-symbols-outlined text-xl ${
-                context.openCamera ? "animate-pulse text-green-500" : "text-red-500"
+                context.openCamera
+                  ? "animate-pulse text-green-500"
+                  : "text-red-500"
               }`}
             >
               sensors
@@ -79,7 +82,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                 context.openCamera ? "text-brass-light" : "text-[#8a806d]"
               }`}
             >
-              {context. openCamera ? "LIVE FEED ACTIVE" : "OFFLINE"}
+              {context.openCamera ? "LIVE FEED ACTIVE" : "OFFLINE"}
             </span>
           </div>
         </div>
@@ -133,27 +136,16 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             ))}
           </div>
         </div>
-
-        <div className="pt-4 border-t border-grid-line">
-          <div className="bg-brass/10 border border-brass p-4 flex items-center justify-between shadow-[0_0_15px_rgba(194,142,43,0.1)]">
-            <div className="flex flex-col ">
-              <p className="">Height</p>
-              <input
-                value={context.userHeight}
-                className="px-3 font-mono text-xl outline-none"
-                type="number"
-                placeholder="Vui Lòng Nhập Số Đo"
-                onChange={(e) => context?.setUserHeight?.(Number(e.target.value))}
-              />
-            </div>
-            <span className="text-3xl material-symbols-outlined text-brass">
-              check_circle
-            </span>
-          </div>
-        </div>
       </div>
 
-      <div className="p-6 mt-auto space-y-4 border-t border-grid-line bg-background-dark">
+      {context.dataMeasured && (
+        <div className="flex justify-center ">
+          <button onClick={handleSaveMeasure} className=" h-14 w-full mx-5 cursor-pointer bg-primary text-background-dark text-lg font-bold font-mono tracking-widest border border-transparent hover:bg-white hover:border-brass-light hover:shadow-[0_0_20px_rgba(242,166,13,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]">
+            Save Measurements
+          </button>
+        </div>
+      )}
+      <div className="p-6 mt-auto space-y-2 border-t border-grid-line bg-background-dark">
         <div className="flex gap-4 mb-2">
           <label
             className="flex items-center gap-2 cursor-pointer select-none group"
@@ -206,17 +198,11 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         <div className="space-y-4">
           <button
             onClick={() => {
-              const height = Number(context.userHeight);
-              if (!height || Number.isNaN(height) || height <= 0) {
-                ToasterUi("Vui Lòng Nhập Chiều Cao Hợp Lệ", "error");
-                return;
-              }
               if (context.openCamera === false) {
                 context?.setOpenCamera?.(true);
                 return;
               }
 
-              
               context?.setMeasuring?.(true);
             }}
             className="w-full h-14 cursor-pointer bg-primary text-background-dark text-lg font-bold font-mono tracking-widest border border-transparent hover:bg-white hover:border-brass-light hover:shadow-[0_0_20px_rgba(242,166,13,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
@@ -235,16 +221,17 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
               >
                 OFF
               </button>
-              {context.dataMeasured && Object.keys(context.dataMeasured).length > 0 && (
-                <button 
-                  className="w-full mb-3 h-14 cursor-pointer bg-gray-800 text-white text-lg font-bold font-mono tracking-widest border border-transparent hover:bg-primary hover:shadow-[0_0_20px_rgba(255,255,0,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]" 
-                  onClick={() => {
-                    context?.setCapturedFallback?.(true);
-                  }}
-                >
-                  RESTART
-                </button>
-              )}
+              {context.dataMeasured &&
+                Object.keys(context.dataMeasured).length > 0 && (
+                  <button
+                    className="w-full mb-3 h-14 cursor-pointer bg-gray-800 text-white text-lg font-bold font-mono tracking-widest border border-transparent hover:bg-primary hover:shadow-[0_0_20px_rgba(255,255,0,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+                    onClick={() => {
+                      context?.setCapturedFallback?.(true);
+                    }}
+                  >
+                    RESTART
+                  </button>
+                )}
             </div>
           )}
         </div>
