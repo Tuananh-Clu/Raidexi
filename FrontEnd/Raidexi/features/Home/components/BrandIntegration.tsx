@@ -1,11 +1,12 @@
+"use client";
 import React from 'react';
 
 export const BrandIntegration: React.FC = () => {
   const brands = [
-    { id: 'REF-01', name: 'Uniqlo', desc: 'Global Sizing Data' },
-    { id: 'REF-02', name: "Arc'teryx", desc: 'Technical Shell Fit' },
-    { id: 'REF-03', name: "Levi's", desc: 'Denim Shrinkage Calib.' },
-    { id: 'REF-04', name: 'Nike', desc: 'Performance Wear' }
+    { id: 'REF-01', name: 'Uniqlo', desc: 'Dữ liệu kích cỡ toàn cầu' },
+    { id: 'REF-02', name: "Arc'teryx", desc: 'Vừa vặn kỹ thuật (Shell)' },
+    { id: 'REF-03', name: "Levi's", desc: 'Hiệu chỉnh độ co rút Denim' },
+    { id: 'REF-04', name: 'Nike', desc: 'Trang phục hiệu suất cao' }
   ];
 
   return (
@@ -13,18 +14,18 @@ export const BrandIntegration: React.FC = () => {
       <div className="px-6 py-24 mx-auto max-w-7xl">
         <div className="flex flex-col items-end justify-between gap-8 mb-12 md:flex-row">
           <div className="max-w-2xl pl-6 border-l-2 border-primary">
-            <h2 className="mb-2 text-3xl font-medium text-white">Brand Integration</h2>
-            <p className="text-[#b8b19d] text-lg font-light">Direct data mapping with manufacturing specifications from verified partners.</p>
+            <h2 className="mb-2 text-3xl font-medium text-white">Tích hợp Thương hiệu</h2>
+            <p className="text-[#b8b19d] text-lg font-light">Ánh xạ dữ liệu trực tiếp với thông số kỹ thuật sản xuất từ các đối tác đã xác minh.</p>
           </div>
           <div className="font-mono text-xs text-[#534d3c] uppercase tracking-widest text-right">
-            Partnerships <br /> IDX-2024
+            Đối tác <br /> IDX-2024
           </div>
         </div>
 
         <div className="grid grid-cols-2 border md:grid-cols-4 border-border-subtle bg-surface-dark">
           {brands.map((brand, idx) => (
-            <div 
-              key={brand.id} 
+            <div
+              key={brand.id}
               className={`p-8 flex flex-col justify-between min-h-[160px] group hover:bg-[#2c261e] transition-colors
                 ${idx !== brands.length - 1 ? 'border-r border-border-subtle' : ''}
                 ${idx < 2 ? 'border-b md:border-b-0' : 'border-b md:border-b-0'}
@@ -48,12 +49,12 @@ export const BrandIntegration: React.FC = () => {
               <span className="material-symbols-outlined">dataset_linked</span>
             </div>
             <div>
-              <h5 className="text-sm font-medium text-white">Direct Manufacturer API Access</h5>
-              <p className="text-[#b8b19d] text-xs font-mono mt-1">Real-time access to pattern grading charts ensures 99.9% match accuracy.</p>
+              <h5 className="text-sm font-medium text-white">Truy cập API Nhà sản xuất trực tiếp</h5>
+              <p className="text-[#b8b19d] text-xs font-mono mt-1">Truy cập thời gian thực vào bảng grading đảm bảo độ chính xác 99.9%.</p>
             </div>
           </div>
           <a href="#" className="px-6 py-3 font-mono text-xs font-bold tracking-wider uppercase transition-colors border border-primary text-primary hover:bg-primary hover:text-background-dark whitespace-nowrap">
-            View Partner Index
+            Xem Chỉ số Đối tác
           </a>
         </div>
       </div>

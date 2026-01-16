@@ -65,7 +65,7 @@ export const DrawCanvasTypeBody = (
     status = messages.start;
   } else if (Buffer.current.length < 50) {
     status = messages.processing;
-  } else if (Buffer.current.length >= 49) {
+  } else if (Buffer.current.length >= 50) {
     status = messages.success;
     
   }

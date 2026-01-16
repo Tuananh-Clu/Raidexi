@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { MeasurementData, SystemStatus } from "../types";
 import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 import { useDataMeasure } from "../hook/useDataMeasure";
+import { useRouter } from "next/navigation";
 
 interface ControlPanelProps {
   status: SystemStatus;
@@ -20,7 +21,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   const [flashEnabled, setFlashEnabled] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const context = useContext(BodyMeasureEstimateContext);
-  const {handleSaveMeasure}=useDataMeasure();
+  const { handleSaveMeasure } = useDataMeasure();
+  const navigate = useRouter();
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -47,20 +49,21 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
       second: "2-digit",
     });
   };
-  useEffect(() => {
-    console.log("Render Control Panel", context.openCamera);
-  }, [context.openCamera]);
+
   return (
-    <div className="bg-panel-dark flex flex-col h-full border-l border-grid-line relative z-10 w-full lg:w-[360px] shrink-0">
+    <div className="bg-panel-dark flex flex-col h-full border-l border-grid-line relative z-10 w-full lg:w-[360px] shrink-0 overflow-y-scroll">
       <div className="p-6 border-b border-grid-line">
-        <h2 className="mb-1 text-xl font-bold tracking-wide text-white font-display">
-          SESSION DATA
-        </h2>
+        <div className="flex flex-row items-start justify-between mb-3">
+          <h2 className="text-xl font-bold tracking-wide text-white font-display">
+            SESSION DATA
+          </h2>
+        </div>
         <div className="flex items-center justify-between text-[#8a806d] font-mono text-xs">
           <span>ID: {status.id}</span>
           <span>T: {formatTime(currentTime)}</span>
         </div>
       </div>
+
       <div className="flex-1 p-6 space-y-8 overflow-y-auto custom-scrollbar">
         {/* Status Block */}
         <div className="space-y-3">
@@ -138,14 +141,57 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         </div>
       </div>
 
+      {/* Brand Fit CTA - Fixed position, chỉ hiện khi đo xong */}
+      {context.dataMeasured && Object.keys(context.dataMeasured).length > 0 && (
+        <div className="px-6 py-3 border-t border-grid-line bg-gradient-to-b from-background-dark to-panel-dark">
+          <div className="relative p-3 overflow-hidden transition-all duration-300 border-2 rounded bg-gradient-to-br from-primary/20 to-brass-light/10 border-primary group hover:border-brass-light">
+            {/* Decorative element */}
+            <div className="absolute top-0 right-0 w-12 h-12 transform rotate-45 translate-x-6 -translate-y-6 bg-primary/30" />
+            
+            <div className="relative z-10 flex items-center justify-between gap-3">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-base material-symbols-outlined text-brass-light">
+                    checkroom
+                  </span>
+                  <p className="text-[10px] font-mono text-brass-light tracking-widest uppercase">
+                    Ready for Next Step
+                  </p>
+                </div>
+                <h3 className="text-sm font-bold text-white font-display">
+                  Find Your Perfect Fit
+                </h3>
+              </div>
+              
+              <button
+                onClick={() => navigate.push("/Brand")}
+                className="px-4 h-10 bg-primary text-background-dark font-bold font-mono text-sm tracking-wider border-2 border-transparent hover:bg-white hover:border-brass-light hover:shadow-[0_0_20px_rgba(242,166,13,0.6)] transition-all flex items-center justify-center gap-2 group-hover:scale-[1.05] active:scale-[0.95] whitespace-nowrap"
+              >
+                <span>ANALYZE</span>
+                <span className="text-base material-symbols-outlined">
+                  arrow_forward
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Save Measurements Button */}
       {context.dataMeasured && (
-        <div className="flex justify-center ">
-          <button onClick={handleSaveMeasure} className=" h-14 w-full mx-5 cursor-pointer bg-primary text-background-dark text-lg font-bold font-mono tracking-widest border border-transparent hover:bg-white hover:border-brass-light hover:shadow-[0_0_20px_rgba(242,166,13,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]">
-            Save Measurements
+        <div className="px-6 pt-3 pb-2 border-t border-grid-line">
+          <button
+            onClick={handleSaveMeasure}
+            className="h-12 w-full cursor-pointer bg-background-dark text-brass-light text-sm font-bold font-mono tracking-widest border-2 border-grid-line hover:border-primary hover:bg-primary hover:text-background-dark hover:shadow-[0_0_15px_rgba(242,166,13,0.3)] transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
+          >
+            <span className="text-lg material-symbols-outlined">save</span>
+            <span>SAVE DATA</span>
           </button>
         </div>
       )}
-      <div className="p-6 mt-auto space-y-2 border-t border-grid-line bg-background-dark">
+
+      {/* Controls Section - Always visible */}
+      <div className="p-6 space-y-2 border-t border-grid-line bg-background-dark">
         <div className="flex gap-4 mb-2">
           <label
             className="flex items-center gap-2 cursor-pointer select-none group"
@@ -195,14 +241,14 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             </span>
           </label>
         </div>
-        <div className="space-y-4">
+
+        <div className="space-y-3">
           <button
             onClick={() => {
               if (context.openCamera === false) {
                 context?.setOpenCamera?.(true);
                 return;
               }
-
               context?.setMeasuring?.(true);
             }}
             className="w-full h-14 cursor-pointer bg-primary text-background-dark text-lg font-bold font-mono tracking-widest border border-transparent hover:bg-white hover:border-brass-light hover:shadow-[0_0_20px_rgba(242,166,13,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
@@ -210,26 +256,29 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             <span className="material-symbols-outlined">camera_alt</span>
             {context.openCamera ? "START ESTIMATE" : "CAPTURE IMAGE"}
           </button>
+
           {context.openCamera && (
-            <div>
+            <div className="space-y-3">
               <button
                 onClick={() => {
                   context?.setOpenCamera?.(false);
                   context?.setMeasuring?.(false);
                 }}
-                className="w-full mb-3 h-14 cursor-pointer bg-red-600 text-white text-lg font-bold font-mono tracking-widest border border-transparent hover:bg-red-700 hover:shadow-[0_0_20px_rgba(255,0,0,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+                className="w-full h-12 cursor-pointer bg-red-600 text-white text-base font-bold font-mono tracking-widest border border-transparent hover:bg-red-700 hover:shadow-[0_0_20px_rgba(255,0,0,0.5)] transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
               >
-                OFF
+                <span className="text-lg material-symbols-outlined">power_settings_new</span>
+                <span>OFF</span>
               </button>
               {context.dataMeasured &&
                 Object.keys(context.dataMeasured).length > 0 && (
                   <button
-                    className="w-full mb-3 h-14 cursor-pointer bg-gray-800 text-white text-lg font-bold font-mono tracking-widest border border-transparent hover:bg-primary hover:shadow-[0_0_20px_rgba(255,255,0,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+                    className="w-full h-12 cursor-pointer bg-gray-800 text-white text-base font-bold font-mono tracking-widest border border-transparent hover:bg-primary hover:text-background-dark hover:shadow-[0_0_20px_rgba(242,166,13,0.5)] transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
                     onClick={() => {
                       context?.setCapturedFallback?.(true);
                     }}
                   >
-                    RESTART
+                    <span className="text-lg material-symbols-outlined">restart_alt</span>
+                    <span>RESTART</span>
                   </button>
                 )}
             </div>

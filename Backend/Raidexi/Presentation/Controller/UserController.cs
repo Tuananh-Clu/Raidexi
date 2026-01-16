@@ -58,6 +58,7 @@ namespace Raidexi.Presentation.Controller
         public async Task<IActionResult> GetUserData()
         {
             var result = await authService.GetDataUser();
+            var dataMeasure = await authService.GetMeasureForUser(result.User.Id);
             if (result == null)
             {
                 return Unauthorized(new { message = "Error Fetch Data" });
@@ -73,7 +74,8 @@ namespace Raidexi.Presentation.Controller
                     Email = result.User.Email,
                     CreatedAt = result.User.CreatedAt,
                     HashPassword = ""
-                }
+                },
+                measureData = dataMeasure
             });
         }
         [HttpPost("Logout")]

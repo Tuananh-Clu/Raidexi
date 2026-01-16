@@ -11,6 +11,8 @@ namespace Raidexi.Domain.Interfaces
         Task<AuthResult> LoginWithFirebase(string token);
         Task LogOut();
         Task SaveMeaure(MeasureData data);
+        Task<MeasureData> GetMeasureForUser(string id);
+
 
     }
     public class AuthResult

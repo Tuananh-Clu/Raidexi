@@ -8,10 +8,10 @@ import { BodyMeasureEstimateProvider } from "@/provider/BodyMeasureEstimate";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="vi">
       <head>
         <link rel="icon" href="/logo.png" />
-        <title>Raidexi - AI Body Measure</title>
+        <title>Raidexi - Đo lường cơ thể AI</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link
           href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=JetBrains+Mono:wght@300;400;500;700&display=swap"
@@ -31,14 +31,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           rel="stylesheet"
         />
         <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-       
+
       </head>
 
       <body>
         <Toaster position="top-right" />
         <AuthProvider>
           <BodyMeasureEstimateProvider>
-          <BrandProvider>{children}</BrandProvider>
+            <BrandProvider>{children}</BrandProvider>
           </BodyMeasureEstimateProvider>
         </AuthProvider>
       </body>

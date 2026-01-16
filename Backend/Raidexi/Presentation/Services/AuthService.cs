@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using MongoDB.Driver;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Raidexi.Application.Dtos;
 using Raidexi.Domain.Entities;
@@ -179,18 +180,41 @@ namespace Raidexi.Presentation.Services
             var id = _httpContextAccessor.HttpContext?.Request.Cookies[$"access_token_client"];
             var jwt = new JwtSecurityTokenHandler().ReadJwtToken(id);
             var userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
-            var datas = new SaveMeasureDataDto
-            {
-                id = userId,
-                dataMeasure = data,
-                LastUpdate = DateTime.Now
 
-            };
-            await dbContext.MeasureUserData.InsertOneAsync(datas);
+            var filter= Builders<SaveMeasureDataDto>.Filter.Eq(u => u.id, userId);
+            var existingData = await dbContext.MeasureUserData.Find(filter).FirstOrDefaultAsync();
+            if (existingData != null)
+            {
+                var update = Builders<SaveMeasureDataDto>.Update
+                    .Set(u => u.dataMeasure, data)
+                    .Set(u => u.LastUpdate, DateTime.Now);
+                await dbContext.MeasureUserData.UpdateOneAsync(filter, update);
+                return;
+            }
+            else
+            {
+                var datas = new SaveMeasureDataDto
+                {
+                    id = userId,
+                    dataMeasure = data,
+                    LastUpdate = DateTime.Now
+                };
+                await dbContext.MeasureUserData.InsertOneAsync(datas);
+                return;
+            }
         }
         async Task IAuthService.SaveMeaure(MeasureData data)
         {
             await SaveMeasure(data);
+        }
+        public async Task<MeasureData> GetMeasureForUser(string id)
+        {
+            var rar = _httpContextAccessor.HttpContext.Request.Cookies[$"access_token_client"];
+            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(rar);
+            var filter = Builders<SaveMeasureDataDto>.Filter.Eq(a => a.id , id);
+            var data=await dbContext.MeasureUserData.Find(filter).FirstOrDefaultAsync();
+            return data.dataMeasure;
+
         }
     }
 }

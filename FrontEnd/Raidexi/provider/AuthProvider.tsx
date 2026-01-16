@@ -1,5 +1,6 @@
 "use client";
 import { useAuthentication } from "@/features/Auth/Hook/Authentication";
+import { ToasterUi } from "@/Shared/Ui/ToasterUi";
 import { useRouter } from "next/navigation";
 import {
   createContext,
@@ -8,7 +9,9 @@ import {
   useEffect,
   useMemo,
   useCallback,
+  useContext,
 } from "react";
+import { BodyMeasureEstimateContext } from "./BodyMeasureEstimate";
 
 export interface AuthContextType {
   isLoggedIn: boolean;
@@ -46,6 +49,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return userData !== null;
   });
+  const context=useContext(BodyMeasureEstimateContext)
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchUserData = async () => {
@@ -55,12 +59,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           setIsLoggedIn(true);
           setUserData(data.user);
           localStorage.setItem("userData", JSON.stringify(data.user));
+          context?.setDataMeasured?.({
+            height: data.user.measureData?.height || null,
+            waist:data.user.measureData?.waist || null,
+            hip: data.user.measureData?.hip || null,
+            chest: data.user.measureData?.chest || null,
+            shoulderWidth: data.user.measureData?.shoulderWidth || null,
+
+          });
+          localStorage.setItem("userMeaurements",JSON.stringify({
+            height: data.user.measureData?.height || null,
+            waist:data.user.measureData?.waist || null,
+            hip: data.user.measureData?.hip || null,
+            chest: data.user.measureData?.chest || null,
+            shoulderWidth: data.user.measureData?.shoulderWidth || null,
+          }));
+        
         }
       } catch (error) {
         console.error("Auth init error:", error);
         localStorage.removeItem("userData");
         setUserData(null);
         setIsLoggedIn(false);
+
       } finally {
         setLoading(false);
       }
@@ -84,6 +105,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           localStorage.setItem("userData", JSON.stringify(data.user));
         }
         navigate.push("/");
+      ToasterUi("Logged in successfully", "success");
       }
       return result;
     },
@@ -114,6 +136,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setUserData(null);
     localStorage.removeItem("userData");
     navigate.push("/Login");
+    ToasterUi("Logged out successfully", "success");
   }, [Logout, navigate]);
 
   const AuthGetDataUser = useCallback(async () => {
@@ -121,6 +144,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (data?.user) {
       setUserData(data.user);
       localStorage.setItem("userData", JSON.stringify(data.user));
+
     }
     return data;
   }, [GetDataUser]);

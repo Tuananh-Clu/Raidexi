@@ -23,13 +23,7 @@ const averageLandmark = (
   };
 };
 
-const CALIBRATION = {
-  CHEST_MULTIPLIER: 100,
-  HIP_MULTIPLIER: 100 * 1.62,
-  WAIST_MULTIPLIER: 100 * 1.44,
-  HEIGHT_MULTIPLIER: 100 * 2.25,
-  WAIST_POSITION: 0.7,
-} as const;
+
 
 const TARGET_FRAMES = 50;
 
@@ -49,7 +43,6 @@ export const HandleMeasureEstimate = ({
   const canvasHeight = canvasCtx.canvas.height;
   const buffer = context.Buffer.current;
 
-  if (!context.DataMeasured) {
     DrawCanvasTypeBody(
       canvasCtx,
       results,
@@ -59,7 +52,7 @@ export const HandleMeasureEstimate = ({
       canvasWidth,
       canvasHeight
     );
-  }
+  
 
   if (
     type === "BODY" &&
@@ -74,23 +67,20 @@ export const HandleMeasureEstimate = ({
     const kneeLeft = averageLandmark(buffer, 25);
     const kneeRight = averageLandmark(buffer, 26);
 
-    const shoulderWidth = calculate3DDistance(shoulderLeft, shoulderRight);
+    const shoulderWidth = calculate3DDistance(shoulderLeft, shoulderRight) * 1.38 ;
     const shoulderDepth = calculateDepthFromZ(
       shoulderLeft.z,
       shoulderRight.z,
       shoulderWidth
     );
     const chest =
-      calculateEllipseCircumference(shoulderWidth, shoulderDepth) *
-      CALIBRATION.CHEST_MULTIPLIER;
+      calculateEllipseCircumference(shoulderWidth, shoulderDepth) *100;
 
     const hipWidth = calculate3DDistance(leftHip, rightHip);
     const hipDepth = calculateDepthFromZ(leftHip.z, rightHip.z, hipWidth);
     const hip =
-      calculateEllipseCircumference(hipWidth, hipDepth) *
-      CALIBRATION.HIP_MULTIPLIER;
-
-    const waistRatio = CALIBRATION.WAIST_POSITION;
+      calculateEllipseCircumference(hipWidth, hipDepth) *  100 * 1.62;
+    const waistRatio = 0.7;
     const leftWaist = {
       x: shoulderLeft.x * (1 - waistRatio) + leftHip.x * waistRatio,
       y: shoulderLeft.y * (1 - waistRatio) + leftHip.y * waistRatio,
@@ -110,10 +100,11 @@ export const HandleMeasureEstimate = ({
     );
     const waist =
       calculateEllipseCircumference(waistWidth, waistDepth) *
-      CALIBRATION.WAIST_MULTIPLIER;
+      100 *
+                1.44;
 
     const height = Math.abs(nose.y - (kneeLeft.y + kneeRight.y) / 2);
-    const heightCm = height * CALIBRATION.HEIGHT_MULTIPLIER;
+    const heightCm = height * 100 * 2.25;
 
     const measurements = {
       shoulderWidth: Math.round(shoulderWidth * 100),

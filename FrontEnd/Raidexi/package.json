@@ -13,6 +13,7 @@
     "@mediapipe/pose": "^0.5.1675469404",
     "axios": "^1.13.2",
     "firebase": "^12.7.0",
+    "framer-motion": "^12.26.2",
     "install": "^0.13.0",
     "lucide-react": "^0.562.0",
     "next": "16.1.1",
