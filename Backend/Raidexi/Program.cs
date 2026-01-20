@@ -13,8 +13,7 @@ using System;
 using System.Xml.Linq;
 DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
-
-
+builder.Services.AddMemoryCache();
 
 builder.Services.AddControllers();
 
@@ -33,6 +32,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<ISizeMapping,MappingSizeRepo>();
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -89,7 +89,6 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDBContext>();
     db.Database.Migrate();
-
 }
 
 

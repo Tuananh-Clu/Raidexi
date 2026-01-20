@@ -5,9 +5,8 @@ namespace Raidexi.Domain.Interfaces
 {
     public interface IAnalysisDataService
     {
+        Task<SizeResult> GetSizeFromMeasure(MeasureData measureData, string category);
         Task<ResultAnalysis> AISuggestSize(uploadDataToAnalysisMeasure uploadDataToAnalysisMeasure);
-        Task GetRateReliable();
-        Task GetGarmentFit();
     }
 
     public class ResultAnalysis
@@ -19,5 +18,10 @@ namespace Raidexi.Domain.Interfaces
         public string sizeSuggest { get; set; }
         public int reliableRate { get; set; }
 
+    }
+    public class SizeResult
+    {
+        public string SizeCode { get; set; } = string.Empty;
+        public int FitPercent { get; set; }
     }
 }

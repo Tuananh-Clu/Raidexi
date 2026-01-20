@@ -542,14 +542,25 @@
             "nullable": true
           },
           "chest": {
-            "type": "integer",
-            "format": "int32"
+            "$ref": "#/components/schemas/ValueSize"
           },
           "waist": {
+            "$ref": "#/components/schemas/ValueSize"
+          },
+          "hip": {
+            "$ref": "#/components/schemas/ValueSize"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ValueSize": {
+        "type": "object",
+        "properties": {
+          "min": {
             "type": "integer",
             "format": "int32"
           },
-          "hip": {
+          "max": {
             "type": "integer",
             "format": "int32"
           }

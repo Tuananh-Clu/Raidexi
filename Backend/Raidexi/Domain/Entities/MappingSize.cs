@@ -4,12 +4,17 @@ namespace Raidexi.Domain.Entities
 {
     public class MappingSize
     {
+        public class ValueSize
+        {
+            public int Min { get; set; }
+            public int Max { get; set; }
+        }
         public class UniversalSize
         {
             public string Code { get; set; }
-            public int Chest { get; set; }
-            public int Waist { get; set; }
-            public int Hip { get; set; }
+            public ValueSize Chest { get; set; }
+            public ValueSize Waist { get; set; }
+            public ValueSize Hip { get; set; }
         }
 
         public class SizeMapping

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ZHPbpeg4ULo=",
+  "dgSpecHash": "du7J1SF7GdQ=",
   "success": true,
   "projectFilePath": "D:\\Frontend\\Raidexi\\Backend\\Raidexi\\Raidexi.csproj",
   "expectedPackageFiles": [
@@ -41,6 +41,7 @@
     "C:\\Users\\yianh\\.nuget\\packages\\microsoft.entityframeworkcore.design\\10.0.1\\microsoft.entityframeworkcore.design.10.0.1.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\10.0.1\\microsoft.entityframeworkcore.relational.10.0.1.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\microsoft.extensions.apidescription.server\\10.0.0\\microsoft.extensions.apidescription.server.10.0.0.nupkg.sha512",
+    "C:\\Users\\yianh\\.nuget\\packages\\microsoft.extensions.caching.memory\\10.0.2\\microsoft.extensions.caching.memory.10.0.2.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\microsoft.extensions.dependencymodel\\10.0.1\\microsoft.extensions.dependencymodel.10.0.1.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\microsoft.identitymodel.abstractions\\8.0.1\\microsoft.identitymodel.abstractions.8.0.1.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\8.0.1\\microsoft.identitymodel.jsonwebtokens.8.0.1.nupkg.sha512",
@@ -90,5 +91,18 @@
     "C:\\Users\\yianh\\.nuget\\packages\\system.windows.extensions\\9.0.0\\system.windows.extensions.9.0.0.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\zstdsharp.port\\0.8.6\\zstdsharp.port.0.8.6.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1510",
+      "level": "Warning",
+      "message": "PackageReference Microsoft.Extensions.Caching.Memory will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
+      "projectPath": "D:\\Frontend\\Raidexi\\Backend\\Raidexi\\Raidexi.csproj",
+      "warningLevel": 1,
+      "filePath": "D:\\Frontend\\Raidexi\\Backend\\Raidexi\\Raidexi.csproj",
+      "libraryId": "Microsoft.Extensions.Caching.Memory",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    }
+  ]
 }
