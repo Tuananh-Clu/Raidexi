@@ -1,5 +1,21 @@
 [
   {
+    "ContainingType": "Raidexi.Presentation.Controller.AnalysisDataMeasureController",
+    "Method": "AISuggestSize",
+    "RelativePath": "api/AnalysisDataMeasure/AISuggest",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "uploadDataToAnalysisMeasure",
+        "Type": "Raidexi.Application.Dtos.uploadDataToAnalysisMeasure",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Raidexi.Presentation.Controller.MappingSizeController",
     "Method": "AddBrandProfile",
     "RelativePath": "api/MappingSize/AddBrandProfile",

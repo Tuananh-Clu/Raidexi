@@ -5,6 +5,37 @@
     "version": "v1"
   },
   "paths": {
+    "/api/AnalysisDataMeasure/AISuggest": {
+      "post": {
+        "tags": [
+          "AnalysisDataMeasure"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/uploadDataToAnalysisMeasure"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/uploadDataToAnalysisMeasure"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/uploadDataToAnalysisMeasure"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/MappingSize/brand-profiles": {
       "get": {
         "tags": [
@@ -402,6 +433,10 @@
       "BrandRule": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
           "brand": {
             "type": "string",
             "nullable": true
@@ -432,6 +467,10 @@
       "CategoryRule": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
           "category": {
             "type": "string",
             "nullable": true
@@ -441,6 +480,24 @@
             "items": {
               "type": "string"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomizeDataAiSuggest": {
+        "type": "object",
+        "properties": {
+          "gender": {
+            "type": "string",
+            "nullable": true
+          },
+          "typeProduct": {
+            "type": "string",
+            "nullable": true
+          },
+          "sizeOutput": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -507,6 +564,10 @@
       "SizeMapping": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
           "universal": {
             "type": "string",
             "nullable": true
@@ -537,6 +598,14 @@
       "UniversalSize": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "gender": {
+            "type": "string",
+            "nullable": true
+          },
           "code": {
             "type": "string",
             "nullable": true
@@ -548,6 +617,12 @@
             "$ref": "#/components/schemas/ValueSize"
           },
           "hip": {
+            "$ref": "#/components/schemas/ValueSize"
+          },
+          "shoulderWidth": {
+            "$ref": "#/components/schemas/ValueSize"
+          },
+          "height": {
             "$ref": "#/components/schemas/ValueSize"
           }
         },
@@ -566,10 +641,29 @@
           }
         },
         "additionalProperties": false
+      },
+      "uploadDataToAnalysisMeasure": {
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "string",
+            "nullable": true
+          },
+          "userCustom": {
+            "$ref": "#/components/schemas/CustomizeDataAiSuggest"
+          },
+          "dataMeasure": {
+            "$ref": "#/components/schemas/MeasureData"
+          }
+        },
+        "additionalProperties": false
       }
     }
   },
   "tags": [
+    {
+      "name": "AnalysisDataMeasure"
+    },
     {
       "name": "MappingSize"
     },

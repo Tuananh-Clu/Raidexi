@@ -32,6 +32,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<ISizeMapping,MappingSizeRepo>();
+builder.Services.AddScoped<Raidexi.Presentation.Services.CacheServices.CacheAnalysisDataService>();
+builder.Services.AddScoped<AnalyisService>();
+builder.Services.AddScoped<IAnalysisDataService, AnalyisService>();
 
 builder.Services.AddSwaggerGen(c =>
 {

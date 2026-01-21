@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System.Text.Json.Serialization;
 
 namespace Raidexi.Domain.Entities
 {
@@ -11,14 +13,23 @@ namespace Raidexi.Domain.Entities
         }
         public class UniversalSize
         {
+            [BsonId]
+            [BsonRepresentation(BsonType.ObjectId)]
+            public string id { get; set; }
+            public string Gender { get; set; }
             public string Code { get; set; }
             public ValueSize Chest { get; set; }
             public ValueSize Waist { get; set; }
             public ValueSize Hip { get; set; }
+            public ValueSize ShoulderWidth { get; set; }
+            public ValueSize Height { get; set; }
         }
 
         public class SizeMapping
         {
+            [BsonId]
+            [BsonRepresentation(BsonType.ObjectId)]
+            public string id { get; set; }
             public string Universal { get; set; }
             public string VN { get; set; }
             public string US { get; set; }
@@ -29,12 +40,18 @@ namespace Raidexi.Domain.Entities
 
         public class CategoryRule
         {
+            [BsonId]
+            [BsonRepresentation(BsonType.ObjectId)]
+            public string id { get; set; }
             public string Category { get; set; }
             public List<string> Fields { get; set; }
         }
 
         public class BrandRule
         {
+            [BsonId]
+            [BsonRepresentation(BsonType.ObjectId)]
+            public string id { get; set; }
             public string Brand { get; set; }
             public int Chest { get; set; }
             public int Waist { get; set; }
@@ -59,6 +76,5 @@ namespace Raidexi.Domain.Entities
             public string icon { get; set; }
             public string Category { get; set; }
         }
-
     }
 }

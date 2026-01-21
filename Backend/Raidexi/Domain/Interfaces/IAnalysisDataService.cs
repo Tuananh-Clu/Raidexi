@@ -5,7 +5,7 @@ namespace Raidexi.Domain.Interfaces
 {
     public interface IAnalysisDataService
     {
-        Task<SizeResult> GetSizeFromMeasure(MeasureData measureData, string category);
+        Task<SizeResult> GetSizeFromMeasure(MeasureData measureData, string category,string gender);
         Task<ResultAnalysis> AISuggestSize(uploadDataToAnalysisMeasure uploadDataToAnalysisMeasure);
     }
 
