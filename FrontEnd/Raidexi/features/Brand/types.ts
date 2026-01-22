@@ -48,21 +48,21 @@ export interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 export enum Gender {
-  MALE = 'NAM',
-  FEMALE = 'NỮ'
+  MALE = 'male',
+  FEMALE = 'female'
 }
 
 export enum ProductType {
-  TOP = 'ÁO',
-  BOTTOM = 'QUẦN',
-  DRESS = 'ĐẦM'
+  TOP = 'top',
+  BOTTOM = 'bottom',
+  DRESS = 'dress'
 }
 
 export enum SizeSystem {
-  UK = 'ANH',
-  US = 'MỸ',
+  UK = 'UK',
+  US = 'US',
   VN = 'VN',
-  EU = 'CHÂU ÂU'
+  EU = 'EU'
 }
 
 export interface SizePreferences {
@@ -71,19 +71,19 @@ export interface SizePreferences {
   sizeSystem: SizeSystem;
 }
 export interface UserMeasurements {
-  chest: number;
-  waist: number;
-  hips: number;
-  height: number;
+  chest: number | undefined;
+  waist: number | undefined;
+  shoulderWidth: number | undefined;
+  height: number | undefined;
 }
 
 
 
 export enum RegionSystem {
-  UK = 'ANH (UK)',
-  US = 'MỸ (US)',
+  UK = 'UK (UK)',
+  US = 'US (US)',
   VN = 'VN',
-  EU = 'CHÂU ÂU (EU)'
+  EU = 'EU (EU)'
 }
 
 export interface SizeChartRow {

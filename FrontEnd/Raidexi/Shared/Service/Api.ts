@@ -11,6 +11,9 @@ export const API={
     },
     "Brand":{
         "GetBrandProfile":"/api/MappingSize/brand-profiles",
+    },
+    "AnalysisDataMeasurement":{
+        "GetSuggestSize":"/api/AnalysisDataMeasure/AISuggest",
     }
 }
 export const BASE_URL="https://localhost:7133"

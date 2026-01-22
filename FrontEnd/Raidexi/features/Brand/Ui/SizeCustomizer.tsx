@@ -2,6 +2,9 @@ import React, { useContext, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Gender, ProductType, SizeSystem } from '../types';
 import { BrandContext } from '@/provider/BrandProvider';
+import { AISuggestSize } from '@/provider/AISuggestSize';
+import { AISuggestSizeType } from '@/Shared/types';
+import { BodyMeasureEstimateContext } from '@/provider/BodyMeasureEstimate';
 
 
 
@@ -10,12 +13,24 @@ export const SizeCustomizer = () => {
   const [productType, setProductType] = useState<ProductType>(ProductType.TOP);
   const [sizeSystem, setSizeSystem] = useState<SizeSystem>(SizeSystem.EU);
   const context=useContext(BrandContext)
+  const AIContext=useContext(AISuggestSize)
+  const measurementData=useContext(BodyMeasureEstimateContext)
   const onClose = () => {
     context.setPopUpSettings({isopened:false,brandrefcode:"",gender:"",productType:"",sizeSystem:""});
   };
 
-  const handleSubmit = () => {
-    context.setPopUpSettings({isopened:false,brandrefcode:context.popUpSettings.brandrefcode,gender: gender, productType: productType, sizeSystem: sizeSystem});
+  const handleSubmit = async() => {
+    AIContext.setDataMeasure({
+        brand:context.popUpSettings.brandrefcode,
+        dataMeasure:measurementData.dataMeasured,
+        userCustom:{
+            gender: gender,
+            typeProduct: productType,
+            sizeOutput: sizeSystem
+        }
+    } as AISuggestSizeType);
+    AIContext.handleAnalysisMeasure();
+    onClose();
   }
   
   const renderOption = <T extends string>(

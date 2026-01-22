@@ -5,6 +5,7 @@ import { AuthProvider } from "@/provider/AuthProvider";
 import type { ReactNode } from "react";
 import { BrandProvider } from "@/provider/BrandProvider";
 import { BodyMeasureEstimateProvider } from "@/provider/BodyMeasureEstimate";
+import { AISuggestSizeProvider } from "@/provider/AISuggestSize";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -37,9 +38,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <Toaster position="top-right" />
         <AuthProvider>
+          <AISuggestSizeProvider>
           <BodyMeasureEstimateProvider>
             <BrandProvider>{children}</BrandProvider>
           </BodyMeasureEstimateProvider>
+          </AISuggestSizeProvider>
         </AuthProvider>
       </body>
     </html>

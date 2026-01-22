@@ -4,22 +4,20 @@ import { UserMeasurements } from '../types';
 
 interface BrandSidebarProps {
   measurements: UserMeasurements;
+  brandData: any;
 }
-
-export const BrandSidebar: React.FC<BrandSidebarProps> = ({ measurements }) => {
+  
+export const BrandSidebar: React.FC<BrandSidebarProps> = ({ measurements, brandData }) => {
   return (
     <div className="space-y-6">
       <div className="overflow-hidden border rounded-sm bg-dark-800 border-dark-600">
         <div className="h-48 bg-[#d4cbb8] relative flex items-center justify-center">
-            <div className="absolute top-4 right-4 text-white/50">
-               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            </div>
             <div className="flex items-center justify-center w-24 h-24 font-serif text-3xl text-white bg-black shadow-lg">
-                CE
+                <img className='w-20 h-20' src={brandData.icon}></img>
             </div>
         </div>
         <div className="p-6">
-          <h2 className="mb-4 font-serif text-3xl tracking-wide text-white">CELINE</h2>
+          <h2 className="mb-4 font-serif text-3xl tracking-wide text-white">{brandData.name}</h2>
           <div className="space-y-3 text-sm text-gray-400">
             <div className="flex items-center gap-3">
               <MapPin size={16} />
@@ -53,8 +51,8 @@ export const BrandSidebar: React.FC<BrandSidebarProps> = ({ measurements }) => {
             <div className="text-xl font-light">{measurements.waist} <span className="text-sm text-gray-500">cm</span></div>
           </div>
           <div className="p-3 border bg-dark-700 border-dark-600">
-            <div className="mb-1 text-xs text-gray-400 uppercase">VÒNG HÔNG</div>
-            <div className="text-xl font-light">{measurements.hips} <span className="text-sm text-gray-500">cm</span></div>
+            <div className="mb-1 text-xs text-gray-400 uppercase">NGANG VAI</div>
+            <div className="text-xl font-light">{measurements.shoulderWidth} <span className="text-sm text-gray-500">cm</span></div>
           </div>
           <div className="p-3 border bg-dark-700 border-dark-600">
             <div className="mb-1 text-xs text-gray-400 uppercase">CHIỀU CAO</div>

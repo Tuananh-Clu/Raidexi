@@ -1,3 +1,4 @@
+"use client";
 import { MeasurementDataResponse } from "@/features/Camera/types";
 import { Landmark } from "@mediapipe/pose";
 import { createContext, useEffect, useRef, useState } from "react";

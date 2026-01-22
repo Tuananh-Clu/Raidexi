@@ -1,18 +1,23 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { ArrowLeft, CheckCircle2, ShoppingBag, List, Diamond } from '../Ui/IconComponents';
 import { Gender, ProductType, RegionSystem, SizeChartRow } from '../types';
+import { AISuggestSize } from '@/provider/AISuggestSize';
+import { useRouter } from 'next/navigation';
 
-export const MainContent: React.FC = () => {
+export const MainContent: React.FC = ({brandData}:any) => {
   const [activeGender, setActiveGender] = useState<Gender>(Gender.MALE);
   const [activeType, setActiveType] = useState<ProductType>(ProductType.TOP);
   const [activeRegion, setActiveRegion] = useState<RegionSystem>(RegionSystem.EU);
+  const context=useContext(AISuggestSize);
 
+  const nav=useRouter();
   const sizeChart: SizeChartRow[] = [
     { size: '46 (M)', chestRange: '90 - 94', shoulderRange: '42 - 43', fitStatus: 'Chật' },
     { size: '48 (L)', chestRange: '95 - 99', shoulderRange: '44 - 45', fitStatus: 'MATCH' },
     { size: '50 (XL)', chestRange: '100 - 104', shoulderRange: '46 - 47', fitStatus: 'Rộng' },
   ];
+  console.log('context data analysis response:', context.dataAnalysisResponse);
 
   return (
     <div className="flex-1">
@@ -20,13 +25,13 @@ export const MainContent: React.FC = () => {
       <div className="flex flex-col pb-6 mb-8 border-b md:flex-row md:justify-between md:items-start border-dark-700">
         <div>
           <h1 className="mb-2 text-4xl text-white font-display-Newsreader">
-            KẾT QUẢ FIT THƯƠNG HIỆU: <span className="text-gold-500">CELINE</span>
+            KẾT QUẢ FIT THƯƠNG HIỆU: <span className="text-gold-500">{brandData.name}</span>
           </h1>
           <p className="font-mono text-xs tracking-wider text-gray-500">
-            MÃ PHÂN TÍCH: #RX-CEL-9928-AB // DATE: 2024.05.21
+            MÃ PHÂN TÍCH: #{context.dataAnalysisResponse?.analysisCode} // DATE: {context.dataAnalysisResponse?.analysisDate}
           </p>
         </div>
-        <button className="flex items-center gap-2 px-6 py-2 mt-4 text-xs tracking-widest uppercase transition-colors border md:mt-0 border-dark-600 hover:border-white">
+        <button onClick={()=>nav.back()} className="flex items-center gap-2 px-6 py-2 mt-4 text-xs tracking-widest uppercase transition-colors border md:mt-0 border-dark-600 hover:border-white">
           <ArrowLeft size={16} /> QUAY LẠI
         </button>
       </div>
@@ -104,7 +109,7 @@ export const MainContent: React.FC = () => {
 
         <div className="flex flex-col items-center justify-center p-10 border-b lg:border-b-0 lg:border-r border-gray bg-gradient-to-br from-dark-[#121212] to-dark-[#0a0a0a]">
           <span className="text-gray-400 text-xs uppercase tracking-[0.2em] mb-4">SIZE ĐƯỢC ĐỀ XUẤT</span>
-          <span className="text-[120px] leading-none font-display-Newsreader text-gold-500 drop-shadow-lg">48</span>
+          <span className="text-[120px] leading-none font-display-Newsreader text-gold-500 drop-shadow-lg">{context.dataAnalysisResponse?.sizeSuggest}</span>
           <span className="mt-4 font-mono text-sm tracking-widest text-gray-500">(SIZE L QUỐC TẾ)</span>
         </div>
 
@@ -112,11 +117,14 @@ export const MainContent: React.FC = () => {
           <div className="pb-8 mb-8 border-b border-dashed border-dark-600">
             <span className="block mb-2 text-xs tracking-widest text-gray-400 uppercase">ĐỘ TIN CẬY</span>
             <div className="flex items-center gap-2">
-              <span className="text-5xl font-light text-white">96%</span>
+              <span className="text-5xl font-light text-white">{context.dataAnalysisResponse?.reliableRate}%</span>
               <CheckCircle2 className="text-gold-500" size={24} />
             </div>
             <div className="w-full h-1 mt-4 bg-dark-700">
-                <div className="bg-primary h-1 w-[96%] shadow-[0_0_10px_rgba(236,174,24,0.5)]"></div>
+                <div
+                  className="bg-primary h-1 shadow-[0_0_10px_rgba(236,174,24,0.5)]"
+                  style={{ width: `${Math.max(0, Math.min(100, Number(context.dataAnalysisResponse?.reliableRate) || 0))}%` }}
+                ></div>
             </div>
           </div>
           <div>
@@ -190,9 +198,9 @@ export const MainContent: React.FC = () => {
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <button className="md:col-span-2 bg-primary hover:bg-gold-400 text-black font-bold text-sm uppercase tracking-widest py-4 flex items-center justify-center gap-3 transition-colors shadow-[0_4px_20px_rgba(236,174,24,0.3)]">
-           <ShoppingBag size={18} /> XEM SẢN PHẨM PHÙ HỢP (SIZE 48)
+            <ShoppingBag size={18} /> MUA NGAY TẠI 
         </button>
-        <button className="flex items-center justify-center gap-3 py-4 text-sm font-bold tracking-widest text-white uppercase transition-colors border border-dark-500 hover:border-white bg-dark-800">
+        <button onClick={()=>nav.replace('/Brand')} className="flex items-center justify-center gap-3 py-4 text-sm font-bold tracking-widest text-white uppercase transition-colors border border-dark-500 hover:border-white bg-dark-800">
            <List size={18} /> DANH SÁCH THƯƠNG HIỆU
         </button>
       </div>

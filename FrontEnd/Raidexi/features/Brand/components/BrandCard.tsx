@@ -1,8 +1,7 @@
 "use client";
 import React, { useContext } from 'react';
 import { Brand, BrandStatus } from '../types';
-import { SizeCustomizer } from '../Ui/SizeCustomizer';
-import { BrandContext, BrandProvider } from '@/provider/BrandProvider';
+import { BrandContext} from '@/provider/BrandProvider';
 
 interface BrandCardProps {
   brand: Brand;
@@ -14,7 +13,7 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand }) => {
   const {popUpSettings,setPopUpSettings}=context;
 
   const handleClick = () => {
-    setPopUpSettings({isopened:true,brandrefcode:refCode,gender:"",productType:"",sizeSystem:""});
+    setPopUpSettings({isopened:true,brandrefcode:name,gender:"",productType:"",sizeSystem:""});
   };
   const getConfig = (status: BrandStatus) => {
     switch (status) {
