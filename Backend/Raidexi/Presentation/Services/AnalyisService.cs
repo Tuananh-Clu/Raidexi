@@ -10,10 +10,12 @@ namespace Raidexi.Presentation.Services
     public class AnalyisService : IAnalysisDataService
     {
         private readonly CacheAnalysisDataService cache;
+        private readonly GeminiService geminiServices;
 
-        public AnalyisService(CacheAnalysisDataService cacheAnalysisDataService)
+        public AnalyisService(CacheAnalysisDataService cacheAnalysisDataService,GeminiService geminiService)
         {
             cache = cacheAnalysisDataService;
+            geminiServices = geminiService;
         }
 
         private MeasureData AdjustByGenderSlight(MeasureData raw, string gender)
@@ -276,6 +278,8 @@ namespace Raidexi.Presentation.Services
                 .GetProperty(uploadDataToAnalysisMeasure.userCustom.sizeOutput.ToUpper())?
                 .GetValue(sizeMap)?.ToString();
 
+            var prompt = geminiServices.CreatePrompt(uploadDataToAnalysisMeasure);
+            var GeminiResponse = await geminiServices.GetAIMeasure(prompt);
             var result = new ResultAnalysis
             {
                 analysisCode = Guid.NewGuid().ToString(),
@@ -283,11 +287,14 @@ namespace Raidexi.Presentation.Services
                 typeCustom = uploadDataToAnalysisMeasure.userCustom,
                 fitSuggest = fitSuggest,
                 sizeSuggest = outputSize ?? dataSize.SizeCode,
-                reliableRate = dataSize.FitPercent
+                reliableRate = dataSize.FitPercent,
+                fitSuggestFromAI=
+                {
+                    expectedFit=new GeminiContent{content=GeminiResponse.expectedFit.content},
+                    measurementInsight=new GeminiContent{content=GeminiResponse.measurementInsight.content},
+                    productFitNote=new GeminiContent{content=GeminiResponse.productFitNote.content}
+                }
             };
-
-            Console.WriteLine($"\n✅ Final result: Size={result.sizeSuggest}, " +
-                $"Fit={result.reliableRate}% ({result.fitSuggest})\n");
 
             return result;
         }

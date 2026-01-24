@@ -17,4 +17,11 @@ export interface AISuggestSizeResponse {
     fitSuggest: string;
     sizeSuggest: string;
     reliableRate: number;
+    fitSuggestFromAI:GeminiAISuggestSizeResponse;
+
+}
+export type GeminiAISuggestSizeResponse = {
+measureInsight: string;
+    productFitInsight: string;
+    expectedFit: string;
 }

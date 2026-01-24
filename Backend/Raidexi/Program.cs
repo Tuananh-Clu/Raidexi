@@ -35,7 +35,7 @@ builder.Services.AddScoped<ISizeMapping,MappingSizeRepo>();
 builder.Services.AddScoped<Raidexi.Presentation.Services.CacheServices.CacheAnalysisDataService>();
 builder.Services.AddScoped<AnalyisService>();
 builder.Services.AddScoped<IAnalysisDataService, AnalyisService>();
-
+builder.Services.AddScoped< GeminiService>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo

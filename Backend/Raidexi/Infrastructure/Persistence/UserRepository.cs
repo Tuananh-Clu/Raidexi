@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Raidexi.Application.Dtos;
 using Raidexi.Domain.Entities;
 using Raidexi.Domain.Interfaces;
 
@@ -7,10 +8,12 @@ namespace Raidexi.Infrastructure.Persistence
     public class UserRepository : IUserRepository
     {
         private readonly AppDBContext _context;
+        private readonly MongoDbContext _mongoContext;
 
-        public UserRepository(AppDBContext context)
+        public UserRepository(AppDBContext context, MongoDbContext mongoContext)
         {
             _context = context;
+            _mongoContext = mongoContext;
         }
 
         public async Task<User> GetByIdAsync(string id)
@@ -47,6 +50,14 @@ namespace Raidexi.Infrastructure.Persistence
         {
             return 
                 await _context.Users.FirstOrDefaultAsync(u => u.FullName == username);
+        }
+        public async Task SaveBrandMeasure(string userId, ResultAnalysis resultAnalysis)
+        {
+            await _mongoContext.DataBrandAnalysis.InsertOneAsync(new DataBrandAnalysis
+            {
+                userId = userId,
+                measure = resultAnalysis
+            });
         }
     }
 }

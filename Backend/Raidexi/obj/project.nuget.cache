@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "bHAOJKERDec=",
+  "dgSpecHash": "Eed7zNL2Fcw=",
   "success": true,
   "projectFilePath": "D:\\Frontend\\Raidexi\\Backend\\Raidexi\\Raidexi.csproj",
   "expectedPackageFiles": [
@@ -16,6 +16,7 @@
     "C:\\Users\\yianh\\.nuget\\packages\\google.apis\\1.73.0\\google.apis.1.73.0.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\google.apis.auth\\1.73.0\\google.apis.auth.1.73.0.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\google.apis.core\\1.73.0\\google.apis.core.1.73.0.nupkg.sha512",
+    "C:\\Users\\yianh\\.nuget\\packages\\google.genai\\0.13.1\\google.genai.0.13.1.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\google.protobuf\\3.32.0\\google.protobuf.3.32.0.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\jwt\\11.0.0\\jwt.11.0.0.nupkg.sha512",
@@ -40,6 +41,7 @@
     "C:\\Users\\yianh\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\10.0.1\\microsoft.entityframeworkcore.analyzers.10.0.1.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\microsoft.entityframeworkcore.design\\10.0.1\\microsoft.entityframeworkcore.design.10.0.1.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\10.0.1\\microsoft.entityframeworkcore.relational.10.0.1.nupkg.sha512",
+    "C:\\Users\\yianh\\.nuget\\packages\\microsoft.extensions.ai.abstractions\\10.1.1\\microsoft.extensions.ai.abstractions.10.1.1.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\microsoft.extensions.apidescription.server\\10.0.0\\microsoft.extensions.apidescription.server.10.0.0.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\microsoft.extensions.caching.memory\\10.0.2\\microsoft.extensions.caching.memory.10.0.2.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\microsoft.extensions.dependencymodel\\10.0.1\\microsoft.extensions.dependencymodel.10.0.1.nupkg.sha512",
@@ -53,6 +55,7 @@
     "C:\\Users\\yianh\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\microsoft.openapi\\2.3.0\\microsoft.openapi.2.3.0.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.23.0\\microsoft.visualstudio.azure.containers.tools.targets.1.23.0.nupkg.sha512",
+    "C:\\Users\\yianh\\.nuget\\packages\\mimetypes\\2.5.2\\mimetypes.2.5.2.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\mongodb.bson\\3.5.2\\mongodb.bson.3.5.2.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\mongodb.driver\\3.5.2\\mongodb.driver.3.5.2.nupkg.sha512",
     "C:\\Users\\yianh\\.nuget\\packages\\mongodb.driver.core\\2.30.0\\mongodb.driver.core.2.30.0.nupkg.sha512",

@@ -1,4 +1,5 @@
-﻿using Raidexi.Domain.Entities;
+﻿using Raidexi.Application.Dtos;
+using Raidexi.Domain.Entities;
 
 namespace Raidexi.Domain.Interfaces
 {
@@ -10,5 +11,7 @@ namespace Raidexi.Domain.Interfaces
         Task AddAsync(User user);                    
         Task UpdateAsync(User user);                 
         Task DeleteAsync(string id);
+
+        Task SaveBrandMeasure(string userId, ResultAnalysis resultAnalysis);
     }
 }

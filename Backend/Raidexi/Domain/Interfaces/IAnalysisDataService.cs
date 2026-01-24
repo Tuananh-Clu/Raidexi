@@ -17,6 +17,7 @@ namespace Raidexi.Domain.Interfaces
         public string fitSuggest { get; set; }
         public string sizeSuggest { get; set; }
         public int reliableRate { get; set; }
+        public GeminiResponse fitSuggestFromAI { get; set; }
 
     }
     public class SizeResult

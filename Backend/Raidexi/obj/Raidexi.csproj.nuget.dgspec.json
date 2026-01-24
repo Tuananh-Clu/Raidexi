@@ -67,6 +67,10 @@
               "target": "Package",
               "version": "[1.73.0, )"
             },
+            "Google.GenAI": {
+              "target": "Package",
+              "version": "[0.13.1, )"
+            },
             "JWT": {
               "target": "Package",
               "version": "[11.0.0, )"

@@ -129,8 +129,7 @@ export const MainContent: React.FC = ({brandData}:any) => {
           </div>
           <div>
             <span className="block mb-2 text-xs tracking-widest text-gray-400 uppercase">LOẠI FIT DỰ KIẾN</span>
-            <h3 className="mb-2 font-serif text-3xl text-white">RELAXED</h3>
-            <p className="text-sm font-light text-gray-400">Hơi rộng vai, thoải mái phần thân.</p>
+            <span className="text-2xl font-medium text-white">{context.dataAnalysisResponse?.fitSuggestFromAI.expectedFit}</span>
           </div>
         </div>
       </div>
@@ -145,15 +144,13 @@ export const MainContent: React.FC = ({brandData}:any) => {
           <div>
              <h5 className="pl-3 mb-3 text-xs font-bold tracking-widest uppercase border-l-2 text-gold-500 border-gold-500">CÁC SỐ ĐO QUAN TRỌNG NHẤT</h5>
              <p>
-               Đối với áo khoác và áo sơ mi của <strong className="text-white">Celine</strong>, vòng ngực và chiều rộng vai là yếu tố quyết định. 
-               Số đo vòng ngực 98cm của bạn đặt bạn vững chắc vào size 48.
+              {context.dataAnalysisResponse?.fitSuggestFromAI.measureInsight}
              </p>
           </div>
           <div>
              <h5 className="pl-3 mb-3 text-xs font-bold tracking-widest uppercase border-l-2 text-gold-500 border-gold-500">ĐIỀU CHỈNH THEO LOẠI SẢN PHẨM</h5>
              <p>
-               Mẫu Teddy Jacket bạn đang xem có phom dáng <em className="text-gray-400">classic fit</em>. 
-               Nếu bạn thích mặc ôm sát (slim fit), bạn có thể cân nhắc size 46, nhưng tay áo có thể hơi ngắn so với chiều cao 175cm.
+              {context.dataAnalysisResponse?.fitSuggestFromAI.productFitInsight}
              </p>
           </div>
         </div>

@@ -229,3 +229,5 @@ D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\System.Management.dll
 D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\runtimes\win\lib\net7.0\System.Management.dll
 D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\DotNetEnv.dll
 D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\Sprache.dll
+D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\Google.GenAI.dll
+D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\Microsoft.Extensions.AI.Abstractions.dll
