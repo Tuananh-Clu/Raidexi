@@ -5,7 +5,7 @@ import { Gender, ProductType, RegionSystem, SizeChartRow } from '../types';
 import { AISuggestSize } from '@/provider/AISuggestSize';
 import { useRouter } from 'next/navigation';
 
-export const MainContent: React.FC = ({brandData}:any) => {
+export const MainContent = ({ brandData }: any) => {
   const [activeGender, setActiveGender] = useState<Gender>(Gender.MALE);
   const [activeType, setActiveType] = useState<ProductType>(ProductType.TOP);
   const [activeRegion, setActiveRegion] = useState<RegionSystem>(RegionSystem.EU);

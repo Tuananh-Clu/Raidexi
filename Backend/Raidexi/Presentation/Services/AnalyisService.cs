@@ -288,14 +288,14 @@ namespace Raidexi.Presentation.Services
                 fitSuggest = fitSuggest,
                 sizeSuggest = outputSize ?? dataSize.SizeCode,
                 reliableRate = dataSize.FitPercent,
-                fitSuggestFromAI=
+                fitSuggestFromAI = new GeminiResponse
                 {
-                    expectedFit=new GeminiContent{content=GeminiResponse.expectedFit.content},
-                    measurementInsight=new GeminiContent{content=GeminiResponse.measurementInsight.content},
-                    productFitNote=new GeminiContent{content=GeminiResponse.productFitNote.content}
+                    expectedFit = new GeminiContent { content = GeminiResponse.expectedFit.content },
+                    measurementInsight = new GeminiContent { content = GeminiResponse.measurementInsight.content },
+                    productFitNote = new GeminiContent { content = GeminiResponse.productFitNote.content }
                 }
             };
-
+           
             return result;
         }
     }

@@ -19,7 +19,7 @@ export default function Page() {
 
   const searchParams = useSearchParams();
   const brand = searchParams.get("brand");
-  const brandResult = brandData.find((b: any) => b.name === brand);
+  const brandResult:any = brandData.find((b: any) => b.name === brand);
   return (
     <div>
       <NavBar />

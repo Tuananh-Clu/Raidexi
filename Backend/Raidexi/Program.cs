@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using MongoDB.Driver;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
+using Raidexi.Application.Dtos;
 using Raidexi.Domain.Interfaces;
 using Raidexi.Infrastructure.Persistence;
 using Raidexi.Infrastructure.Security;
@@ -44,6 +45,8 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1"
     });
 });
+
+
 var firebaseJson =Environment.GetEnvironmentVariable("FIREBASE_CREDENTIALS_JSON") ?? "";
 firebaseJson = firebaseJson.Replace("\\n", "\n");
 if (string.IsNullOrWhiteSpace(firebaseJson))
