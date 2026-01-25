@@ -7,28 +7,29 @@ import BackgroundDecor from "../../features/Auth/components/BackgroundDecor";
 import { useAuthentication } from "@/features/Auth/Hook/Authentication";
 import { ChromiumIcon } from "lucide-react";
 import { AuthContext } from "@/provider/AuthProvider";
+import { useLoadingStore } from "@/Shared/store/loading.store";
 
 
 const page: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [keepActive, setKeepActive] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const context=useContext(AuthContext);
+  const { startLoading, stopLoading, isLoading } = useLoadingStore();
+  const context = useContext(AuthContext);
   const handleInitialize = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    startLoading?.("Intializing session...");
     setTimeout(async () => {
       await context?.AuthLogin(email, password);
-      setIsLoading(false);
+      stopLoading?.();
     }, 2000);
   };
 
   const handleSSO = () => {
-    setIsLoading(true);
+    startLoading?.("Redirecting to Google...");
     setTimeout(async () => {
       await context?.AuthLoginWithGoogle();
-      setIsLoading(false);
+      stopLoading?.();
     }, 2000);
   };
 
@@ -37,7 +38,7 @@ const page: React.FC = () => {
       <div className="relative flex flex-col min-h-screen retro-grid">
         <button className="fixed z-20 p-2 transition border top-4 left-4 hover:bg-primary border-primary" onClick={() => window.history.back()}>
           <h1>Back</h1>
-          </button>
+        </button>
         <BackgroundDecor />
         <div className="z-10 flex items-center justify-center flex-1 p-4 sm:p-8">
           <div className="w-full max-w-[520px] bg-panel-bg border border-border-brass shadow-[0_0_0_1px_rgba(0,0,0,0.5)] flex flex-col">
@@ -71,7 +72,7 @@ const page: React.FC = () => {
                 placeholder="user@raidexi.com"
                 icon="id_card"
                 value={email}
-                onChange={(e:any) => setEmail(e.target.value)}
+                onChange={(e: any) => setEmail(e.target.value)}
                 required
               />
 
@@ -81,7 +82,7 @@ const page: React.FC = () => {
                 placeholder="••••••••••••"
                 icon="key"
                 value={password}
-                onChange={(e:any) => setPassword(e.target.value)}
+                onChange={(e: any) => setPassword(e.target.value)}
                 required
               />
 

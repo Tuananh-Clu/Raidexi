@@ -1,27 +1,32 @@
 import { MeasurementDataResponse } from "@/features/Camera/types";
 
 export interface AISuggestSizeType {
-    brand: string;
-    dataMeasure:MeasurementDataResponse
-    userCustom: UserCustomSizeType;
+  brand: string;
+  dataMeasure: MeasurementDataResponse;
+  userCustom: UserCustomSizeType;
 }
 export type UserCustomSizeType = {
-    gender: string;
-    typeProduct: string;
-    sizeOutput: string;
-}
+  gender: string;
+  typeProduct: string;
+  sizeOutput: string;
+};
 export interface AISuggestSizeResponse {
-    analysisCode:string;
-    analysisDate:string;
-    typeCustom: string;
-    fitSuggest: string;
-    sizeSuggest: string;
-    reliableRate: number;
-    fitSuggestFromAI:GeminiAISuggestSizeResponse;
-
+  analysisCode: string;
+  analysisDate: string;
+  typeCustom: string;
+  fitSuggest: string;
+  sizeSuggest: string;
+  reliableRate: number;
+  fitSuggestFromAI: GeminiAISuggestSizeResponse;
 }
 export type GeminiAISuggestSizeResponse = {
-measureInsight: string;
-    productFitInsight: string;
-    expectedFit: string;
-}
+  measureInsight: {
+    content: string;
+  };
+  productFitInsight: {
+    content: string;
+  };
+  expectedFit: {
+    content: string;
+  };
+};

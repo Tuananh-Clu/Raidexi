@@ -3,25 +3,26 @@ import React, { useContext, useState } from 'react';
 import { ArrowLeft, CheckCircle2, ShoppingBag, List, Diamond } from '../Ui/IconComponents';
 import { Gender, ProductType, RegionSystem, SizeChartRow } from '../types';
 import { AISuggestSize } from '@/provider/AISuggestSize';
-import { useRouter } from 'next/navigation';
+import { SaveAllIcon } from 'lucide-react';
+import { useRouterService } from '@/Shared/Service/routerService';
+
 
 export const MainContent = ({ brandData }: any) => {
   const [activeGender, setActiveGender] = useState<Gender>(Gender.MALE);
   const [activeType, setActiveType] = useState<ProductType>(ProductType.TOP);
   const [activeRegion, setActiveRegion] = useState<RegionSystem>(RegionSystem.EU);
+  const {navigate,back}=useRouterService();
   const context=useContext(AISuggestSize);
 
-  const nav=useRouter();
   const sizeChart: SizeChartRow[] = [
     { size: '46 (M)', chestRange: '90 - 94', shoulderRange: '42 - 43', fitStatus: 'Chật' },
     { size: '48 (L)', chestRange: '95 - 99', shoulderRange: '44 - 45', fitStatus: 'MATCH' },
     { size: '50 (XL)', chestRange: '100 - 104', shoulderRange: '46 - 47', fitStatus: 'Rộng' },
   ];
-  console.log('context data analysis response:', context.dataAnalysisResponse);
 
   return (
     <div className="flex-1">
-      {/* Header */}
+
       <div className="flex flex-col pb-6 mb-8 border-b md:flex-row md:justify-between md:items-start border-dark-700">
         <div>
           <h1 className="mb-2 text-4xl text-white font-display-Newsreader">
@@ -31,12 +32,12 @@ export const MainContent = ({ brandData }: any) => {
             MÃ PHÂN TÍCH: #{context.dataAnalysisResponse?.analysisCode} // DATE: {context.dataAnalysisResponse?.analysisDate}
           </p>
         </div>
-        <button onClick={()=>nav.back()} className="flex items-center gap-2 px-6 py-2 mt-4 text-xs tracking-widest uppercase transition-colors border md:mt-0 border-dark-600 hover:border-white">
+        <button onClick={()=>back()} className="flex items-center gap-2 px-6 py-2 mt-4 text-xs tracking-widest uppercase transition-colors border md:mt-0 border-dark-600 hover:border-white">
           <ArrowLeft size={16} /> QUAY LẠI
         </button>
       </div>
 
-      {/* Filters */}
+      
       <div className="p-6 mb-6 border rounded-sm bg-dark-800 border-dark-600">
         <h4 className="flex items-center gap-2 mb-6 text-xs font-bold tracking-widest uppercase text-gold-500">
            <span className="text-lg">⎚</span> TÙY CHỌN BỘ LỌC
@@ -61,6 +62,8 @@ export const MainContent = ({ brandData }: any) => {
               ))}
             </div>
           </div>
+
+          
           <div>
             <label className="block mb-3 text-xs tracking-wide text-gray-500 uppercase">LOẠI SẢN PHẨM</label>
             <div className="grid grid-cols-3 border border-dark-600">
@@ -129,7 +132,7 @@ export const MainContent = ({ brandData }: any) => {
           </div>
           <div>
             <span className="block mb-2 text-xs tracking-widest text-gray-400 uppercase">LOẠI FIT DỰ KIẾN</span>
-            <span className="text-2xl font-medium text-white">{context.dataAnalysisResponse?.fitSuggestFromAI.expectedFit}</span>
+            <span className="text-2xl font-medium text-white">{context.dataAnalysisResponse?.fitSuggestFromAI.expectedFit.content}</span>
           </div>
         </div>
       </div>
@@ -144,13 +147,13 @@ export const MainContent = ({ brandData }: any) => {
           <div>
              <h5 className="pl-3 mb-3 text-xs font-bold tracking-widest uppercase border-l-2 text-gold-500 border-gold-500">CÁC SỐ ĐO QUAN TRỌNG NHẤT</h5>
              <p>
-              {context.dataAnalysisResponse?.fitSuggestFromAI.measureInsight}
+              {context.dataAnalysisResponse?.fitSuggestFromAI.measureInsight.content}
              </p>
           </div>
           <div>
              <h5 className="pl-3 mb-3 text-xs font-bold tracking-widest uppercase border-l-2 text-gold-500 border-gold-500">ĐIỀU CHỈNH THEO LOẠI SẢN PHẨM</h5>
              <p>
-              {context.dataAnalysisResponse?.fitSuggestFromAI.productFitInsight}
+              {context.dataAnalysisResponse?.fitSuggestFromAI.productFitInsight.content}
              </p>
           </div>
         </div>
@@ -195,9 +198,9 @@ export const MainContent = ({ brandData }: any) => {
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <button className="md:col-span-2 bg-primary hover:bg-gold-400 text-black font-bold text-sm uppercase tracking-widest py-4 flex items-center justify-center gap-3 transition-colors shadow-[0_4px_20px_rgba(236,174,24,0.3)]">
-            <ShoppingBag size={18} /> MUA NGAY TẠI 
-        </button>
-        <button onClick={()=>nav.replace('/Brand')} className="flex items-center justify-center gap-3 py-4 text-sm font-bold tracking-widest text-white uppercase transition-colors border border-dark-500 hover:border-white bg-dark-800">
+            <SaveAllIcon size={18} /> Lưu dữ liệu vào tài khoản của tôi
+        </button> 
+        <button onClick={()=>navigate('/Brand')} className="flex items-center justify-center gap-3 py-4 text-sm font-bold tracking-widest text-white uppercase transition-colors border border-dark-500 hover:border-white bg-dark-800">
            <List size={18} /> DANH SÁCH THƯƠNG HIỆU
         </button>
       </div>

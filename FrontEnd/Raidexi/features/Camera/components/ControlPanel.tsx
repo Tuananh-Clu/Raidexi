@@ -2,7 +2,9 @@ import React, { useState, useEffect, useContext } from "react";
 import { MeasurementData, SystemStatus } from "../types";
 import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 import { useDataMeasure } from "../hook/useDataMeasure";
-import { useRouter } from "next/navigation";
+import { useRouterService } from "@/Shared/Service/routerService";
+
+
 
 interface ControlPanelProps {
   status: SystemStatus;
@@ -22,8 +24,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   const [currentTime, setCurrentTime] = useState(new Date());
   const context = useContext(BodyMeasureEstimateContext);
   const { handleSaveMeasure } = useDataMeasure();
-  const navigate = useRouter();
-
+  const {navigate}=useRouterService();
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
@@ -164,7 +165,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
               </div>
               
               <button
-                onClick={() => navigate.push("/Brand")}
+                onClick={() => navigate("/Brand")}
                 className="px-4 h-10 bg-primary text-background-dark font-bold font-mono text-sm tracking-wider border-2 border-transparent hover:bg-white hover:border-brass-light hover:shadow-[0_0_20px_rgba(242,166,13,0.6)] transition-all flex items-center justify-center gap-2 group-hover:scale-[1.05] active:scale-[0.95] whitespace-nowrap"
               >
                 <span>ANALYZE</span>

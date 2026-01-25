@@ -1,7 +1,6 @@
 "use client";
 import { useAuthentication } from "@/features/Auth/Hook/Authentication";
 import { ToasterUi } from "@/Shared/Ui/ToasterUi";
-import { useRouter } from "next/navigation";
 import {
   createContext,
   useState,
@@ -12,6 +11,9 @@ import {
   useContext,
 } from "react";
 import { BodyMeasureEstimateContext } from "./BodyMeasureEstimate";
+import { useRouterService } from "@/Shared/Service/routerService";
+import { useLoadingStore } from "@/Shared/store/loading.store";
+
 
 export interface AuthContextType {
   isLoggedIn: boolean;
@@ -25,7 +27,6 @@ export interface AuthContextType {
   AuthLoginWithGoogle: () => Promise<boolean>;
   AuthLogout: () => Promise<void>;
   AuthGetDataUser: () => Promise<any>;
-  loading: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -37,8 +38,9 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const { Login, LoginWithGoogle, Logout, Register, GetDataUser } =
     useAuthentication();
-  const navigate = useRouter();
 
+  const {startLoading, stopLoading}=useLoadingStore();
+  const { navigate }=useRouterService();
   const [userData, setUserData] = useState<any>(() => {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("userData");
@@ -50,7 +52,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return userData !== null;
   });
   const context=useContext(BodyMeasureEstimateContext)
-  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -83,14 +84,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setIsLoggedIn(false);
 
       } finally {
-        setLoading(false);
       }
     };
 
     if (userData === null) {
       fetchUserData();
     } else {
-      setLoading(false);
+  
     }
   }, []);
 
@@ -100,11 +100,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (result) {
         setIsLoggedIn(true);
         const data = await GetDataUser();
+        
         if (data?.user) {
           setUserData(data.user);
           localStorage.setItem("userData", JSON.stringify(data.user));
         }
-        navigate.push("/");
+        navigate("/");
       ToasterUi("Logged in successfully", "success");
       }
       return result;
@@ -120,22 +121,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   );
 
   const AuthLoginWithGoogle = useCallback(async () => {
+    
     const result = await LoginWithGoogle();
+    startLoading?.("Logging in with Google...");
     if (result.isSuccess) {
       setIsLoggedIn(true);
       setUserData(result.user);
+      stopLoading?.();
+      ToasterUi("Logged in successfully", "success");
       localStorage.setItem("userData", JSON.stringify(result.user));
-      navigate.push("/");
+      navigate("/");
     }
     return result;
   }, [LoginWithGoogle, navigate]);
 
   const AuthLogout = useCallback(async () => {
+    startLoading?.("Logging out...");
     await Logout();
     setIsLoggedIn(false);
     setUserData(null);
     localStorage.removeItem("userData");
-    navigate.push("/Login");
+    navigate("/Login");
     ToasterUi("Logged out successfully", "success");
   }, [Logout, navigate]);
 
@@ -157,7 +163,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       AuthLoginWithGoogle,
       AuthLogout,
       AuthGetDataUser,
-      loading,
     }),
     [
       isLoggedIn,
@@ -167,7 +172,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       AuthLoginWithGoogle,
       AuthLogout,
       AuthGetDataUser,
-      loading,
+
     ]
   );
 

@@ -6,8 +6,11 @@ import type { ReactNode } from "react";
 import { BrandProvider } from "@/provider/BrandProvider";
 import { BodyMeasureEstimateProvider } from "@/provider/BodyMeasureEstimate";
 import { AISuggestSizeProvider } from "@/provider/AISuggestSize";
+import GlobalLoading from "@/Shared/Components/components/LoadingScreen";
+import { useLoadingStore } from "@/Shared/store/loading.store";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
+  const {isLoading, note}=useLoadingStore();
   return (
     <html lang="vi">
       <head>
@@ -36,6 +39,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
 
       <body>
+        {isLoading && <GlobalLoading note={note} />}  
         <Toaster position="top-right" />
         <AuthProvider>
           <AISuggestSizeProvider>

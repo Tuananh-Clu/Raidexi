@@ -1,8 +1,10 @@
 "use client";
 import React, { useContext } from "react";
 import { SquareActivity } from "lucide-react";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { AuthContext } from "@/provider/AuthProvider";
+import { useRouterService } from "@/Shared/Service/routerService";
+
 
 export const NavBar: React.FC = () => {
   const description = [
@@ -15,11 +17,10 @@ export const NavBar: React.FC = () => {
   const context = useContext(AuthContext);
   const isLoggedIn = context?.isLoggedIn;
   const currentPath = usePathname();
-  console.log(currentPath);
-  const navigate = useRouter();
+  const { navigate }=useRouterService();
   const handleClick = async () => {
     context?.AuthLogout();
-    navigate.push("/");
+    navigate("/");
   };
   return (
     <header className="sticky top-0 z-50 border-b border-border-brass bg-background-dark/95 backdrop-blur-sm">
@@ -31,7 +32,7 @@ export const NavBar: React.FC = () => {
           <button
             onClick={() => {
               window.scrollBy(0, 0);
-              navigate.push("/");
+              navigate("/");
             }}
             className="font-sans text-xl font-bold tracking-tight text-white uppercase"
           >

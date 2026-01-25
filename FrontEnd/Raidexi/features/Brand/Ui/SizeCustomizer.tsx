@@ -29,8 +29,6 @@ export const SizeCustomizer = () => {
             sizeOutput: sizeSystem
         }
     } as AISuggestSizeType);
-    AIContext.handleAnalysisMeasure();
-    onClose();
   }
   
   const renderOption = <T extends string>(
@@ -134,6 +132,7 @@ export const SizeCustomizer = () => {
               Hủy bỏ
             </button>
             <button
+            disabled={AIContext.isLoading}
               onClick={handleSubmit}
               className="flex-1 py-3 cursor-pointer px-6 bg-primary text-black uppercase text-sm font-bold tracking-wider hover:bg-gray-600 transition-colors flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(230,179,37,0.2)]"
             >

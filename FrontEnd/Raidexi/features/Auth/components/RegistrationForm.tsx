@@ -1,12 +1,11 @@
 "use client"
 import React, { useContext, useState } from 'react';
 import { InputGroup } from './InputGroup';
-import { useRouter } from 'next/navigation';
-import { useAuthentication } from '../Hook/Authentication';
 import { AuthContext } from '@/provider/AuthProvider';
+import { useRouterService } from '@/Shared/Service/routerService';
+
 
 const RegistrationForm: React.FC = () => {
-  const navigate=useRouter();
   const [formData, setFormData] = useState({
     fullname: '',
     email: '',
@@ -15,7 +14,7 @@ const RegistrationForm: React.FC = () => {
     agreed: false
   });
   const context=useContext(AuthContext);
-
+  const {navigate}=useRouterService();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value, type, checked } = e.target;
     setFormData(prev => ({
@@ -36,7 +35,7 @@ const RegistrationForm: React.FC = () => {
       <div className="absolute w-4 h-4 border-b-2 border-l-2 -bottom-1 -left-1 border-primary"></div>
       <div className="absolute w-4 h-4 border-b-2 border-r-2 -bottom-1 -right-1 border-primary"></div>
 
-      {/* Header of the Card */}
+
       <div className="p-8 border-b border-border-dark md:p-10 bg-surface-dark/30">
         <div className="flex flex-col gap-2">
           <h2 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl font-display">
@@ -50,7 +49,6 @@ const RegistrationForm: React.FC = () => {
 
       {/* Form Content */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-8 p-8 md:p-10">
-        {/* Name Field */}
         <InputGroup
           id="fullname"
           label="01 // Họ và Tên"
@@ -60,7 +58,6 @@ const RegistrationForm: React.FC = () => {
           onChange={handleChange}
         />
 
-        {/* Email Field */}
         <InputGroup
           id="email"
           label="02 // Địa chỉ Email"
@@ -70,7 +67,6 @@ const RegistrationForm: React.FC = () => {
           onChange={handleChange}
         />
 
-        {/* Password Group */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <InputGroup
             id="password"
@@ -90,7 +86,6 @@ const RegistrationForm: React.FC = () => {
           />
         </div>
 
-        {/* Terms Checkbox */}
         <div className="flex items-start gap-3 mt-2 cursor-pointer group">
           <div className="flex items-center h-6">
             <input
@@ -123,7 +118,6 @@ const RegistrationForm: React.FC = () => {
           </label>
         </div>
 
-        {/* Actions */}
         <div className="flex flex-col items-center gap-6 pt-4 mt-2 border-t md:flex-row border-border-dark/50">
           <button
             type="submit"
@@ -138,7 +132,7 @@ const RegistrationForm: React.FC = () => {
             href="/Login"
             className="flex items-center gap-2 text-[#b9b29d] hover:text-primary transition-colors text-base font-medium px-4 py-2 font-sans"
           >
-            <span>Đã có tài khoản? <h1 onClick={()=>navigate.push('/Login')}>Đăng nhập</h1></span>
+            <span>Đã có tài khoản? <h1 onClick={()=>navigate('/Login')}>Đăng nhập</h1></span>
             <span className="text-sm material-symbols-outlined">
               arrow_forward
             </span>
@@ -146,7 +140,6 @@ const RegistrationForm: React.FC = () => {
         </div>
       </form>
 
-      {/* Technical Footer Strip inside Card */}
       <div className="bg-black/40 border-t border-border-dark px-4 py-2 flex justify-between items-center text-[10px] text-[#544d3b] font-mono uppercase tracking-wider select-none">
         <span>SECURE_CONNECTION: TLS 1.3</span>
         <span>NODE_ID: VN-SGN-09</span>
