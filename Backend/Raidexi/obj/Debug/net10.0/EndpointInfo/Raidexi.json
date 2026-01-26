@@ -385,6 +385,37 @@
           }
         }
       }
+    },
+    "/api/User/SaveMeasureBrandSize": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataBrandAnalysis"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataBrandAnalysis"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataBrandAnalysis"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -392,7 +423,7 @@
       "BrandProfile": {
         "type": "object",
         "properties": {
-          "id": {
+          "_id": {
             "type": "string",
             "nullable": true
           },
@@ -424,6 +455,18 @@
             "nullable": true
           },
           "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "origin": {
+            "type": "string",
+            "nullable": true
+          },
+          "segment": {
+            "type": "string",
+            "nullable": true
+          },
+          "dataSeason": {
             "type": "string",
             "nullable": true
           }
@@ -503,6 +546,51 @@
         },
         "additionalProperties": false
       },
+      "DataBrandAnalysis": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "brand": {
+            "type": "string",
+            "nullable": true
+          },
+          "dataMeasure": {
+            "$ref": "#/components/schemas/MeasureData"
+          },
+          "dataAnalysis": {
+            "$ref": "#/components/schemas/ResultAnalysis"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GeminiContent": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GeminiResponse": {
+        "type": "object",
+        "properties": {
+          "measurementInsight": {
+            "$ref": "#/components/schemas/GeminiContent"
+          },
+          "productFitNote": {
+            "$ref": "#/components/schemas/GeminiContent"
+          },
+          "expectedFit": {
+            "$ref": "#/components/schemas/GeminiContent"
+          }
+        },
+        "additionalProperties": false
+      },
       "LoginDto": {
         "type": "object",
         "properties": {
@@ -557,6 +645,38 @@
           "fullName": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResultAnalysis": {
+        "type": "object",
+        "properties": {
+          "analysisCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "analysisDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "typeCustom": {
+            "$ref": "#/components/schemas/CustomizeDataAiSuggest"
+          },
+          "fitSuggest": {
+            "type": "string",
+            "nullable": true
+          },
+          "sizeSuggest": {
+            "type": "string",
+            "nullable": true
+          },
+          "reliableRate": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fitSuggestFromAI": {
+            "$ref": "#/components/schemas/GeminiResponse"
           }
         },
         "additionalProperties": false

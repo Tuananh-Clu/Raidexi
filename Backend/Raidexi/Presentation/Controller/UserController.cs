@@ -52,7 +52,7 @@ namespace Raidexi.Presentation.Controller
                 message = result.ErrorMessage,
                 user = result.User
             });
-                
+
         }
         [HttpGet("GetUserData")]
         public async Task<IActionResult> GetUserData()
@@ -113,9 +113,19 @@ namespace Raidexi.Presentation.Controller
             return Ok(new
             {
                 message = "Thêm Thành Công",
-                isSuccess=true
+                isSuccess = true
             });
 
+        }
+        [HttpPost("SaveMeasureBrandSize")]
+        public async Task<IActionResult> SaveMeasureBrandSize([FromBody] DataBrandAnalysis resultAnalysis)
+        {
+            await authService.SaveBrandMeasure(resultAnalysis);
+            return Ok(new
+            {
+                message = "Thêm Thành Công",
+                isSuccess = true
+            });
         }
     }
 }

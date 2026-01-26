@@ -51,12 +51,15 @@ namespace Raidexi.Infrastructure.Persistence
             return 
                 await _context.Users.FirstOrDefaultAsync(u => u.FullName == username);
         }
-        public async Task SaveBrandMeasure(string userId, ResultAnalysis resultAnalysis)
+        public async Task SaveBrandMeasure(string userId ,DataBrandAnalysis dataBrandAnalysis)
         {
+
             await _mongoContext.DataBrandAnalysis.InsertOneAsync(new DataBrandAnalysis
             {
                 userId = userId,
-                measure = resultAnalysis
+                brand = dataBrandAnalysis.brand,
+                dataMeasure = dataBrandAnalysis.dataMeasure,
+                dataAnalysis = dataBrandAnalysis.dataAnalysis
             });
         }
 

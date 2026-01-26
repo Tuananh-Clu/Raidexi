@@ -38,6 +38,9 @@ export interface Brand {
   metricValue: string; 
   icon: string; 
   category: string;
+  origin: string;
+  segment: string;
+  dataSeason: string;
 }
 
 export interface PaginationProps {

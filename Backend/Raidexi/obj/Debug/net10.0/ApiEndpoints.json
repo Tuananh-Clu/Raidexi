@@ -194,5 +194,21 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Raidexi.Presentation.Controller.UserController",
+    "Method": "SaveMeasureBrandSize",
+    "RelativePath": "api/User/SaveMeasureBrandSize",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "resultAnalysis",
+        "Type": "Raidexi.Domain.Entities.DataBrandAnalysis",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]

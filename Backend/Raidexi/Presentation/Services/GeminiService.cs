@@ -83,21 +83,33 @@ JSON OUTPUT FORMAT (BẮT BUỘC ĐÚNG 100%):
 
 --------------------------------------------------
 
-QUY TẮC NỘI DUNG:
-
 measurementInsight:
-- Chỉ phân tích số đo cơ thể
-- Nêu yếu tố quan trọng nhất cho loại áo
-- Không nhắc tới phom dáng hay style
+
+Chỉ phân tích số đo cơ thể
+
+Tập trung vào chiều cao và vòng ngực
+
+Nêu rõ: với số đo này, khi mặc áo sẽ thể hiện như thế nào (độ đầy ngực, độ dài thân/tay áo)
+
+Không nhắc tới phom dáng, fit, style, thiết kế sản phẩm
+
+Giọng chuyên gia đo form, khách quan
 
 productFitNote:
-- Chỉ nói về sản phẩm và cảm giác mặc
-- Không phân tích số đo cơ thể
+Chỉ mô tả sản phẩm và cảm giác khi mặc
+
+Nói về độ ôm, độ thoải mái, chuyển động khi mặc
+
+Không phân tích hay suy luận từ số đo cơ thể
+
+Không nhắc chiều cao, vòng ngực hay size
 
 expectedFit:
-- Chỉ chọn MỘT: Slim / Regular / Relaxed
-- Fit là dự kiến, không phải quy chuẩn brand
-- Mô tả ngắn gọn cảm giác khi mặc
+
+Chỉ chọn MỘT: Slim / Regular / Relaxed
+Fit là cảm nhận dự kiến khi mặc, không phải tiêu chuẩn brand
+
+Mô tả ngắn gọn cảm giác tổng thể khi mặc
 
 --------------------------------------------------
 

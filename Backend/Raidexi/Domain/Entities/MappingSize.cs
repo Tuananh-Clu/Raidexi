@@ -66,7 +66,7 @@ namespace Raidexi.Domain.Entities
         }
         public class BrandProfile
         {
-            public string id { get; set; }
+            public string _id { get; set; }
             public string name { get; set; }
             public string refCode { get; set; }
             public BrandStatus status { get; set; }
@@ -75,6 +75,9 @@ namespace Raidexi.Domain.Entities
             public string metricValue { get; set; }
             public string icon { get; set; }
             public string Category { get; set; }
+            public string origin { get; set; }
+            public string segment { get; set; }
+            public string dataSeason { get; set; }
         }
     }
 }

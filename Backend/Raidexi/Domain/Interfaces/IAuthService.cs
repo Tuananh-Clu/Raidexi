@@ -12,7 +12,7 @@ namespace Raidexi.Domain.Interfaces
         Task LogOut();
         Task SaveMeaure(MeasureData data);
         Task<MeasureData> GetMeasureForUser(string id);
-        Task SaveBrandMeasure( ResultAnalysis resultAnalysis);
+        Task SaveBrandMeasure( DataBrandAnalysis resultAnalysis);
 
     }
     public class AuthResult

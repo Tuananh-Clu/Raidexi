@@ -1,6 +1,7 @@
 import React from 'react';
 import { MapPin, Shirt, History, Ruler, Edit2 } from '../Ui/IconComponents';
 import { UserMeasurements } from '../types';
+import { b } from 'framer-motion/client';
 
 interface BrandSidebarProps {
   measurements: UserMeasurements;
@@ -21,15 +22,15 @@ export const BrandSidebar: React.FC<BrandSidebarProps> = ({ measurements, brandD
           <div className="space-y-3 text-sm text-gray-400">
             <div className="flex items-center gap-3">
               <MapPin size={16} />
-              <span>PARIS, PHÁP</span>
+              <span>{brandData.origin}</span>
             </div>
             <div className="flex items-center gap-3">
               <Shirt size={16} />
-              <span>LUXURY READY-TO-WEAR</span>
+              <span>{brandData.segment}</span>
             </div>
             <div className="flex items-center gap-3">
               <History size={16} />
-              <span>DỮ LIỆU: MÙA THU 2023</span>
+              <span>{brandData.dataSeason}</span>
             </div>
           </div>
         </div>

@@ -11,6 +11,8 @@ export type UserCustomSizeType = {
   sizeOutput: string;
 };
 export interface AISuggestSizeResponse {
+  userId: string;
+  brand: string;
   analysisCode: string;
   analysisDate: string;
   typeCustom: string;
@@ -30,3 +32,9 @@ export type GeminiAISuggestSizeResponse = {
     content: string;
   };
 };
+export interface DataToSaveBrandMeasure {
+  userId: string;
+  brand: string;
+  dataMeasure: MeasurementDataResponse;
+  dataAnalysis: AISuggestSizeResponse;
+}

@@ -1,5 +1,6 @@
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
@@ -11,13 +12,40 @@ using Raidexi.Infrastructure.Persistence;
 using Raidexi.Infrastructure.Security;
 using Raidexi.Presentation.Services;
 using System;
+using System.Threading.RateLimiting;
 using System.Xml.Linq;
 DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.OnRejected = (context, i) =>
+    {
+        var http = context.HttpContext;
+        var ip = http.Connection.RemoteIpAddress.ToString();
+        var path = http.Request.Path;
+
+        Console.WriteLine($"[RATE-LIMIT] IP={ip} | PATH={path}");
+
+        return ValueTask.CompletedTask;
+    };
+    options.AddPolicy("anon05", ctx =>
+    {
+        var ip = ctx.Connection.RemoteIpAddress.ToString();
+        return RateLimitPartition.GetFixedWindowLimiter
+        (
+            ip,
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromHours(24)
+            });
+    });
+});
 builder.Services.AddMemoryCache();
-
 builder.Services.AddControllers();
-
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDBContext>(options =>
@@ -108,6 +136,7 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = "swagger";
     });
 }
+app.UseRateLimiter();
 app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 

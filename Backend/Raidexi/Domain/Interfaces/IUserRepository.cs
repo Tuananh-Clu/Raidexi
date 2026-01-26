@@ -12,6 +12,6 @@ namespace Raidexi.Domain.Interfaces
         Task UpdateAsync(User user);                 
         Task DeleteAsync(string id);
 
-        Task SaveBrandMeasure(string? userId, ResultAnalysis resultAnalysis);
+        Task SaveBrandMeasure(string? userId,  DataBrandAnalysis dataBrandAnalysis);
     }
 }
