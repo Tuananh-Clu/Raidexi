@@ -216,5 +216,12 @@ namespace Raidexi.Presentation.Services
             return data.dataMeasure;
 
         }
+       public async Task SaveBrandMeasure(ResultAnalysis resultAnalysis)
+        {
+            var jwtToken = _httpContextAccessor.HttpContext?.Request.Cookies[$"access_token_client"];
+            var jwt=new JwtSecurityTokenHandler().ReadJwtToken(jwtToken);
+            var userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            await _userRepository.SaveBrandMeasure(userId, resultAnalysis);
+        }
     }
 }

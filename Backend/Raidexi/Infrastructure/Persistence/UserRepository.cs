@@ -59,5 +59,6 @@ namespace Raidexi.Infrastructure.Persistence
                 measure = resultAnalysis
             });
         }
+
     }
 }

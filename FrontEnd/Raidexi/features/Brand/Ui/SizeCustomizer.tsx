@@ -5,6 +5,7 @@ import { BrandContext } from '@/provider/BrandProvider';
 import { AISuggestSize } from '@/provider/AISuggestSize';
 import { AISuggestSizeType } from '@/Shared/types';
 import { BodyMeasureEstimateContext } from '@/provider/BodyMeasureEstimate';
+import { useLoadingStore } from '@/Shared/store/loading.store';
 
 
 
@@ -18,6 +19,7 @@ export const SizeCustomizer = () => {
   const onClose = () => {
     context.setPopUpSettings({isopened:false,brandrefcode:"",gender:"",productType:"",sizeSystem:""});
   };
+  const {isLoading}=useLoadingStore()
 
   const handleSubmit = async() => {
     AIContext.setDataMeasure({
@@ -29,6 +31,7 @@ export const SizeCustomizer = () => {
             sizeOutput: sizeSystem
         }
     } as AISuggestSizeType);
+    onClose();
   }
   
   const renderOption = <T extends string>(
@@ -132,7 +135,7 @@ export const SizeCustomizer = () => {
               Hủy bỏ
             </button>
             <button
-            disabled={AIContext.isLoading}
+            disabled={isLoading}
               onClick={handleSubmit}
               className="flex-1 py-3 cursor-pointer px-6 bg-primary text-black uppercase text-sm font-bold tracking-wider hover:bg-gray-600 transition-colors flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(230,179,37,0.2)]"
             >

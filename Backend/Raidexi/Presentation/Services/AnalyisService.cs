@@ -4,6 +4,7 @@ using Raidexi.Domain.Interfaces;
 using Raidexi.Presentation.Services.CacheServices;
 using System.Drawing;
 using System.Reflection;
+using Google.GenAI;
 
 namespace Raidexi.Presentation.Services
 {
@@ -11,6 +12,7 @@ namespace Raidexi.Presentation.Services
     {
         private readonly CacheAnalysisDataService cache;
         private readonly GeminiService geminiServices;
+        private Client _client;
 
         public AnalyisService(CacheAnalysisDataService cacheAnalysisDataService,GeminiService geminiService)
         {
@@ -230,6 +232,11 @@ namespace Raidexi.Presentation.Services
         public async Task<ResultAnalysis> AISuggestSize(
             uploadDataToAnalysisMeasure uploadDataToAnalysisMeasure)
         {
+            var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
+            if (string.IsNullOrEmpty(apiKey))
+                throw new InvalidOperationException("Missing GEMINI_API_KEY environment variable");
+
+            _client = new Client(apiKey: apiKey);
             var brandRules = await cache.BrandRuleAsync();
             var brandRule = brandRules.FirstOrDefault(b =>
                 b.Brand.Equals(uploadDataToAnalysisMeasure.brand, StringComparison.OrdinalIgnoreCase));

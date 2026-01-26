@@ -20,13 +20,13 @@ export interface AISuggestSizeResponse {
   fitSuggestFromAI: GeminiAISuggestSizeResponse;
 }
 export type GeminiAISuggestSizeResponse = {
-  measureInsight: {
+  measurementInsight?: {
     content: string;
   };
-  productFitInsight: {
+  productFitNote?: {
     content: string;
   };
-  expectedFit: {
+  expectedFit?: {
     content: string;
   };
 };

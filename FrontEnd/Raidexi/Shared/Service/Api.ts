@@ -7,7 +7,8 @@ export const API={
         "Register":"/api/User/Register",
         "GetDataUser":"/api/User/GetUserData",
         "LoginWithFirebase":"/api/User/LoginWithFirebase",
-        "SaveDataMeasurement":"/api/User/SaveMeasure"
+        "SaveDataMeasurement":"/api/User/SaveMeasure",
+        "SaveMeasureBrandSize":"/api/User/SaveMeasureBrandSize",
     },
     "Brand":{
         "GetBrandProfile":"/api/MappingSize/brand-profiles",

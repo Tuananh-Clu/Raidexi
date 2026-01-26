@@ -5,6 +5,7 @@ import { Gender, ProductType, RegionSystem, SizeChartRow } from '../types';
 import { AISuggestSize } from '@/provider/AISuggestSize';
 import { SaveAllIcon } from 'lucide-react';
 import { useRouterService } from '@/Shared/Service/routerService';
+import { useBrandMeasure } from '../hook/useBrandMeasure';
 
 
 export const MainContent = ({ brandData }: any) => {
@@ -12,6 +13,7 @@ export const MainContent = ({ brandData }: any) => {
   const [activeType, setActiveType] = useState<ProductType>(ProductType.TOP);
   const [activeRegion, setActiveRegion] = useState<RegionSystem>(RegionSystem.EU);
   const {navigate,back}=useRouterService();
+  const {HandleSaveSuggestBrand}=useBrandMeasure();
   const context=useContext(AISuggestSize);
 
   const sizeChart: SizeChartRow[] = [
@@ -19,6 +21,9 @@ export const MainContent = ({ brandData }: any) => {
     { size: '48 (L)', chestRange: '95 - 99', shoulderRange: '44 - 45', fitStatus: 'MATCH' },
     { size: '50 (XL)', chestRange: '100 - 104', shoulderRange: '46 - 47', fitStatus: 'Rộng' },
   ];
+  const handleSave=()=>{
+    HandleSaveSuggestBrand(context.dataAnalysisResponse);
+  }
 
   return (
     <div className="flex-1">
@@ -132,7 +137,7 @@ export const MainContent = ({ brandData }: any) => {
           </div>
           <div>
             <span className="block mb-2 text-xs tracking-widest text-gray-400 uppercase">LOẠI FIT DỰ KIẾN</span>
-            <span className="text-2xl font-medium text-white">{context.dataAnalysisResponse?.fitSuggestFromAI.expectedFit.content}</span>
+            <span className="text-xl font-medium text-white">{context.dataAnalysisResponse?.fitSuggestFromAI.expectedFit?.content}</span>
           </div>
         </div>
       </div>
@@ -147,13 +152,13 @@ export const MainContent = ({ brandData }: any) => {
           <div>
              <h5 className="pl-3 mb-3 text-xs font-bold tracking-widest uppercase border-l-2 text-gold-500 border-gold-500">CÁC SỐ ĐO QUAN TRỌNG NHẤT</h5>
              <p>
-              {context.dataAnalysisResponse?.fitSuggestFromAI.measureInsight.content}
+              {context.dataAnalysisResponse?.fitSuggestFromAI.measurementInsight?.content}
              </p>
           </div>
           <div>
              <h5 className="pl-3 mb-3 text-xs font-bold tracking-widest uppercase border-l-2 text-gold-500 border-gold-500">ĐIỀU CHỈNH THEO LOẠI SẢN PHẨM</h5>
              <p>
-              {context.dataAnalysisResponse?.fitSuggestFromAI.productFitInsight.content}
+              {context.dataAnalysisResponse?.fitSuggestFromAI.productFitNote?.content}
              </p>
           </div>
         </div>
@@ -197,7 +202,7 @@ export const MainContent = ({ brandData }: any) => {
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <button className="md:col-span-2 bg-primary hover:bg-gold-400 text-black font-bold text-sm uppercase tracking-widest py-4 flex items-center justify-center gap-3 transition-colors shadow-[0_4px_20px_rgba(236,174,24,0.3)]">
+        <button onClick={handleSave} className="md:col-span-2 bg-primary hover:bg-gold-400 text-black font-bold text-sm uppercase tracking-widest py-4 flex items-center justify-center gap-3 transition-colors shadow-[0_4px_20px_rgba(236,174,24,0.3)]">
             <SaveAllIcon size={18} /> Lưu dữ liệu vào tài khoản của tôi
         </button> 
         <button onClick={()=>navigate('/Brand')} className="flex items-center justify-center gap-3 py-4 text-sm font-bold tracking-widest text-white uppercase transition-colors border border-dark-500 hover:border-white bg-dark-800">

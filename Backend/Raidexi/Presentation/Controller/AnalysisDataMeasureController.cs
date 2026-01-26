@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Raidexi.Application.Dtos;
 using Raidexi.Presentation.Services;
 
@@ -14,6 +15,7 @@ namespace Raidexi.Presentation.Controller
         {
             analyisService = service;
         }
+        [EnableRateLimiting("anon05")]
         [HttpPost("AISuggest")]
         public async Task<IActionResult> AISuggestSize([FromBody] uploadDataToAnalysisMeasure uploadDataToAnalysisMeasure)
         {

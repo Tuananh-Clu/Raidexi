@@ -10,15 +10,12 @@ import { Footer } from "@/Shared/Components/components/Footer";
 import { HeroSection } from "@/features/Home/components/HeroSection";
 import { useEffect, useState } from "react";
 import { ArrowBigUpDashIcon } from "lucide-react";
-import { useAuthentication } from "@/features/Auth/Hook/Authentication";
-import { LoadingScreen } from "@/Shared/Components/components/LoadingScreen";
+
+
 
 
 function page() {
   const [scrollButtonVisible, setScrollButtonVisible] = useState(false);
-  useEffect(() => {
-    LoadingScreen({isLoading: true});
-  });
   useEffect(() => {
     const onScroll = () => {
       setScrollButtonVisible(window.scrollY > 300);
