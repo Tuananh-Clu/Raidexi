@@ -395,21 +395,33 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DataBrandAnalysis"
+                "$ref": "#/components/schemas/DataBrand"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/DataBrandAnalysis"
+                "$ref": "#/components/schemas/DataBrand"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/DataBrandAnalysis"
+                "$ref": "#/components/schemas/DataBrand"
               }
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/User/GetBrandSizeMeasure": {
+      "get": {
+        "tags": [
+          "User"
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -546,13 +558,9 @@
         },
         "additionalProperties": false
       },
-      "DataBrandAnalysis": {
+      "DataBrand": {
         "type": "object",
         "properties": {
-          "userId": {
-            "type": "string",
-            "nullable": true
-          },
           "brand": {
             "type": "string",
             "nullable": true

@@ -6,5 +6,9 @@ export const brandApi = {
     saveMeasureBrandSize: (data: DataToSaveBrandMeasure | undefined) =>
         api_Response(API.Authentication.SaveMeasureBrandSize, "POST", data, {
             withCredentials: true
-        })
+        }),
+    getBrandMeasurements: () =>
+        api_Response(API.Authentication.GetBrandMeasurements, "GET", undefined, {
+            withCredentials: true
+        }),
 };

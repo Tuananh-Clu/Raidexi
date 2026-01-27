@@ -5,14 +5,15 @@ import { NavBar } from "@/Shared/Components/components/NavBar";
 import PartnerGrid from "@/features/Brand/components/PartnerGrid";
 import QuoteSection from "@/features/Brand/components/QuoteSection";
 import { useContext, useMemo, useState } from "react";
-import { BrandStatus, FilterType } from "@/features/Brand/types";
+import { FilterType } from "@/features/Brand/types";
 import FilterBar from "@/features/Brand/components/FilterBar";
 import BrandCard from "@/features/Brand/components/BrandCard";
 import Pagination from "@/features/Brand/components/Pagination";
 
 import { AuthContext } from "@/provider/AuthProvider";
 import { BrandContext } from "@/provider/BrandProvider";
-import { SizeCustomizer } from "@/features/Brand/Ui/SizeCustomizer";
+import { SizeCustomizer } from "@/features/Brand/components/SizeCustomizer";
+
 export default function Page() {
   const [activeFilter, setActiveFilter] = useState<FilterType>(FilterType.ALL);
   const [searchQuery, setSearchQuery] = useState("");
@@ -48,16 +49,19 @@ export default function Page() {
     return BrandContexts?.dataBrand.slice(start, start + itemsPerPage);
   }, [filteredBrands, currentPage]);
 
-  const brandAl=()=>{
-    currentBrands.map((brand)=>{
-      filteredBrands.map((fBrand)=>{
-        if(brand.id==fBrand.id){
+  const brandAl = () => {
+    currentBrands.map((brand) => {
+      filteredBrands.map((fBrand) => {
+        if (brand.id == fBrand.id) {
           return brand;
         }
+      });
     });
-    })
-    return filteredBrands.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  }
+    return filteredBrands.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage,
+    );
+  };
   const counts = useMemo(() => {
     return {
       all: BrandContexts?.dataBrand.length ?? 0,
@@ -105,7 +109,6 @@ export default function Page() {
                 </span>
               </p>
             </div>
-           
           </section>
 
           <FilterBar

@@ -217,7 +217,7 @@ namespace Raidexi.Infrastructure.Services
             return data.dataMeasure;
 
         }
-       public async Task SaveBrandMeasure(DataBrandAnalysis dataBrandAnalysis)
+       public async Task SaveBrandMeasure(DataBrand dataBrandAnalysis)
         {
             var jwtToken = _httpContextAccessor.HttpContext?.Request.Cookies[$"access_token_client"];
             
@@ -225,6 +225,14 @@ namespace Raidexi.Infrastructure.Services
             Console.WriteLine("JWT Token: " + jwtToken);
             string? userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
             await _userRepository.SaveBrandMeasure(userId,dataBrandAnalysis);
+        }
+        public async Task<DataBrandAnalysisResult> GetDataBrandAnalysisAsync()
+        {
+            var jwtToken = _httpContextAccessor.HttpContext?.Request.Cookies[$"access_token_client"];
+            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(jwtToken);
+            string? userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            var dataBrandAnalysis = await _userRepository.GetBrandAnalysisByIdAsync(userId);
+            return dataBrandAnalysis;
         }
     }
 }

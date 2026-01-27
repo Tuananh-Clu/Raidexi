@@ -18,7 +18,7 @@ namespace Raidexi.Infrastructure.Persistence
         public IMongoCollection<MappingSize.SizeMapping> SizeMapping => mongoDatabase.GetCollection<MappingSize.SizeMapping>("SizeMapping");
         public IMongoCollection<MappingSize.BrandProfile> BrandProfile => mongoDatabase.GetCollection<MappingSize.BrandProfile>("BrandProfile");
         public IMongoCollection<SaveMeasureDataDto> MeasureUserData => mongoDatabase.GetCollection<SaveMeasureDataDto>("MeasureDataUser");
-        public IMongoCollection<DataBrandAnalysis> DataBrandAnalysis => mongoDatabase.GetCollection<DataBrandAnalysis>("DataBrandAnalysis");
+        public IMongoCollection<DataBrandAnalysisResult> DataBrandAnalysis => mongoDatabase.GetCollection<DataBrandAnalysisResult>("DataBrandAnalysis");
 
     }
 }

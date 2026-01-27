@@ -1,7 +1,6 @@
 import React from 'react';
-import { MapPin, Shirt, History, Ruler, Edit2 } from '../Ui/IconComponents';
+import { MapPin, Shirt, History, Ruler, Edit2 } from '../components/IconComponents';
 import { UserMeasurements } from '../types';
-import { b } from 'framer-motion/client';
 
 interface BrandSidebarProps {
   measurements: UserMeasurements;

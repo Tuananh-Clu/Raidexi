@@ -33,8 +33,12 @@ export type GeminiAISuggestSizeResponse = {
   };
 };
 export interface DataToSaveBrandMeasure {
-  userId: string;
   brand: string;
   dataMeasure: MeasurementDataResponse;
   dataAnalysis: AISuggestSizeResponse;
+}
+
+export interface DataBrandMeasureResponse {
+  userid: string;
+  dataBrandAnalysis:DataToSaveBrandMeasure[];
 }

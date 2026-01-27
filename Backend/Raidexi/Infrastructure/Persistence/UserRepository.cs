@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using Raidexi.Application.Dtos;
 using Raidexi.Domain.Entities;
 using Raidexi.Domain.Interfaces;
@@ -51,16 +52,31 @@ namespace Raidexi.Infrastructure.Persistence
             return 
                 await _context.Users.FirstOrDefaultAsync(u => u.FullName == username);
         }
-        public async Task SaveBrandMeasure(string userId ,DataBrandAnalysis dataBrandAnalysis)
+        public async Task SaveBrandMeasure(string userId, DataBrand dataBrandAnalysis)
         {
-
-            await _mongoContext.DataBrandAnalysis.InsertOneAsync(new DataBrandAnalysis
+            var filter = Builders<DataBrandAnalysisResult>.Filter.Eq("userId", userId);
+            var existingData = await _mongoContext.DataBrandAnalysis.Find(filter).FirstOrDefaultAsync();
+            if (existingData != null)
             {
-                userId = userId,
-                brand = dataBrandAnalysis.brand,
-                dataMeasure = dataBrandAnalysis.dataMeasure,
-                dataAnalysis = dataBrandAnalysis.dataAnalysis
-            });
+                var update = Builders<DataBrandAnalysisResult>.Update.Set("DataBrandAnalysis",   dataBrandAnalysis );
+                await _mongoContext.DataBrandAnalysis.UpdateOneAsync(filter, update);
+            }
+            else
+            {
+                var newData = new DataBrandAnalysisResult
+                {
+                    userId = userId,
+                    DataBrandAnalysis = new List<DataBrand> { dataBrandAnalysis }
+                };
+                await _mongoContext.DataBrandAnalysis.InsertOneAsync(newData);
+            }
+        }
+
+        public async Task<DataBrandAnalysisResult> GetBrandAnalysisByIdAsync(string id)
+        {
+            var filter = Builders<DataBrandAnalysisResult>.Filter.Eq("userId", id);
+            var result = await _mongoContext.DataBrandAnalysis.Find(filter).FirstOrDefaultAsync();
+            return result;
         }
 
     }

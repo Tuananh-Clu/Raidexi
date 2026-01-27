@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Raidexi.Application.Dtos;
 using Raidexi.Domain.Entities;
 
 namespace Raidexi.Application.Interfaces
@@ -12,7 +13,8 @@ namespace Raidexi.Application.Interfaces
         Task LogOut();
         Task SaveMeaure(MeasureData data);
         Task<MeasureData> GetMeasureForUser(string id);
-        Task SaveBrandMeasure( DataBrandAnalysis resultAnalysis);
+        Task SaveBrandMeasure( DataBrand resultAnalysis);
+        Task<DataBrandAnalysisResult> GetDataBrandAnalysisAsync();
 
     }
     public class AuthResult

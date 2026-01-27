@@ -230,3 +230,4 @@ D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\Raidexi.runtimeconfig.json
 D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\Raidexi.pdb
 D:\Frontend\Raidexi\Backend\Raidexi\obj\Debug\net10.0\Raidexi.genruntimeconfig.cache
 D:\Frontend\Raidexi\Backend\Raidexi\obj\Debug\net10.0\ref\Raidexi.dll
+D:\Frontend\Raidexi\Backend\Raidexi\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

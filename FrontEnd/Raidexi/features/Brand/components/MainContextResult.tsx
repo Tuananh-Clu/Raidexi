@@ -1,14 +1,15 @@
 "use client";
 import { useContext, useState } from "react";
-import { ArrowLeft, CheckCircle2, List, Diamond } from "../Ui/IconComponents";
+import { ArrowLeft, CheckCircle2, Diamond, List } from "../components/IconComponents";
 import { Gender, ProductType, RegionSystem } from "../types";
 import { AISuggestSize } from "@/provider/AISuggestSize";
 import { SaveAllIcon } from "lucide-react";
 import { useRouterService } from "@/Shared/Service/routerService";
-import { useBrandMeasure } from "../hook/useBrandMeasure";
 import { DataToSaveBrandMeasure } from "@/Shared/types";
 import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 import { BrandContext } from "@/provider/BrandProvider";
+import { useBrandMeasure } from "../hooks/useBrandMeasure";
+
 
 export const MainContent = ({ brandData }: any) => {
   const { navigate, back } = useRouterService();
@@ -20,7 +21,6 @@ export const MainContent = ({ brandData }: any) => {
   const handleSave = () => {
     const { userId, brand, ...restData } = context.dataAnalysisResponse!;
     const dataToSave: DataToSaveBrandMeasure = {
-      userId: "",
       brand: brandData.name,
       dataMeasure: dataMeasured?.dataMeasured!,
       dataAnalysis: context.dataAnalysisResponse!,
@@ -33,7 +33,9 @@ export const MainContent = ({ brandData }: any) => {
   const [activeRegion, setActiveRegion] = useState<RegionSystem>(
     brandContext.popUpSettings.sizeSystem.toUpperCase() as RegionSystem
   );
-  return (
+  const dataAnalysisWithFilter = context.dataAnalysisResponse==null?brandContext.brandMeasuredRefCodesData?.dataAnalysis:context.dataAnalysisResponse;
+  console.log("dataAnalysisWithFilter",dataAnalysisWithFilter);
+    return (
     <div className="flex-1">
       <div className="flex flex-col pb-6 mb-8 border-b md:flex-row md:justify-between md:items-start border-dark-700">
         <div>
@@ -42,8 +44,8 @@ export const MainContent = ({ brandData }: any) => {
             <span className="text-gold-500">{brandData.name}</span>
           </h1>
           <p className="font-mono text-xs tracking-wider text-gray-500">
-            MÃ PHÂN TÍCH: #{context.dataAnalysisResponse?.analysisCode} // DATE:{" "}
-            {context.dataAnalysisResponse?.analysisDate}
+            MÃ PHÂN TÍCH: # {dataAnalysisWithFilter?.analysisCode} // DATE:{" "}
+            {dataAnalysisWithFilter?.analysisDate}
           </p>
         </div>
         <button
@@ -136,7 +138,7 @@ export const MainContent = ({ brandData }: any) => {
             SIZE ĐƯỢC ĐỀ XUẤT
           </span>
           <span className="text-[120px] leading-none font-display-Newsreader text-gold-500 drop-shadow-lg">
-            {context.dataAnalysisResponse?.sizeSuggest}
+            {dataAnalysisWithFilter?.sizeSuggest}
           </span>
           <span className="mt-4 font-mono text-sm tracking-widest text-gray-500">
             (SIZE L QUỐC TẾ)
@@ -150,7 +152,7 @@ export const MainContent = ({ brandData }: any) => {
             </span>
             <div className="flex items-center gap-2">
               <span className="text-5xl font-light text-white">
-                {context.dataAnalysisResponse?.reliableRate}%
+                {dataAnalysisWithFilter?.reliableRate}%
               </span>
               <CheckCircle2 className="text-gold-500" size={24} />
             </div>
@@ -158,7 +160,7 @@ export const MainContent = ({ brandData }: any) => {
               <div
                 className="bg-primary h-1 shadow-[0_0_10px_rgba(236,174,24,0.5)]"
                 style={{
-                  width: `${Math.max(0, Math.min(100, Number(context.dataAnalysisResponse?.reliableRate) || 0))}%`,
+                  width: `${Math.max(0, Math.min(100, Number(dataAnalysisWithFilter?.reliableRate) || 0))}%`,
                 }}
               ></div>
             </div>
@@ -169,7 +171,7 @@ export const MainContent = ({ brandData }: any) => {
             </span>
             <span className="text-xl font-medium text-white">
               {
-                context.dataAnalysisResponse?.fitSuggestFromAI.expectedFit
+                dataAnalysisWithFilter?.fitSuggestFromAI.expectedFit
                   ?.content
               }
             </span>
@@ -191,7 +193,7 @@ export const MainContent = ({ brandData }: any) => {
             </h5>
             <p>
               {
-                context.dataAnalysisResponse?.fitSuggestFromAI
+                dataAnalysisWithFilter?.fitSuggestFromAI
                   .measurementInsight?.content
               }
             </p>
@@ -202,7 +204,7 @@ export const MainContent = ({ brandData }: any) => {
             </h5>
             <p>
               {
-                context.dataAnalysisResponse?.fitSuggestFromAI.productFitNote
+                dataAnalysisWithFilter?.fitSuggestFromAI.productFitNote
                   ?.content
               }
             </p>
@@ -244,4 +246,5 @@ export const MainContent = ({ brandData }: any) => {
       </div>
     </div>
   );
-};
+}
+

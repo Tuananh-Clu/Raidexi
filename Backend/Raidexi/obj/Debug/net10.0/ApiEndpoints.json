@@ -113,6 +113,16 @@
   },
   {
     "ContainingType": "Raidexi.Presentation.Controller.UserController",
+    "Method": "GetBrandSizeMeasure",
+    "RelativePath": "api/User/GetBrandSizeMeasure",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Raidexi.Presentation.Controller.UserController",
     "Method": "GetUserData",
     "RelativePath": "api/User/GetUserData",
     "HttpMethod": "GET",
@@ -205,7 +215,7 @@
     "Parameters": [
       {
         "Name": "resultAnalysis",
-        "Type": "Raidexi.Domain.Entities.DataBrandAnalysis",
+        "Type": "Raidexi.Application.Dtos.DataBrand",
         "IsRequired": true
       }
     ],

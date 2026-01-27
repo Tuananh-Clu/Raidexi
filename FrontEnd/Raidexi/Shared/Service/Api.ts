@@ -9,6 +9,7 @@ export const API={
         "LoginWithFirebase":"/api/User/LoginWithFirebase",
         "SaveDataMeasurement":"/api/User/SaveMeasure",
         "SaveMeasureBrandSize":"/api/User/SaveMeasureBrandSize",
+        "GetBrandMeasurements":"/api/User/GetBrandSizeMeasure",
     },
     "Brand":{
         "GetBrandProfile":"/api/MappingSize/brand-profiles",

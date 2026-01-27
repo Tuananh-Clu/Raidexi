@@ -10,7 +10,7 @@ interface BrandCardProps {
 const BrandCard: React.FC<BrandCardProps> = ({ brand }) => {
   const { name, refCode, status, lastSync, metricLabel, metricValue, icon } = brand;
   const context=useContext(BrandContext);
-  const {popUpSettings,setPopUpSettings}=context;
+  const {setPopUpSettings}=context;
 
   const handleClick = () => {
     setPopUpSettings({isopened:true,brandrefcode:name,gender:"",productType:"",sizeSystem:""});

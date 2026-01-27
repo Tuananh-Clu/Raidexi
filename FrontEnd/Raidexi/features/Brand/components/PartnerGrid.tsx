@@ -1,5 +1,6 @@
 import React from 'react';
-import { PARTNER_ITEMS } from '../contstants';
+import { PARTNER_ITEMS } from '../constants';
+
 
 const PartnerGrid: React.FC = () => {
   return (

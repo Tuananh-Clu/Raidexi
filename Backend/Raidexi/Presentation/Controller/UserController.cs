@@ -118,13 +118,24 @@ namespace Raidexi.Presentation.Controller
 
         }
         [HttpPost("SaveMeasureBrandSize")]
-        public async Task<IActionResult> SaveMeasureBrandSize([FromBody] DataBrandAnalysis resultAnalysis)
+        public async Task<IActionResult> SaveMeasureBrandSize([FromBody] DataBrand resultAnalysis)
         {
             await authService.SaveBrandMeasure(resultAnalysis);
             return Ok(new
             {
                 message = "Thêm Thành Công",
                 isSuccess = true
+            });
+        }
+        [HttpGet("GetBrandSizeMeasure")]
+        public async Task<IActionResult> GetBrandSizeMeasure()
+        {
+            var result = await authService.GetDataBrandAnalysisAsync();
+            return Ok(new
+            {
+                message = "Lấy Thành Công",
+                isSuccess = true,
+                data = result
             });
         }
     }
