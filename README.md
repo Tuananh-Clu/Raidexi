@@ -4,44 +4,44 @@
 
 ![Raidexi Logo](./FrontEnd/Raidexi/public/logo.png)
 
-**H? th?ng ?o l??ng c? th? ch?nh x?c b?ng AI, chuy?n ??i s? ?o th?nh k?ch c? c? th? c?a t?ng th??ng hi?u**
+**Hệ thống đo lường cơ thể chính xác bằng AI, chuyển đổi số đo thành kích cỡ cụ thể của từng thương hiệu**
 
-[Features](#-t?nh-n?ng) ? [Tech Stack](#-tech-stack) ? [Installation](#-c?i-??t) ? [Usage](#-s?-d?ng) ? [Architecture](#-ki?n-tr?c) ? [Contributing](#-??ng-g?p)
+[Features](#-tính-năng) • [Tech Stack](#-tech-stack) • [Installation](#-cài-đặt) • [Usage](#-sử-dụng) • [Architecture](#-kiến-trúc) • [Contributing](#-đóng-góp)
 
 </div>
 
 ---
 
-## ?? Gi?i thi?u
+## 📋 Giới thiệu
 
-**Raidexi** l? m?t h? th?ng ?o l??ng c? th? th?ng minh s? d?ng c?ng ngh? AI v? Computer Vision. H? th?ng cho ph?p ng??i d?ng ?o l??ng c?c ch? s? c? th? (ng?c, eo, h?ng) m?t c?ch ch?nh x?c ch? b?ng camera webcam, sau ?? chuy?n ??i s? ?o th?nh k?ch c? ph? h?p v?i t?ng th??ng hi?u th?i trang.
+**Raidexi** là một hệ thống đo lường cơ thể thông minh sử dụng công nghệ AI và Computer Vision. Hệ thống cho phép người dùng đo lường các chỉ số cơ thể (ngực, eo, hông) một cách chính xác chỉ bằng camera webcam, sau đó chuyển đổi số đo thành kích cỡ phù hợp với từng thương hiệu thời trang.
 
-### V?n ?? gi?i quy?t
+### Vấn đề giải quyết
 
-- ? Lo?i b? s? m? h? khi ?o?n m? k?ch c? qu?n ?o
-- ? Cung c?p s? ?o ch?nh x?c d?a tr?n d? li?u kh?ch quan
-- ? T? ??ng ?? xu?t size ph? h?p cho t?ng th??ng hi?u
-- ? Tr?i nghi?m ?o l??ng nhanh ch?ng, kh?ng c?n thi?t b? chuy?n d?ng
+- ❌ Loại bỏ sự mơ hồ khi đoán mò kích cỡ quần áo
+- ✅ Cung cấp số đo chính xác dựa trên dữ liệu khách quan
+- ✅ Tự động đề xuất size phù hợp cho từng thương hiệu
+- ✅ Trải nghiệm đo lường nhanh chóng, không cần thiết bị chuyên dụng
 
 ---
 
-## ? T?nh n?ng
+## ✨ Tính năng
 
-### ?? T?nh n?ng ch?nh
+### 🎯 Tính năng chính
 
-- **?? ?o l??ng b?ng Camera**: S? d?ng MediaPipe Pose ?? nh?n di?n v? ?o l??ng c? th? t? webcam
-- **?? ?o l??ng t? ??ng**: T? ??ng t?nh to?n chu vi ng?c, eo, h?ng t? pose landmarks
-- **??? ?? xu?t Size theo Brand**: AI ?? xu?t size ph? h?p d?a tr?n s? ?o v? th??ng hi?u
-- **?? Qu?n l? Profile**: L?u tr? v? qu?n l? s? ?o c? nh?n
-- **?? X?c th?c ng??i d?ng**: H? th?ng ??ng nh?p/??ng k? v?i Firebase Authentication
-- **?? Dashboard**: Theo d?i l?ch s? ?o l??ng v? s? ?o
+- **📸 Đo lường bằng Camera**: Sử dụng MediaPipe Pose để nhận diện và đo lường cơ thể từ webcam
+- **📏 Đo lường tự động**: Tự động tính toán chu vi ngực, eo, hông từ pose landmarks
+- **🏷️ Đề xuất Size theo Brand**: AI đề xuất size phù hợp dựa trên số đo và thương hiệu
+- **👤 Quản lý Profile**: Lưu trữ và quản lý số đo cá nhân
+- **🔐 Xác thực người dùng**: Hệ thống đăng nhập/đăng ký với Firebase Authentication
+- **📊 Dashboard**: Theo dõi lịch sử đo lường và số đo
 
-### ?? Giao di?n
+### 🎨 Giao diện
 
-- **Modern UI/UX**: Thi?t k? hi?n ??i v?i Tailwind CSS
-- **Responsive Design**: T?i ?u cho m?i thi?t b?
-- **Real-time Feedback**: Hi?n th? tr?c ti?p qu? tr?nh ?o l??ng
-- **Dark Theme**: Giao di?n t?i v?i accent m?u v?ng ??ng (brass)
+- **Modern UI/UX**: Thiết kế hiện đại với Tailwind CSS
+- **Responsive Design**: Tối ưu cho mọi thiết bị
+- **Real-time Feedback**: Hiển thị trực tiếp quá trình đo lường
+- **Dark Theme**: Giao diện tối với accent màu vàng đồng (brass)
 
 ---
 
@@ -49,7 +49,7 @@
 
 ### Frontend
 
-- **Framework**: [Next.js 16.1.1](https://nextjs.org/) v?i React 19.2.3
+- **Framework**: [Next.js 16.1.1](https://nextjs.org/) với React 19.2.3
 - **Language**: TypeScript 5
 - **Styling**: Tailwind CSS 4.1.18
 - **Animation**: Framer Motion 12.26.2
@@ -78,7 +78,7 @@
 - **AI Integration**: 
   - Google Gemini 3 Flash Preview API
   - Custom prompt engineering
-- **Caching**: In-memory cache cho brand rules v? size mappings
+- **Caching**: In-memory cache cho brand rules và size mappings
 - **Rate Limiting**: Fixed window (5 requests/24h cho anonymous users)
 - **API Documentation**: Swagger/OpenAPI
 - **Location**: `Backend/Raidexi/`
@@ -102,16 +102,16 @@
 
 ---
 
-## ?? C?i ??t
+## 📦 Cài đặt
 
-### Y?u c?u h? th?ng
+### Yêu cầu hệ thống
 
 - Node.js >= 18.x
 - npm >= 9.x
-- Webcam/Camera ?? ?o l??ng
-- Tr?nh duy?t hi?n ??i (Chrome, Firefox, Edge, Safari)
+- Webcam/Camera để đo lường
+- Trình duyệt hiện đại (Chrome, Firefox, Edge, Safari)
 
-### C?i ??t Frontend
+### Cài đặt Frontend
 
 1. **Clone repository**
    ```bash
@@ -119,28 +119,28 @@
    cd Raidexi/FrontEnd/Raidexi
    ```
 
-2. **C?i ??t dependencies**
+2. **Cài đặt dependencies**
    ```bash
    npm install
    ```
 
-3. **C?u h?nh Firebase** (n?u ch?a c?)
-   - T?o project tr?n [Firebase Console](https://console.firebase.google.com/)
-   - L?y Firebase config v? th?m v?o file c?u h?nh
+3. **Cấu hình Firebase** (nếu chưa có)
+   - Tạo project trên [Firebase Console](https://console.firebase.google.com/)
+   - Lấy Firebase config và thêm vào file cấu hình
 
-4. **Ch?y development server**
+4. **Chạy development server**
    ```bash
    npm run dev
    ```
 
-5. **M? tr?nh duy?t**
+5. **Mở trình duyệt**
    ```
    http://localhost:3000
    ```
 
-### C?i ??t Backend (.NET)
+### Cài đặt Backend (.NET)
 
-1. **Di chuy?n v?o th? m?c Backend**
+1. **Di chuyển vào thư mục Backend**
    ```bash
    cd Backend/Raidexi
    ```
@@ -150,119 +150,119 @@
    dotnet restore
    ```
 
-3. **Ch?y ?ng d?ng**
+3. **Chạy ứng dụng**
    ```bash
    dotnet run
    ```
 
 ---
 
-## ?? S? d?ng
+## 🚀 Sử dụng
 
-### Quy tr?nh ?o l??ng
+### Quy trình đo lường
 
-1. **??ng nh?p/??ng k?**
-   - Truy c?p trang Login ho?c SignUp
-   - T?o t?i kho?n m?i ho?c ??ng nh?p
+1. **Đăng nhập/Đăng ký**
+   - Truy cập trang Login hoặc SignUp
+   - Tạo tài khoản mới hoặc đăng nhập
 
-2. **B?t ??u ?o l??ng**
-   - ?i?u h??ng ??n trang `/Measurements`
-   - Nh?p chi?u cao c?a b?n (cm)
-   - Click "CAPTURE IMAGE" ?? m? camera
+2. **Bắt đầu đo lường**
+   - Điều hướng đến trang `/Measurements`
+   - Nhập chiều cao của bạn (cm)
+   - Click "CAPTURE IMAGE" để mở camera
 
-3. **Th?c hi?n ?o l??ng**
-   - ??ng trong khung h?nh v?i t? th? FRONT (m?t tr??c)
-   - Ch? ??m ng??c 3 gi?y
-   - Gi? nguy?n t? th? trong 15 gi?y ?? thu th?p d? li?u FRONT
-   - Chuy?n sang t? th? SIDE (m?t b?n)
-   - Gi? nguy?n t? th? ??n khi ho?n t?t
+3. **Thực hiện đo lường**
+   - Đứng trong khung hình với tư thế FRONT (mặt trước)
+   - Chờ đếm ngược 3 giây
+   - Giữ nguyên tư thế trong 15 giây để thu thập dữ liệu FRONT
+   - Chuyển sang tư thế SIDE (mặt bên)
+   - Giữ nguyên tư thế đến khi hoàn tất
 
-4. **Xem k?t qu?**
-   - H? th?ng t? ??ng t?nh to?n:
-     - Chu vi ng?c (Chest)
+4. **Xem kết quả**
+   - Hệ thống tự động tính toán:
+     - Chu vi ngực (Chest)
      - Chu vi eo (Waist)
-     - Chu vi h?ng (Hip)
-   - K?t qu? hi?n th? tr?n Control Panel
+     - Chu vi hông (Hip)
+   - Kết quả hiển thị trên Control Panel
 
-5. **?? xu?t Size**
-   - Ch?n th??ng hi?u t?i trang `/Brand`
-   - H? th?ng s? ?? xu?t size ph? h?p d?a tr?n s? ?o
+5. **Đề xuất Size**
+   - Chọn thương hiệu tại trang `/Brand`
+   - Hệ thống sẽ đề xuất size phù hợp dựa trên số đo
 
-### T? th? ?o l??ng
+### Tư thế đo lường
 
-- **FRONT (M?t tr??c)**: ??ng th?ng, m?t h??ng camera, hai tay ?? t? nhi?n
-- **SIDE (M?t b?n)**: Xoay ng??i 90 ??, m?t b?n h??ng camera
+- **FRONT (Mặt trước)**: Đứng thẳng, mặt hướng camera, hai tay để tự nhiên
+- **SIDE (Mặt bên)**: Xoay người 90 độ, mặt bên hướng camera
 
 ---
 
-## ?? Ki?n tr?c
+## 🏗 Kiến trúc
 
-### C?u tr?c th? m?c
+### Cấu trúc thư mục
 
 ```
 Raidexi/
-??? FrontEnd/
-?   ??? Raidexi/
-?       ??? app/                    # Next.js App Router
-?       ?   ??? page.tsx            # Trang ch?
-?       ?   ??? Login/              # Trang ??ng nh?p
-?       ?   ??? SignUp/             # Trang ??ng k?
-?       ?   ??? Measurements/       # Trang ?o l??ng
-?       ?   ??? Dashboard/          # Dashboard ng??i d?ng
-?       ?   ??? Brand/              # Qu?n l? th??ng hi?u
-?       ?   ??? WorkFlow/           # Gi?i th?ch quy tr?nh
-?       ?   ??? Architecture/       # Ki?n tr?c h? th?ng
-?       ?
-?       ??? features/               # Feature modules
-?       ?   ??? Camera/             # Module ?o l??ng camera
-?       ?   ?   ??? components/    # ViewPort, ControlPanel
-?       ?   ?   ??? hook/           # Custom hooks
-?       ?   ??? Auth/               # Module x?c th?c
-?       ?   ??? Brand/              # Module th??ng hi?u
-?       ?   ??? Home/               # Module trang ch?
-?       ?   ??? DashboardUser/      # Module dashboard
-?       ?   ??? WorkFlow/           # Module workflow
-?       ?
-?       ??? provider/               # Context Providers
-?       ?   ??? AuthProvider.tsx
-?       ?   ??? BodyMeasureEstimate.tsx
-?       ?   ??? BrandProvider.tsx
-?       ?   ??? AISuggestSize.tsx
-?       ?
-?       ??? Shared/                 # Shared components & utilities
-?       ?   ??? Components/        # NavBar, Footer, LoadingScreen
-?       ?   ??? Service/            # API, Firebase, Router services
-?       ?   ??? store/              # Zustand stores
-?       ?   ??? Ui/                 # Shared UI components
-?       ?
-?       ??? public/                 # Static assets
-?
-??? Backend/
-    ??? Raidexi/                    # .NET Backend
+├── FrontEnd/
+│   └── Raidexi/
+│       ├── app/                    # Next.js App Router
+│       │   ├── page.tsx            # Trang chủ
+│       │   ├── Login/              # Trang đăng nhập
+│       │   ├── SignUp/             # Trang đăng ký
+│       │   ├── Measurements/       # Trang đo lường
+│       │   ├── Dashboard/          # Dashboard người dùng
+│       │   ├── Brand/              # Quản lý thương hiệu
+│       │   ├── WorkFlow/           # Giải thích quy trình
+│       │   └── Architecture/       # Kiến trúc hệ thống
+│       │
+│       ├── features/               # Feature modules
+│       │   ├── Camera/             # Module đo lường camera
+│       │   │   ├── components/    # ViewPort, ControlPanel
+│       │   │   └── hook/           # Custom hooks
+│       │   ├── Auth/               # Module xác thực
+│       │   ├── Brand/              # Module thương hiệu
+│       │   ├── Home/               # Module trang chủ
+│       │   ├── DashboardUser/      # Module dashboard
+│       │   └── WorkFlow/           # Module workflow
+│       │
+│       ├── provider/               # Context Providers
+│       │   ├── AuthProvider.tsx
+│       │   ├── BodyMeasureEstimate.tsx
+│       │   ├── BrandProvider.tsx
+│       │   └── AISuggestSize.tsx
+│       │
+│       ├── Shared/                 # Shared components & utilities
+│       │   ├── Components/        # NavBar, Footer, LoadingScreen
+│       │   ├── Service/            # API, Firebase, Router services
+│       │   ├── store/              # Zustand stores
+│       │   └── Ui/                 # Shared UI components
+│       │
+│       └── public/                 # Static assets
+│
+└── Backend/
+    └── Raidexi/                    # .NET Backend
 ```
 
-### Lu?ng d? li?u
+### Luồng dữ liệu
 
 ```
-User ? Camera ? MediaPipe Pose ? Pose Landmarks ? 
-Calculate Measurements ? Context Provider ? 
-Display Results ? AI Size Suggestion ? Brand Matching
+User → Camera → MediaPipe Pose → Pose Landmarks → 
+Calculate Measurements → Context Provider → 
+Display Results → AI Size Suggestion → Brand Matching
 ```
 
-### Components ch?nh
+### Components chính
 
-- **ViewPort**: Component hi?n th? camera v? canvas v? landmarks
-- **ControlPanel**: Panel ?i?u khi?n ?o l??ng v? hi?n th? k?t qu?
-- **BodyMeasureEstimateProvider**: Context qu?n l? state ?o l??ng
-- **BrandProvider**: Context qu?n l? th?ng tin th??ng hi?u
+- **ViewPort**: Component hiển thị camera và canvas vẽ landmarks
+- **ControlPanel**: Panel điều khiển đo lường và hiển thị kết quả
+- **BodyMeasureEstimateProvider**: Context quản lý state đo lường
+- **BrandProvider**: Context quản lý thông tin thương hiệu
 
 ---
 
-## ?? Chi ti?t C? ch? Ho?t ??ng
+## 🔬 Chi tiết Cơ chế Hoạt động
 
-### ?? H? th?ng Camera & MediaPipe Pose
+### 📸 Hệ thống Camera & MediaPipe Pose
 
-#### C?u tr?c Component
+#### Cấu trúc Component
 
 ```
 ViewPort Component
@@ -278,11 +278,11 @@ ViewPort Component
     ??? Measurement Status Display
 ```
 
-#### Quy tr?nh Thu th?p D? li?u
+#### Quy trình Thu thập Dữ liệu
 
-**1. Kh?i t?o Camera**
+**1. Khởi tạo Camera**
 ```typescript
-// MediaPipe Camera ???c kh?i t?o v?i video element
+// MediaPipe Camera được khởi tạo với video element
 mpCameraRef.current = new camera.Camera(videoRef.current, {
   onFrame: async () => {
     await poseRef.current.send({ image: videoRef.current });
@@ -293,21 +293,21 @@ mpCameraRef.current = new camera.Camera(videoRef.current, {
 ```
 
 **2. Pose Detection Pipeline**
-- M?i frame ???c g?i ??n MediaPipe Pose
-- Pose model tr? v? 33 landmarks (?i?m m?c tr?n c? th?)
-- Landmarks ???c normalize v? t?a ?? [0, 1] v?i depth (z-axis)
+- Mỗi frame được gửi đến MediaPipe Pose
+- Pose model trả về 33 landmarks (điểm mốc trên cơ thể)
+- Landmarks được normalize về tọa độ [0, 1] với depth (z-axis)
 
-**3. T? th? Detection**
+**3. Tư thế Detection**
 ```typescript
 function detectPose(lm: Landmark[]) {
   const leftShoulder = lm[11];
   const rightShoulder = lm[12];
   
-  // T?nh to?n kho?ng c?ch v? ?? s?u
+  // Tính toán khoảng cách và độ sâu
   const dx = Math.abs(leftShoulder.x - rightShoulder.x);
   const dz = Math.abs(leftShoulder.z - rightShoulder.z);
   
-  // Ph?n lo?i: FRONT, SIDE, ho?c INVALID
+  // Phân loại: FRONT, SIDE, hoặc INVALID
   if (dz / dx > 2.2 && dx < 0.04) return "SIDE";
   if (dz < 0.05) return "FRONT";
   return "UNKNOWN";
@@ -315,80 +315,80 @@ function detectPose(lm: Landmark[]) {
 ```
 
 **4. Buffer Management**
-- **FrontBuffer**: L?u tr? 10-20 frames t? th? FRONT
-- **SideBuffer**: L?u tr? 10-20 frames t? th? SIDE
-- Ch? frames h?p l? (??ng t? th?) ???c th?m v?o buffer
-- Buffer t? ??ng gi?i h?n t?i ?a 20 frames
+- **FrontBuffer**: Lưu trữ 10-20 frames tư thế FRONT
+- **SideBuffer**: Lưu trữ 10-20 frames tư thế SIDE
+- Chỉ frames hợp lệ (đúng tư thế) được thêm vào buffer
+- Buffer tự động giới hạn tối đa 20 frames
 
-### ?? Qu? tr?nh ?o l??ng & T?nh to?n
+### 📏 Quá trình Đo lường & Tính toán
 
-#### Thu th?p D? li?u
+#### Thu thập Dữ liệu
 
-**Phase 1: Countdown (3 gi?y)**
-- Hi?n th? ??m ng??c ?? ng??i d?ng chu?n b?
-- Reset c?c buffers v? states
+**Phase 1: Countdown (3 giây)**
+- Hiển thị đếm ngược để người dùng chuẩn bị
+- Reset các buffers và states
 
-**Phase 2: FRONT Pose Collection (15 gi?y)**
-- Thu th?p frames khi `countdown > 10`
-- Ch? l?u frames c? `type === "FRONT"`
-- Hi?n th? progress: "?ang Thu Th?p D? Li?u FRONT"
-- Khi ?? 10 frames: "?? Thu Th?p ?? D? Li?u FRONT"
+**Phase 2: FRONT Pose Collection (15 giây)**
+- Thu thập frames khi `countdown > 10`
+- Chỉ lưu frames có `type === "FRONT"`
+- Hiển thị progress: "Đang Thu Thập Dữ Liệu FRONT"
+- Khi đủ 10 frames: "Đã Thu Thập Đủ Dữ Liệu FRONT"
 
-**Phase 3: SIDE Pose Collection (5 gi?y c?n l?i)**
-- Chuy?n sang thu th?p frames SIDE
-- Hi?n th?: "?ang Thu Th?p D? Li?u SIDE"
-- Khi ?? 10 frames: "?? Thu Th?p ?? D? Li?u SIDE"
+**Phase 3: SIDE Pose Collection (5 giây còn lại)**
+- Chuyển sang thu thập frames SIDE
+- Hiển thị: "Đang Thu Thập Dữ Liệu SIDE"
+- Khi đủ 10 frames: "Đã Thu Thập Đủ Dữ Liệu SIDE"
 
-#### T?nh to?n Measurements
+#### Tính toán Measurements
 
 **1. Extract Key Measurements**
 
 ```typescript
-// T?nh chi?u r?ng/?? s?u t? landmarks
+// Tính chiều rộng/độ sâu từ landmarks
 function extractAxis(frames, type, L, R) {
   const values = frames.map(lm => 
     type === "FRONT" 
-      ? Math.abs(lm[L].x - lm[R].x)  // Chi?u r?ng (x-axis)
-      : Math.abs(lm[L].z - lm[R].z)   // ?? s?u (z-axis)
+      ? Math.abs(lm[L].x - lm[R].x)  // Chiều rộng (x-axis)
+      : Math.abs(lm[L].z - lm[R].z)   // Độ sâu (z-axis)
   );
-  // L?y median value ?? lo?i b? outliers
+  // Lấy median value để loại bỏ outliers
   values.sort((a, b) => a - b);
   return values[Math.floor(values.length / 2)];
 }
 ```
 
-**2. T?nh to?n Waist Landmarks**
+**2. Tính toán Waist Landmarks**
 
 ```typescript
 function getWaistLandmarks(lm, type) {
-  // T?nh ?i?m gi?a vai v? h?ng
+  // Tính điểm giữa vai và hông
   const waistX = (shoulderX + hipX) / 2;
   const waistY = (shoulderY + hipY) / 2;
   const waistZ = (shoulderZ + hipZ) / 2;
   
-  // T?nh chi?u r?ng/?? s?u eo
+  // Tính chiều rộng/độ sâu eo
   const waistHalfWidth = (shoulderWidth + hipWidth) / 4;
   const waistHalfDepth = (shoulderDepth + hipDepth) / 4;
   
-  // Tr? v? left v? right waist points
+  // Trả về left và right waist points
 }
 ```
 
-**3. T?nh Chu vi (Circumference)**
+**3. Tính Chu vi (Circumference)**
 
 ```typescript
 function calculateEllipseCircumference(a, b) {
-  // S? d?ng c?ng th?c Ramanujan approximation
+  // Sử dụng công thức Ramanujan approximation
   const h = Math.pow(a - b, 2) / Math.pow(a + b, 2);
   const circumference = 
     Math.PI * (a + b) * (1 + (3 * h) / (10 + Math.sqrt(4 - 3 * h)));
   return circumference;
 }
 
-// ?p d?ng cho t?ng ph?n c? th?
+// Áp dụng cho từng phần cơ thể
 const chestCircumference = calculateEllipseCircumference(
-  frontShoulderWidth / 2,  // B?n k?nh ngang
-  sideChestDepth / 2        // B?n k?nh s?u
+  frontShoulderWidth / 2,  // Bán kính ngang
+  sideChestDepth / 2        // Bán kính sâu
 );
 ```
 
@@ -412,80 +412,80 @@ const scaledWaist = waistCircumference * scale;
 const scaledHip = hipCircumference * scale;
 ```
 
-#### Landmarks ???c s? d?ng
+#### Landmarks được sử dụng
 
 | Landmark Index | Body Part | Usage |
 |---------------|-----------|-------|
-| 0 | Nose | T?nh chi?u cao, scale factor |
-| 11 | Left Shoulder | T?nh chi?u r?ng ng?c, vai |
-| 12 | Right Shoulder | T?nh chi?u r?ng ng?c, vai |
-| 23 | Left Hip | T?nh chi?u r?ng h?ng |
-| 24 | Right Hip | T?nh chi?u r?ng h?ng |
-| 25-26 | Waist (Calculated) | T?nh chu vi eo |
-| 27-28 | Ankles | T?nh chi?u cao, scale factor |
+| 0 | Nose | Tính chiều cao, scale factor |
+| 11 | Left Shoulder | Tính chiều rộng ngực, vai |
+| 12 | Right Shoulder | Tính chiều rộng ngực, vai |
+| 23 | Left Hip | Tính chiều rộng hông |
+| 24 | Right Hip | Tính chiều rộng hông |
+| 25-26 | Waist (Calculated) | Tính chu vi eo |
+| 27-28 | Ankles | Tính chiều cao, scale factor |
 
-### ?? T?ch h?p Gemini AI
+### 🤖 Tích hợp Gemini AI
 
-#### Lu?ng x? l? Backend
+#### Luồng xử lý Backend
 
 ```
-Frontend (S? ?o)
-    ?
+Frontend (Số đo)
+    ↓
 Backend API: /api/AnalysisDataMeasure/AISuggest
-    ?
-1. ?i?u ch?nh s? ?o theo Brand Rules
-    ??? Chest += brandRule.Chest
-    ??? Waist += brandRule.Waist
-    ??? Hip += brandRule.Hip
-    ?
-2. ?i?u ch?nh theo Gender
-    ??? AdjustByGenderSlight()
-    ?
-3. T?nh to?n Size Match
-    ??? GetSizeFromMeasure()
-    ??? So s?nh v?i Size Rules
-    ??? T?nh Fit Percent (0-100%)
-    ?
-4. T?o Prompt cho Gemini
-    ??? CreatePrompt()
-    ?
-5. G?i Gemini API
-    ??? Model: gemini-3-flash-preview
-    ??? Input: Prompt v?i s? ?o + brand info
-    ??? Output: JSON v?i 3 fields
-    ?
+    ↓
+1. Điều chỉnh số đo theo Brand Rules
+    ├── Chest += brandRule.Chest
+    ├── Waist += brandRule.Waist
+    └── Hip += brandRule.Hip
+    ↓
+2. Điều chỉnh theo Gender
+    └── AdjustByGenderSlight()
+    ↓
+3. Tính toán Size Match
+    ├── GetSizeFromMeasure()
+    ├── So sánh với Size Rules
+    └── Tính Fit Percent (0-100%)
+    ↓
+4. Tạo Prompt cho Gemini
+    └── CreatePrompt()
+    ↓
+5. Gọi Gemini API
+    ├── Model: gemini-3-flash-preview
+    ├── Input: Prompt với số đo + brand info
+    └── Output: JSON với 3 fields
+    ↓
 6. Parse & Combine Results
-    ??? Size Suggest (t? Size Matching)
-    ??? Fit Suggest (t? Fit Percent)
-    ??? AI Insights (t? Gemini)
+    ├── Size Suggest (từ Size Matching)
+    ├── Fit Suggest (từ Fit Percent)
+    └── AI Insights (từ Gemini)
 ```
 
 #### Gemini Prompt Structure
 
 ```csharp
 SYSTEM ROLE:
-- API sinh d? li?u JSON (KH?NG ph?i chatbot)
-- CH? tr? v? JSON h?p l?
-- KH?NG markdown, KH?NG text th?a
+- API sinh dữ liệu JSON (KHÔNG phải chatbot)
+- CHỈ trả về JSON hợp lệ
+- KHÔNG markdown, KHÔNG text thừa
 
-D? LI?U ??U V?O:
-- Th??ng hi?u: {brand}
-- Lo?i s?n ph?m: {typeProduct}
-- Chi?u cao: {height} cm
-- V?ng ng?c: {chest} cm
+DỮ LIỆU ĐẦU VÀO:
+- Thương hiệu: {brand}
+- Loại sản phẩm: {typeProduct}
+- Chiều cao: {height} cm
+- Vòng ngực: {chest} cm
 - Vai: {shoulderWidth} cm
-- V?ng eo: {waist} cm
+- Vòng eo: {waist} cm
 
 JSON OUTPUT:
 {
   "measurementInsight": {
-    "content": "Ph?n t?ch s? ?o c? th?, t?p trung v?o chi?u cao v? v?ng ng?c"
+    "content": "Phân tích số đo cơ thể, tập trung vào chiều cao và vòng ngực"
   },
   "productFitNote": {
-    "content": "M? t? ?? ?m, ?? tho?i m?i khi m?c"
+    "content": "Mô tả độ ôm, độ thoải mái khi mặc"
   },
   "expectedFit": {
-    "content": "Slim / Regular / Relaxed - c?m nh?n d? ki?n"
+    "content": "Slim / Regular / Relaxed - cảm nhận dự kiến"
   }
 }
 ```
@@ -494,7 +494,7 @@ JSON OUTPUT:
 
 **Brand Rules Adjustment**
 ```csharp
-// M?i brand c? offset ri?ng ?? ?i?u ch?nh s? ?o
+// Mỗi brand có offset riêng để điều chỉnh số đo
 dataMeasureAdjusted = {
   Chest: measureData.Chest + brandRule.Chest,
   Waist: measureData.Waist + brandRule.Waist,
@@ -504,19 +504,19 @@ dataMeasureAdjusted = {
 
 **Size Matching Algorithm**
 ```csharp
-// So s?nh s? ?o v?i t?ng size trong brand
+// So sánh số đo với từng size trong brand
 foreach (var size in brandSizes) {
   var fit = CalculateRangeFit(userValue, size.Min, size.Max);
   totalFit += fit * weight;
 }
 
 // Fit Percent Categories
->= 90%: "R?t v?a v?n"
->= 80%: "V?a v?n"
->= 70%: "T?m ?n"
->= 60%: "H?i l?ch"
->= 50%: "Kh?ng khuy?n ngh?"
-< 50%:  "Kh?ng ph? h?p"
+>= 90%: "Rất vừa vặn"
+>= 80%: "Vừa vặn"
+>= 70%: "Tạm ổn"
+>= 60%: "Hơi lệch"
+>= 50%: "Không khuyến nghị"
+< 50%:  "Không phù hợp"
 ```
 
 #### Response Structure
@@ -525,250 +525,399 @@ foreach (var size in brandSizes) {
 interface ResultAnalysis {
   analysisCode: string;           // GUID
   analysisDate: DateTime;
-  sizeSuggest: string;             // Size ???c ?? xu?t (S, M, L, etc.)
-  fitSuggest: string;             // "R?t v?a v?n", "V?a v?n", etc.
+  sizeSuggest: string;             // Size được đề xuất (S, M, L, etc.)
+  fitSuggest: string;             // "Rất vừa vặn", "Vừa vặn", etc.
   reliableRate: number;            // Fit Percent (0-100)
   fitSuggestFromAI: {
-    measurementInsight: {          // Ph?n t?ch s? ?o t? Gemini
+    measurementInsight: {          // Phân tích số đo từ Gemini
       content: string;
     };
-    productFitNote: {              // Ghi ch? v? ?? fit t? Gemini
+    productFitNote: {              // Ghi chú về độ fit từ Gemini
       content: string;
     };
-    expectedFit: {                 // Fit d? ki?n (Slim/Regular/Relaxed)
+    expectedFit: {                 // Fit dự kiến (Slim/Regular/Relaxed)
       content: string;
     };
   };
 }
 ```
 
-### ?? Data Flow Diagram
+### 🔄 Data Flow Diagram
 
 ```
-???????????????
-?   User      ?
-?  (Camera)   ?
-???????????????
-       ?
-       ?
-???????????????????
-?  MediaPipe Pose ? ???? Video Frames (30fps)
-?   Detection     ?
-???????????????????
-       ?
-       ?
-???????????????????
-?  Pose Landmarks ? (33 points v?i x, y, z, visibility)
-?   (33 points)   ?
-???????????????????
-       ?
-       ???? Detect Pose Type (FRONT/SIDE)
-       ?
-       ???? Buffer Frames (FrontBuffer/SideBuffer)
-       ?
-       ???? Extract Measurements
-              ?
-              ???? Shoulder Width (FRONT)
-              ???? Hip Width (FRONT)
-              ???? Chest Depth (SIDE)
-              ???? Hip Depth (SIDE)
-              ???? Waist Width/Depth
-                     ?
-                     ?
-              ????????????????????
-              ? Calculate        ?
-              ? Circumference    ? ???? Ellipse Formula
-              ? (Chest/Waist/Hip)?
-              ????????????????????
-                     ?
-                     ?
-              ????????????????????
-              ? Scale to Real     ? ???? User Height Input
-              ? World (cm)        ?
-              ????????????????????
-                     ?
-                     ?
-              ????????????????????
-              ? Frontend Context  ?
-              ? (BodyMeasureEstimate)?
-              ????????????????????
-                     ?
-                     ?
-              ????????????????????
-              ? API Call          ?
-              ? /AISuggest        ?
-              ????????????????????
-                     ?
-                     ?
-              ????????????????????
-              ? Backend           ?
-              ? AnalysisService   ?
-              ????????????????????
-                     ?
-                     ???? Adjust by Brand Rules
-                     ???? Adjust by Gender
-                     ???? Size Matching Algorithm
-                     ???? Create Gemini Prompt
-                            ?
-                            ?
-                     ????????????????????
-                     ? Gemini API        ?
-                     ? (gemini-3-flash)   ?
-                     ????????????????????
-                            ?
-                            ?
-                     ????????????????????
-                     ? Parse JSON        ?
-                     ? Response          ?
-                     ????????????????????
-                            ?
-                            ?
-                     ????????????????????
-                     ? Combine Results   ?
-                     ? (Size + AI)       ?
-                     ????????????????????
-                            ?
-                            ?
-                     ????????????????????
-                     ? Return to         ?
-                     ? Frontend          ?
-                     ????????????????????
+┌─────────────┐
+│   User      │
+│  (Camera)   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────────┐
+│  MediaPipe Pose │ ◄─── Video Frames (30fps)
+│   Detection     │
+└──────┬──────────┘
+       │
+       ▼
+┌─────────────────┐
+│  Pose Landmarks │ (33 points với x, y, z, visibility)
+│   (33 points)   │
+└──────┬──────────┘
+       │
+       ├──► Detect Pose Type (FRONT/SIDE)
+       │
+       ├──► Buffer Frames (FrontBuffer/SideBuffer)
+       │
+       └──► Extract Measurements
+              │
+              ├──► Shoulder Width (FRONT)
+              ├──► Hip Width (FRONT)
+              ├──► Chest Depth (SIDE)
+              ├──► Hip Depth (SIDE)
+              └──► Waist Width/Depth
+                     │
+                     ▼
+              ┌──────────────────┐
+              │ Calculate        │ ◄─── Ellipse Formula
+              │ Circumference    │
+              │ (Chest/Waist/Hip)│
+              └──────┬───────────┘
+                     │
+                     ▼
+              ┌──────────────────┐
+              │ Scale to Real     │ ◄─── User Height Input
+              │ World (cm)        │
+              └──────┬───────────┘
+                     │
+                     ▼
+              ┌──────────────────┐
+              │ Frontend Context  │
+              │ (BodyMeasureEstimate)│
+              └──────┬───────────┘
+                     │
+                     ▼
+              ┌──────────────────┐
+              │ API Call          │
+              │ /AISuggest        │
+              └──────┬───────────┘
+                     │
+                     ▼
+              ┌──────────────────┐
+              │ Backend           │
+              │ AnalysisService   │
+              └──────┬───────────┘
+                     │
+                     ├──► Adjust by Brand Rules
+                     ├──► Adjust by Gender
+                     ├──► Size Matching Algorithm
+                     └──► Create Gemini Prompt
+                            │
+                            ▼
+                     ┌──────────────────┐
+                     │ Gemini API        │
+                     │ (gemini-3-flash)   │
+                     └──────┬───────────┘
+                            │
+                            ▼
+                     ┌──────────────────┐
+                     │ Parse JSON        │
+                     │ Response          │
+                     └──────┬───────────┘
+                            │
+                            ▼
+                     ┌──────────────────┐
+                     │ Combine Results   │
+                     │ (Size + AI)       │
+                     └──────┬───────────┘
+                            │
+                            ▼
+                     ┌──────────────────┐
+                     │ Return to         │
+                     │ Frontend          │
+                     └──────────────────┘
 ```
 
-### ?? Technical Details
+### 🏗️ Backend Architecture
+
+#### Cấu trúc Backend
+
+```
+Backend/Raidexi/
+├── Application/              # Application Layer
+│   ├── Dtos/                 # Data Transfer Objects
+│   │   ├── GeminiResponse.cs
+│   │   ├── ResultAnalysis.cs
+│   │   ├── SizeResult.cs
+│   │   └── uploadDataToAnalysisMeasure.cs
+│   └── Interfaces/           # Service Interfaces
+│       ├── IAnalysisDataService.cs
+│       ├── IAuthService.cs
+│       └── IGeminiService.cs
+│
+├── Domain/                   # Domain Layer
+│   ├── Entities/            # Domain Models
+│   │   ├── User.cs
+│   │   ├── MeasureData.cs
+│   │   ├── MappingSize.cs
+│   │   └── DataBrandAnalysis.cs
+│   └── Interfaces/          # Repository Interfaces
+│       ├── IUserRepository.cs
+│       ├── ISizeMapping.cs
+│       └── ITokenServices.cs
+│
+├── Infrastructure/          # Infrastructure Layer
+│   ├── Persistence/        # Data Access
+│   │   ├── AppDBContext.cs (PostgreSQL)
+│   │   ├── MongoDbContext.cs
+│   │   ├── UserRepository.cs
+│   │   └── MappingSizeRepo.cs
+│   ├── Security/           # Security Services
+│   │   ├── PasswordHasher.cs (BCrypt)
+│   │   └── TokenGenerate.cs (JWT)
+│   └── Services/           # Business Logic
+│       ├── AnalyisService.cs
+│       ├── AuthService.cs
+│       └── GeminiService.cs
+│
+└── Presentation/           # Presentation Layer
+    ├── Controller/        # API Controllers
+    │   ├── UserController.cs
+    │   ├── AnalysisDataMeasureController.cs
+    │   └── MappingSizeController.cs
+    └── Services/
+        └── CacheServices/
+            └── CacheAnalysisDataService.cs
+```
+
+#### API Endpoints
+
+**Authentication Endpoints** (`/api/User`)
+- `POST /api/User/Login` - Đăng nhập với email/password
+- `POST /api/User/Register` - Đăng ký tài khoản mới
+- `POST /api/User/LoginWithFirebase` - Đăng nhập với Firebase token
+- `POST /api/User/Logout` - Đăng xuất
+- `GET /api/User/GetUserData` - Lấy thông tin người dùng
+
+**Analysis Endpoints** (`/api/AnalysisDataMeasure`)
+- `POST /api/AnalysisDataMeasure/AISuggest` - Đề xuất size với AI
+  - Rate Limit: 5 requests/24h (anonymous)
+  - Request Body: `uploadDataToAnalysisMeasure`
+  - Response: `ResultAnalysis`
+
+**Size Mapping Endpoints** (`/api/MappingSize`)
+- `GET /api/MappingSize/brand-profiles` - Lấy danh sách brand profiles
+- `POST /api/MappingSize/AddBrandProfile` - Thêm brand profile
+- `POST /api/MappingSize/AddSizeMapping` - Thêm size mapping
+- `POST /api/MappingSize/AddUniversalSize` - Thêm universal size
+- `POST /api/MappingSize/AddCategoryRule` - Thêm category rule
+- `POST /api/MappingSize/AddBrandRule` - Thêm brand rule
+
+#### Database Schema
+
+**PostgreSQL (User Data)**
+```sql
+Users Table:
+- Id (Guid, PK)
+- Email (string, unique)
+- FullName (string)
+- HashPassword (string)
+- CreatedAt (DateTime)
+- MeasureData (JSON)
+```
+
+**MongoDB (Brand & Size Data)**
+```javascript
+Collections:
+- BrandProfiles: Thông tin thương hiệu
+- SizeMappings: Mapping giữa universal size và brand size
+- UniversalSizes: Kích thước chuẩn (S, M, L, XL, etc.)
+- CategoryRules: Quy tắc theo loại sản phẩm (top, bottom, dress)
+- BrandRules: Quy tắc điều chỉnh số đo theo brand
+```
+
+#### Backend Services
+
+**AnalyisService**
+- `GetSizeFromMeasure()`: Tính toán size phù hợp từ số đo
+- `AISuggestSize()`: Tích hợp Gemini AI để đề xuất size
+- `AdjustByGenderSlight()`: Điều chỉnh số đo theo giới tính
+- `CalculateRangeFit()`: Tính toán độ phù hợp (0-100%)
+
+**GeminiService**
+- `CreatePrompt()`: Tạo prompt cho Gemini AI
+- `GetAIMeasure()`: Gọi Gemini API và parse response
+
+**AuthService**
+- `LoginAsync()`: Xác thực người dùng
+- `RegisterAsync()`: Đăng ký người dùng mới
+- `LoginWithFirebaseAsync()`: Xác thực với Firebase
+
+**CacheAnalysisDataService**
+- Cache brand rules, size mappings, category rules
+- Giảm số lần query database
+
+#### Rate Limiting
+
+```csharp
+Policy: "anon05"
+- Limit: 5 requests per 24 hours
+- Window: Fixed window (24 hours)
+- Scope: Per IP address
+- Status Code: 429 Too Many Requests
+```
+
+#### Environment Variables
+
+```env
+# Database
+DefaultConnection=PostgreSQL connection string
+MongoUrl=MongoDB connection string
+Databasename=MongoDB database name
+
+# Firebase
+FIREBASE_CREDENTIALS_JSON=Firebase service account JSON
+
+# Gemini AI
+GEMINI_API_KEY=Google Gemini API key
+
+# JWT
+JWT_SECRET_KEY=Secret key for JWT tokens
+```
+
+### ⚙️ Technical Details
 
 #### MediaPipe Configuration
 
 ```typescript
 poseRef.current.setOptions({
-  modelComplexity: 2,              // 0-2, cao h?n = ch?nh x?c h?n
-  smoothLandmarks: true,           // L?m m??t landmarks
-  enableSegmentation: true,         // B?t segmentation
-  smoothSegmentation: true,         // L?m m??t segmentation
-  minDetectionConfidence: 0.7,     // Ng??ng ph?t hi?n
-  minTrackingConfidence: 0.7       // Ng??ng tracking
+  modelComplexity: 2,              // 0-2, cao hơn = chính xác hơn
+  smoothLandmarks: true,           // Làm mượt landmarks
+  enableSegmentation: true,         // Bật segmentation
+  smoothSegmentation: true,         // Làm mượt segmentation
+  minDetectionConfidence: 0.7,     // Ngưỡng phát hiện
+  minTrackingConfidence: 0.7       // Ngưỡng tracking
 });
 ```
 
 #### Error Handling
 
-- **Camera kh?ng kh? d?ng**: Hi?n th? "OFFLINE" status
-- **Pose kh?ng detect ???c**: B? qua frame, kh?ng th?m v?o buffer
-- **Buffer ch?a ??**: Hi?n th? "?ang Thu Th?p D? Li?u"
-- **Gemini API l?i**: Tr? v? size suggest t? algorithm, kh?ng c? AI insights
-- **Rate limiting**: Hi?n th? th?ng b?o "?? h?t l??t d?ng th?"
+- **Camera không khả dụng**: Hiển thị "OFFLINE" status
+- **Pose không detect được**: Bỏ qua frame, không thêm vào buffer
+- **Buffer chưa đủ**: Hiển thị "Đang Thu Thập Dữ Liệu"
+- **Gemini API lỗi**: Trả về size suggest từ algorithm, không có AI insights
+- **Rate limiting**: Hiển thị thông báo "Đã hết lượt dùng thử"
 
 #### Performance Optimization
 
-- **Frame Buffering**: Ch? x? l? frames h?p l?
-- **Median Filtering**: Lo?i b? outliers trong measurements
-- **Lazy Loading**: MediaPipe ch? load khi m? camera
-- **Canvas Optimization**: Clear v? redraw ch? khi c?n
-- **Context Memoization**: Tr?nh re-render kh?ng c?n thi?t
+- **Frame Buffering**: Chỉ xử lý frames hợp lệ
+- **Median Filtering**: Loại bỏ outliers trong measurements
+- **Lazy Loading**: MediaPipe chỉ load khi mở camera
+- **Canvas Optimization**: Clear và redraw chỉ khi cần
+- **Context Memoization**: Tránh re-render không cần thiết
+- **Backend Caching**: In-memory cache cho brand rules và size mappings
+- **Database Indexing**: Index trên email và các trường thường query
 
 ---
 
-## ?? C?u h?nh
+## 🔧 Cấu hình
 
 ### Environment Variables
 
-T?o file `.env.local` trong `FrontEnd/Raidexi/`:
+Tạo file `.env.local` trong `FrontEnd/Raidexi/`:
 
 ```env
 NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-# ... c?c config Firebase kh?c
+# ... các config Firebase khác
 ```
 
 ### Tailwind Config
 
-File `tailwind.config.js` ?? ???c c?u h?nh v?i:
+File `tailwind.config.js` đã được cấu hình với:
 - Custom colors (brass, background-dark, etc.)
 - Custom fonts (Newsreader, JetBrains Mono)
-- Custom spacing v? utilities
+- Custom spacing và utilities
 
 ---
 
-## ?? Scripts
+## 📝 Scripts
 
 ```bash
 # Development
-npm run dev          # Ch?y development server
+npm run dev          # Chạy development server
 
 # Production
 npm run build        # Build production
-npm run start        # Ch?y production server
+npm run start        # Chạy production server
 
 # Linting
-npm run lint         # Ch?y ESLint
+npm run lint         # Chạy ESLint
 ```
 
 ---
 
-## ?? Testing
+## 🧪 Testing
 
-### Ki?m tra Camera
+### Kiểm tra Camera
 
-1. ??m b?o camera ???c c?p quy?n truy c?p
-2. Ki?m tra console browser ?? xem l?i (n?u c?)
-3. ??m b?o ?? ?nh s?ng khi ?o l??ng
+1. Đảm bảo camera được cấp quyền truy cập
+2. Kiểm tra console browser để xem lỗi (nếu có)
+3. Đảm bảo đủ ánh sáng khi đo lường
 
-### Ki?m tra MediaPipe
+### Kiểm tra MediaPipe
 
-- MediaPipe Pose ???c load t? CDN
-- Ki?m tra network tab ?? ??m b?o c?c file MediaPipe ???c t?i th?nh c?ng
-
----
-
-## ?? Troubleshooting
-
-### Camera kh?ng ho?t ??ng
-
-- Ki?m tra quy?n truy c?p camera trong browser settings
-- ??m b?o kh?ng c? ?ng d?ng kh?c ?ang s? d?ng camera
-- Th? tr?n tr?nh duy?t kh?c
-
-### MediaPipe kh?ng load
-
-- Ki?m tra k?t n?i internet (MediaPipe load t? CDN)
-- Ki?m tra console ?? xem l?i c? th?
-- Th? clear cache v? reload
-
-### ?o l??ng kh?ng ch?nh x?c
-
-- ??m b?o ?? ?nh s?ng
-- ??ng ??ng v? tr? trong khung h?nh
-- Gi? nguy?n t? th? trong su?t qu? tr?nh ?o
+- MediaPipe Pose được load từ CDN
+- Kiểm tra network tab để đảm bảo các file MediaPipe được tải thành công
 
 ---
 
-## ?? ??ng g?p
+## 🐛 Troubleshooting
 
-Ch?ng t?i hoan ngh?nh m?i ??ng g?p! Vui l?ng:
+### Camera không hoạt động
+
+- Kiểm tra quyền truy cập camera trong browser settings
+- Đảm bảo không có ứng dụng khác đang sử dụng camera
+- Thử trên trình duyệt khác
+
+### MediaPipe không load
+
+- Kiểm tra kết nối internet (MediaPipe load từ CDN)
+- Kiểm tra console để xem lỗi cụ thể
+- Thử clear cache và reload
+
+### Đo lường không chính xác
+
+- Đảm bảo đủ ánh sáng
+- Đứng đúng vị trí trong khung hình
+- Giữ nguyên tư thế trong suốt quá trình đo
+
+---
+
+## 🤝 Đóng góp
+
+Chúng tôi hoan nghênh mọi đóng góp! Vui lòng:
 
 1. Fork repository
-2. T?o feature branch (`git checkout -b feature/AmazingFeature`)
+2. Tạo feature branch (`git checkout -b feature/AmazingFeature`)
 3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to branch (`git push origin feature/AmazingFeature`)
-5. M? Pull Request
+5. Mở Pull Request
 
 ### Code Style
 
-- S? d?ng TypeScript cho type safety
-- Tu?n th? ESLint rules
-- Format code v?i Prettier (n?u c?)
-- Vi?t comments cho c?c function ph?c t?p
+- Sử dụng TypeScript cho type safety
+- Tuân thủ ESLint rules
+- Format code với Prettier (nếu có)
+- Viết comments cho các function phức tạp
 
 ---
 
-## ?? License
+## 📄 License
 
-D? ?n n?y l? private v? kh?ng c? license c?ng khai.
+Dự án này là private và không có license công khai.
 
 ---
 
-## ?? Team
+## 👥 Team
 
 - **Development**: Raidexi Team
 - **AI/ML**: MediaPipe Integration
@@ -776,15 +925,15 @@ D? ?n n?y l? private v? kh?ng c? license c?ng khai.
 
 ---
 
-## ?? Li?n h?
+## 📞 Liên hệ
 
 - **Website**: [Raidexi](http://localhost:3000)
 - **Email**: support@raidexi.com
-- **Issues**: T?o issue tr?n repository
+- **Issues**: Tạo issue trên repository
 
 ---
 
-## ?? Acknowledgments
+## 🙏 Acknowledgments
 
 - [MediaPipe](https://mediapipe.dev/) - Computer Vision framework
 - [Next.js](https://nextjs.org/) - React framework
@@ -795,8 +944,8 @@ D? ?n n?y l? private v? kh?ng c? license c?ng khai.
 
 <div align="center">
 
-**Made with ?? by Raidexi Team**
+**Made with ❤️ by Raidexi Team**
 
-? Star this repo n?u b?n th?y h?u ?ch!
+⭐ Star this repo nếu bạn thấy hữu ích!
 
 </div>
