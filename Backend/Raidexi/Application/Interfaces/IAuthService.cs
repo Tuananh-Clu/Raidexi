@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Raidexi.Domain.Entities;
 
-namespace Raidexi.Domain.Interfaces
+namespace Raidexi.Application.Interfaces
 {
     public interface IAuthService
     {

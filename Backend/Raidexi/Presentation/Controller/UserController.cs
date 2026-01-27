@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Raidexi.Application.Dtos;
 using Raidexi.Domain.Entities;
 using Raidexi.Domain.Interfaces;
-using Raidexi.Presentation.Services;
+using Raidexi.Infrastructure.Services;
 
 namespace Raidexi.Presentation.Controller
 {

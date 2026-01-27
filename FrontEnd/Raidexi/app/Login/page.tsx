@@ -4,7 +4,7 @@ import Button from "../../features/Auth/components/Button";
 import InputField from "../../features/Auth/components/InputField";
 import Checkbox from "../../features/Auth/components/CheckBox";
 import BackgroundDecor from "../../features/Auth/components/BackgroundDecor";
-import { useAuthentication } from "@/features/Auth/Hook/Authentication";
+
 import { ChromiumIcon } from "lucide-react";
 import { AuthContext } from "@/provider/AuthProvider";
 import { useLoadingStore } from "@/Shared/store/loading.store";

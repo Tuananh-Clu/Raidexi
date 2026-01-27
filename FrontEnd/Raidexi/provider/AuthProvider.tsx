@@ -1,5 +1,5 @@
 "use client";
-import { useAuthentication } from "@/features/Auth/Hook/Authentication";
+import { useAuth } from "@/features/Auth/hooks/useAuth";
 import { ToasterUi } from "@/Shared/Ui/ToasterUi";
 import {
   createContext,
@@ -37,10 +37,10 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const { Login, LoginWithGoogle, Logout, Register, GetDataUser } =
-    useAuthentication();
+    useAuth();
 
-  const {startLoading, stopLoading}=useLoadingStore();
-  const { navigate }=useRouterService();
+  const { startLoading, stopLoading } = useLoadingStore();
+  const { navigate } = useRouterService();
   const [userData, setUserData] = useState<any>(() => {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("userData");
@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return userData !== null;
   });
-  const context=useContext(BodyMeasureEstimateContext)
+  const context = useContext(BodyMeasureEstimateContext)
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -62,20 +62,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           localStorage.setItem("userData", JSON.stringify(data.user));
           context?.setDataMeasured?.({
             height: data.user.measureData?.height || null,
-            waist:data.user.measureData?.waist || null,
+            waist: data.user.measureData?.waist || null,
             hip: data.user.measureData?.hip || null,
             chest: data.user.measureData?.chest || null,
             shoulderWidth: data.user.measureData?.shoulderWidth || null,
 
           });
-          localStorage.setItem("userMeaurements",JSON.stringify({
+          localStorage.setItem("userMeaurements", JSON.stringify({
             height: data.user.measureData?.height || null,
-            waist:data.user.measureData?.waist || null,
+            waist: data.user.measureData?.waist || null,
             hip: data.user.measureData?.hip || null,
             chest: data.user.measureData?.chest || null,
             shoulderWidth: data.user.measureData?.shoulderWidth || null,
           }));
-        
+
         }
       } catch (error) {
         console.error("Auth init error:", error);
@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (userData === null) {
       fetchUserData();
     } else {
-  
+
     }
   }, []);
 
@@ -100,13 +100,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (result) {
         setIsLoggedIn(true);
         const data = await GetDataUser();
-        
+
         if (data?.user) {
           setUserData(data.user);
           localStorage.setItem("userData", JSON.stringify(data.user));
         }
         navigate("/");
-      ToasterUi("Logged in successfully", "success");
+        ToasterUi("Logged in successfully", "success");
       }
       return result;
     },
@@ -121,7 +121,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   );
 
   const AuthLoginWithGoogle = useCallback(async () => {
-    
+
     const result = await LoginWithGoogle();
     startLoading?.("Logging in with Google...");
     if (result.isSuccess) {

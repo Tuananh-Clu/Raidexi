@@ -1,12 +1,13 @@
 ﻿using Raidexi.Application.Dtos;
 using Raidexi.Domain.Entities;
 using Raidexi.Domain.Interfaces;
+using Raidexi.Application.Interfaces;
 using Raidexi.Presentation.Services.CacheServices;
 using System.Drawing;
 using System.Reflection;
 using Google.GenAI;
 
-namespace Raidexi.Presentation.Services
+namespace Raidexi.Infrastructure.Services
 {
     public class AnalyisService : IAnalysisDataService
     {

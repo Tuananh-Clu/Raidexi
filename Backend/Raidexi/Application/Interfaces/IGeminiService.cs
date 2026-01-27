@@ -1,6 +1,6 @@
 ﻿using Raidexi.Application.Dtos;
 
-namespace Raidexi.Domain.Interfaces
+namespace Raidexi.Application.Interfaces
 {
     public interface IGeminiService
     {

@@ -2,10 +2,11 @@
 using Microsoft.Extensions.Logging;
 using Raidexi.Application.Dtos;
 using Raidexi.Domain.Interfaces;
+using Raidexi.Application.Interfaces;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-namespace Raidexi.Presentation.Services
+namespace Raidexi.Infrastructure.Services
 {
     public class GeminiService : IGeminiService
     {

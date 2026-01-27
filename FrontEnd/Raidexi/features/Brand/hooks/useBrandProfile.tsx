@@ -1,9 +1,9 @@
-import { API, api_Response } from "@/Shared/Service/Api";
+import { brandApi } from "../api/brandApi";
 
 export const useBrandProfile = () => {
     const getBrandProfile = async () => {
         try {
-            const response=await api_Response(API.Brand.GetBrandProfile,'GET');
+            const response = await brandApi.getBrandProfile();
             return response;
         } catch (error) {
             throw error;

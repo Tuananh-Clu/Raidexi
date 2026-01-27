@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Raidexi.Application.Dtos;
-using Raidexi.Presentation.Services;
+using Raidexi.Infrastructure.Services;
 
 namespace Raidexi.Presentation.Controller
 {

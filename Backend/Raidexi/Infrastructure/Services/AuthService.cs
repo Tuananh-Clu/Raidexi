@@ -4,11 +4,12 @@ using Org.BouncyCastle.Asn1.Ocsp;
 using Raidexi.Application.Dtos;
 using Raidexi.Domain.Entities;
 using Raidexi.Domain.Interfaces;
+using Raidexi.Application.Interfaces;
 using Raidexi.Infrastructure.Persistence;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 
-namespace Raidexi.Presentation.Services
+namespace Raidexi.Infrastructure.Services
 {
     public class AuthService : IAuthService
     {
