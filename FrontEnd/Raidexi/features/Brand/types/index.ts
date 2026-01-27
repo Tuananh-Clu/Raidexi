@@ -83,10 +83,10 @@ export interface UserMeasurements {
 
 
 export enum RegionSystem {
-  UK = 'UK (UK)',
-  US = 'US (US)',
-  VN = 'VN',
-  EU = 'EU (EU)'
+  UK = 'UK (UNITED KINGDOM)',
+  US = 'US (UNITED STATES)',
+  VN = 'VN (VIETNAM)',
+  EU = 'EU (EUROPEAN UNION)'
 }
 
 export interface SizeChartRow {

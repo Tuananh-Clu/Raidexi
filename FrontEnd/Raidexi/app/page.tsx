@@ -10,6 +10,7 @@ import { Footer } from "@/Shared/Components/components/Footer";
 import { HeroSection } from "@/features/Home/components/HeroSection";
 import { useEffect, useState } from "react";
 import { ArrowBigUpDashIcon } from "lucide-react";
+import { MobileMenu } from "@/Shared/Components/components/mobileMenu";
 
 
 
@@ -27,6 +28,7 @@ function page() {
     };
   }, []);
      return <div className="flex min-h-screen w-full flex-col font-display antialiased selection:bg-[#e9be49] selection:text-[#1a1510]">
+      <MobileMenu />
       <NavBar />
       {
         scrollButtonVisible && (

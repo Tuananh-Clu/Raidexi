@@ -28,10 +28,11 @@ export const MainContent = ({ brandData }: any) => {
 
     HandleSaveSuggestBrand(dataToSave);
   };
-  const [activeGender, setActiveGender] = useState<Gender>(brandContext.popUpSettings.gender.toLowerCase() as Gender);
-  const [activeType, setActiveType] = useState<ProductType>(brandContext.popUpSettings.productType.toLowerCase() as ProductType);
+  const dataCustomSize = brandContext.popUpSettings? brandContext.brandMeasuredRefCodesData?.dataAnalysis.typeCustom :brandContext.popUpSettings;
+  const [activeGender, setActiveGender] = useState<Gender>(dataCustomSize?.gender.toUpperCase() as Gender);
+  const [activeType, setActiveType] = useState<ProductType>(dataCustomSize?.typeProduct.toUpperCase() as ProductType);
   const [activeRegion, setActiveRegion] = useState<RegionSystem>(
-    brandContext.popUpSettings.sizeSystem.toUpperCase() as RegionSystem
+    dataCustomSize?.sizeOutput.toUpperCase() as RegionSystem
   );
   const dataAnalysisWithFilter = context.dataAnalysisResponse==null?brandContext.brandMeasuredRefCodesData?.dataAnalysis:context.dataAnalysisResponse;
   console.log("dataAnalysisWithFilter",dataAnalysisWithFilter);
@@ -72,7 +73,7 @@ export const MainContent = ({ brandData }: any) => {
                   key={gender}
                   onClick={() => setActiveGender(gender)}
                   className={`py-3 text-sm font-medium transition-colors ${
-                    activeGender === gender
+                    activeGender === gender.toUpperCase()
                       ? "bg-primary text-black"
                       : "bg-transparent text-gray-400 hover:text-white"
                   }`}
@@ -93,7 +94,7 @@ export const MainContent = ({ brandData }: any) => {
                   key={type}
                   onClick={() => setActiveType(type)}
                   className={`py-3 text-sm font-medium transition-colors border-l border-dark-600 first:border-l-0 ${
-                    activeType === type
+                    activeType === type.toUpperCase()
                       ? "bg-primary text-black"
                       : "bg-transparent text-gray-400 hover:text-white"
                   }`}
@@ -115,7 +116,7 @@ export const MainContent = ({ brandData }: any) => {
                 key={region}
                 onClick={() => setActiveRegion(region)}
                 className={`px-6 py-3 border text-xs font-bold uppercase tracking-wider transition-all ${
-                  activeRegion === region
+                  activeRegion === region.toUpperCase()
                     ? "bg-primary border-gold-500 text-black"
                     : "bg-transparent border-dark-600 text-gray-400 hover:border-gray-400"
                 }`}

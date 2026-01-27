@@ -15,7 +15,7 @@ export interface AISuggestSizeResponse {
   brand: string;
   analysisCode: string;
   analysisDate: string;
-  typeCustom: string;
+  typeCustom: UserCustomSizeType;
   fitSuggest: string;
   sizeSuggest: string;
   reliableRate: number;

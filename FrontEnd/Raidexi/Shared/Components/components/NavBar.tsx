@@ -1,10 +1,10 @@
 "use client";
 import React, { useContext } from "react";
-import { SquareActivity } from "lucide-react";
+import { BugOff, MenuIcon, SquareActivity } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { AuthContext } from "@/provider/AuthProvider";
 import { useRouterService } from "@/Shared/Service/routerService";
-
+import { mobileScreenStore } from "@/Shared/store/mobileScreen.store";
 
 export const NavBar: React.FC = () => {
   const description = [
@@ -17,11 +17,12 @@ export const NavBar: React.FC = () => {
   const context = useContext(AuthContext);
   const isLoggedIn = context?.isLoggedIn;
   const currentPath = usePathname();
-  const { navigate }=useRouterService();
+  const { navigate } = useRouterService();
   const handleClick = async () => {
     context?.AuthLogout();
     navigate("/");
   };
+  const { isMobileScreen,setOpenMobileMenu } = mobileScreenStore();
   return (
     <header className="sticky top-0 z-50 border-b border-border-brass bg-background-dark/95 backdrop-blur-sm">
       <div className="flex items-center justify-between h-16 px-6 mx-auto max-w-7xl">
@@ -48,10 +49,11 @@ export const NavBar: React.FC = () => {
             <a
               key={item.label}
               href={item.href}
-              className={`relative px-1 py-2 font-mono text-sm font-medium text-white hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full ${currentPath === item.href
-                ? "underline-offset-2 text-amber-300"
-                : ""
-                }`}
+              className={`relative px-1 py-2 font-mono text-sm font-medium text-white hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full ${
+                currentPath === item.href
+                  ? "underline-offset-2 text-amber-300"
+                  : ""
+              }`}
             >
               {item.label}
             </a>
@@ -61,10 +63,19 @@ export const NavBar: React.FC = () => {
         {isLoggedIn ? (
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-sm font-semibold text-gray-200">
-              <div className="flex items-center justify-center w-6 h-6 text-xs font-bold rounded-full bg-primary text-background-dark">
+              <div
+                onClick={() => navigate("/Dashboard")}
+                className="flex items-center justify-center w-6 h-6 text-xs font-bold rounded-full bg-primary text-background-dark"
+              >
                 U
               </div>
-              Xin chào, {context?.userData?.fullName || "User"}
+              <div
+                onClick={() => navigate("/Dashboard")}
+                className="cursor-pointer hover:underline underline-offset-4"
+              >
+                {!isMobileScreen &&
+                  `Xin chào, ${context?.userData.fullName || "User"}`}
+              </div>
             </div>
             <div className="w-px h-5 bg-gray-400/50" />
             <a
@@ -73,13 +84,26 @@ export const NavBar: React.FC = () => {
             >
               Hồ sơ
             </a>
+            {!isMobileScreen && (
+              <>
+                <button
+                  onClick={handleClick}
+                  className="px-4 py-2 font-mono text-xs font-bold text-white uppercase transition-all duration-300 border border-primary/50 hover:bg-primary/20 hover:border-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+                >
+                  Đăng xuất
+                </button>
+              </>
+            )}
+            { isMobileScreen && (
             <button
-              onClick={handleClick}
-              className="px-4 py-2 font-mono text-xs font-bold text-white uppercase transition-all duration-300 border border-primary/50 hover:bg-primary/20 hover:border-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+              onClick={() => setOpenMobileMenu(true)}
+              className="p-2 text-white rounded-md hover:bg-primary/20 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
-              Đăng xuất
+              <MenuIcon size={20} />
             </button>
+            ) }
           </div>
+          
         ) : (
           <div className="flex items-center gap-3">
             <a

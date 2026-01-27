@@ -8,9 +8,10 @@ import React, {
   useContext,
   useMemo,
 } from "react";
-import { DrawPointLandmark } from "../hook/DrawCanvas";
-import { HandleMeasureEstimate } from "../hook/HandleMeasureEstimate";
-import { detectPose } from "../hook/DetermineMeasure";
+import { DrawPointLandmark } from "../hooks/DrawCanvas";
+import { HandleMeasureEstimate } from "../hooks/HandleMeasureEstimate";
+import { detectPose } from "../hooks/DetermineMeasure";
+
 
 interface ViewportProps {
   showGrid: boolean;

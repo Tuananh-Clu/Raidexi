@@ -1,9 +1,10 @@
 "use client"
-import Dashboard from "@/features/DashboardUser/Components/Dashboard";
-import Sidebar from "@/features/DashboardUser/Components/Sidebar";
+
+import Dashboard from "@/features/DashboardUser/components/Dashboard";
 import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 
 import { NavBar } from "@/Shared/Components/components/NavBar";
+import { Sidebar } from "lucide-react";
 import { useContext } from "react";
 
 export default function page() {

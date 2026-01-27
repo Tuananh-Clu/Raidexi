@@ -2,15 +2,27 @@
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import { AuthProvider } from "@/provider/AuthProvider";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { BrandProvider } from "@/provider/BrandProvider";
 import { BodyMeasureEstimateProvider } from "@/provider/BodyMeasureEstimate";
 import { AISuggestSizeProvider } from "@/provider/AISuggestSize";
 import GlobalLoading from "@/Shared/Components/components/LoadingScreen";
 import { useLoadingStore } from "@/Shared/store/loading.store";
+import { mobileScreenStore } from "@/Shared/store/mobileScreen.store";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   const {isLoading, note}=useLoadingStore();
+  const {setIsMobileScreen}=mobileScreenStore();
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileScreen(window.innerWidth < 500);
+    }
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    } 
+  }, [setIsMobileScreen]);
   return (
     <html lang="vi">
       <head>
@@ -39,6 +51,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
 
       <body>
+        
         {isLoading && <GlobalLoading note={note} />}  
         <Toaster position="top-right" />
         <AuthProvider>
