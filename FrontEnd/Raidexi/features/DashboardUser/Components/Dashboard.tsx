@@ -1,4 +1,5 @@
 import { MeasurementDataResponse } from "@/features/Camera/types";
+import { useRouterService } from "@/Shared/Service/routerService";
 
 const Dashboard = ({
   dataMeasurements,
@@ -31,7 +32,7 @@ const Dashboard = ({
       icons: "pan_tool",
     },
   ];
-
+  const {navigate}=useRouterService();
   return (
     <div className="flex flex-col h-full gap-8 lg:col-span-8">
       <div className="relative flex flex-col flex-1 border border-border-color bg-background-card">
@@ -88,6 +89,7 @@ const Dashboard = ({
 
           <div className="grid grid-cols-1 gap-px md:col-span-8 sm:grid-cols-2 bg-border-color">
             {data.map((dataMeasurements) => (
+              
               <div className="bg-background-card p-6 flex flex-col justify-between h-full hover:bg-[#2a251e] transition-colors group">
                 <div className="flex items-start justify-between">
                   <span className="font-mono text-xs tracking-widest uppercase transition-colors text-text-muted group-hover:text-primary">
@@ -128,7 +130,7 @@ const Dashboard = ({
           </div>
         </div>
         <div className="flex w-full gap-3 sm:w-auto">
-          <button className="flex items-center justify-center flex-1 h-10 px-6 font-mono text-xs font-bold tracking-wider uppercase transition-colors border sm:flex-none border-primary text-primary hover:bg-primary/10">
+          <button onClick={()=>navigate('/PreviewMeasurement')} className="flex items-center justify-center flex-1 h-10 px-6 font-mono text-xs font-bold tracking-wider uppercase transition-colors border sm:flex-none border-primary text-primary hover:bg-primary/10">
             Xem trước
           </button>
           <button className="flex items-center justify-center flex-1 h-10 px-6 font-mono text-xs font-bold tracking-wider uppercase transition-colors sm:flex-none bg-primary hover:bg-primary-dark text-background-dark">

@@ -1,10 +1,9 @@
 "use client"
 
 import Dashboard from "@/features/DashboardUser/components/Dashboard";
+import Sidebar from "@/features/DashboardUser/components/Sidebar";
 import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
-
 import { NavBar } from "@/Shared/Components/components/NavBar";
-import { Sidebar } from "lucide-react";
 import { useContext } from "react";
 
 export default function page() {
@@ -37,7 +36,6 @@ export default function page() {
             </p>
           </div>
         </header>
-
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           <Sidebar  />
           <Dashboard dataMeasurements={dataMeasurements} />

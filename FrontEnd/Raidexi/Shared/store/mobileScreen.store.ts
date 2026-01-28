@@ -8,7 +8,7 @@ type MobileScreenState = {
 };
 
 export const mobileScreenStore = create<MobileScreenState>((set) => ({
-    isMobileScreen: window.innerWidth < 500,
+    isMobileScreen: false,
     setIsMobileScreen: (value: boolean) => set({ isMobileScreen: value }),
     openMobileMenu: false,
     setOpenMobileMenu: (value: boolean) => set({ openMobileMenu: value }),

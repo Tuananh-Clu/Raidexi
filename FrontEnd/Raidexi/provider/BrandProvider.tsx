@@ -1,12 +1,12 @@
 "use client";
-
 import { useBrandMeasure } from "@/features/Brand/hooks/useBrandMeasure";
 import { useBrandProfile } from "@/features/Brand/hooks/useBrandProfile";
 import { Brand } from "@/features/Brand/types";
 import { useBrandDataUserStore } from "@/Shared/store/brandDataUser.store";
 import { DataToSaveBrandMeasure } from "@/Shared/types";
 
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { AuthContext } from "./AuthProvider";
 interface BrandContextType {
     dataBrand: Brand[];
     popUpSettings: { isopened: boolean; brandrefcode: string; gender: string; productType: string; sizeSystem: string };
@@ -25,6 +25,7 @@ export const BrandContext = createContext<BrandContextType >(
 export const BrandProvider = ({children}: {children: React.ReactNode}) => {
     const {dataBrandMeasured,setDataBrandMeasured} =useBrandDataUserStore();
     const {GetBrandMeasureData}=useBrandMeasure();
+    const {isLoggedIn}=useContext(AuthContext)!;
     const [dataBrand, setDataBrand] = useState<Brand[]>(()=>{
         const storedData = localStorage.getItem("brandData");
         return storedData ? JSON.parse(storedData) : [];
@@ -36,11 +37,12 @@ export const BrandProvider = ({children}: {children: React.ReactNode}) => {
             const data = await getBrandProfile();
             setDataBrand(data);
             localStorage.setItem("brandData",JSON.stringify(data));
+            if(!isLoggedIn) return;
             const brandMeasureData = await GetBrandMeasureData();
             setDataBrandMeasured(brandMeasureData.data);  
         };
         fetchData();
-    }, []);
+    }, [isLoggedIn]);
     const brandMeasuredRefCodesData = useMemo(
         () => {
             return dataBrandMeasured?.dataBrandAnalysis.find(

@@ -53,6 +53,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   });
   const context = useContext(BodyMeasureEstimateContext)
   useEffect(() => {
+    if(userData===null){
+      return;
+    }
     const fetchUserData = async () => {
       try {
         const data = await GetDataUser();
@@ -142,6 +145,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setUserData(null);
     localStorage.removeItem("userData");
     navigate("/Login");
+    stopLoading?.();
     ToasterUi("Logged out successfully", "success");
   }, [Logout, navigate]);
 
