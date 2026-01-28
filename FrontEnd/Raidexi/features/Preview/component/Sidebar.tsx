@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ExportFormat } from '../types';
+import { HandleSendDataToMail } from '@/Shared/Service/DownloadService';
 
 
 interface SidebarProps {
@@ -14,8 +15,20 @@ const Sidebar: React.FC<SidebarProps> = ({
   onFormatChange,
 }) => {
   const [isEmailFormOpen, setIsEmailFormOpen] = useState(false);
-
+  const [data,setData]=useState({
+    to:'',
+    subject:"Raidexi Transmission",
+    body:'',
+    attachments:{
+      base64:'',
+      mineType:'',
+      filenames:''
+    }
+  })
   const toggleEmailForm = () => setIsEmailFormOpen(!isEmailFormOpen);
+  const handleSendEmail = () => {
+    HandleSendDataToMail(data,currentFormat);
+  }
 
   return (
     <aside className="flex flex-col w-full gap-8 p-8 border-r no-print lg:w-80 bg-stone-900/50 border-stone-800 shrink-0">
@@ -44,7 +57,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           onClick={toggleEmailForm}
           className={`w-full border border-primary text-paper px-6 py-4 flex justify-center items-center gap-3 text-sm font-bold tracking-[0.2em] transition-all rounded-none hover:bg-primary/10 ${isEmailFormOpen ? 'bg-primary/5' : ''}`}
         >
-          <span className="material-symbols-outlined text-[20px]">mail</span> 
+          <a href='email/to:' className="material-symbols-outlined text-[20px]">mail</a> 
           SEND VIA EMAIL
         </button>
 
@@ -62,6 +75,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <label className="block text-[10px] text-stone-500 font-mono uppercase mb-1">Recipient Email</label>
                 <input 
                   type="email" 
+                  value={data.to}
+                  onChange={(e) => setData(prev => ({ ...prev, to: e.target.value }))}
                   placeholder="ENTER ADDRESS..." 
                   className="w-full p-3 font-mono text-xs border rounded-none outline-none bg-stone-900 border-stone-800 text-paper focus:border-primary focus:ring-0 placeholder:text-stone-700"
                 />
@@ -70,11 +85,16 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <label className="block text-[10px] text-stone-500 font-mono uppercase mb-1">Reference Note (Optional)</label>
                 <textarea 
                   rows={3} 
+                  value={data.body}
+                  onChange={(e) => setData(prev => ({ ...prev, body: e.target.value }))}
                   placeholder="ENTER MESSAGE..." 
                   className="w-full p-3 font-mono text-xs border rounded-none outline-none resize-none bg-stone-900 border-stone-800 text-paper focus:border-primary focus:ring-0 placeholder:text-stone-700"
                 />
               </div>
-              <button className="w-full bg-stone-800 hover:bg-stone-700 text-primary border border-primary/30 px-4 py-2 text-[10px] font-mono font-bold tracking-widest uppercase transition-all">
+              <button
+                onClick={handleSendEmail}
+                className="w-full bg-stone-800 hover:bg-stone-700 text-primary border border-primary/30 px-4 py-2 text-[10px] font-mono font-bold tracking-widest uppercase transition-all"
+              >
                 TRANSMIT DATA
               </button>
             </div>

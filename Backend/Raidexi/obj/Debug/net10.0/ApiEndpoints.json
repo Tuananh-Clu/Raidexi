@@ -16,6 +16,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Raidexi.Presentation.Controller.MailController",
+    "Method": "SendMail",
+    "RelativePath": "api/Mail/send",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sendMailRequest",
+        "Type": "Raidexi.Application.Dtos.SendMailRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Raidexi.Presentation.Controller.MappingSizeController",
     "Method": "AddBrandProfile",
     "RelativePath": "api/MappingSize/AddBrandProfile",

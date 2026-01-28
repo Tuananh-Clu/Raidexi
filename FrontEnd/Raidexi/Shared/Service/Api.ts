@@ -16,6 +16,9 @@ export const API={
     },
     "AnalysisDataMeasurement":{
         "GetSuggestSize":"/api/AnalysisDataMeasure/AISuggest",
+    },
+    "Mail":{
+        "SendMail":"/api/Mail/send",
     }
 }
 export const BASE_URL="https://localhost:7133"

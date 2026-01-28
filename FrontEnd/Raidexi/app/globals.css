@@ -140,3 +140,13 @@ body {
   background: #d48d11;
 }
 
+@theme {
+  --color-*: initial; /* Reset colors */
+}
+
+:root {
+  /* Define lại bằng hex/rgb */
+  --color-Background: #e9be49;
+  --text-Primary: #1a1510;
+  /* ... */
+}

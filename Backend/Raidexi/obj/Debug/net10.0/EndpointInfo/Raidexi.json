@@ -36,6 +36,37 @@
         }
       }
     },
+    "/api/Mail/send": {
+      "post": {
+        "tags": [
+          "Mail"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMailRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMailRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMailRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/MappingSize/brand-profiles": {
       "get": {
         "tags": [
@@ -432,6 +463,24 @@
   },
   "components": {
     "schemas": {
+      "AttachmentDto": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "mimeType": {
+            "type": "string",
+            "nullable": true
+          },
+          "base64": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "BrandProfile": {
         "type": "object",
         "properties": {
@@ -689,6 +738,27 @@
         },
         "additionalProperties": false
       },
+      "SendMailRequest": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "string",
+            "nullable": true
+          },
+          "subject": {
+            "type": "string",
+            "nullable": true
+          },
+          "html": {
+            "type": "string",
+            "nullable": true
+          },
+          "attachment": {
+            "$ref": "#/components/schemas/AttachmentDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "SizeMapping": {
         "type": "object",
         "properties": {
@@ -791,6 +861,9 @@
   "tags": [
     {
       "name": "AnalysisDataMeasure"
+    },
+    {
+      "name": "Mail"
     },
     {
       "name": "MappingSize"

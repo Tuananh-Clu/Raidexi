@@ -1,4 +1,5 @@
 import { MeasurementDataResponse } from "@/features/Camera/types";
+import { GetAttachmentOptions } from "resend";
 
 export interface AISuggestSizeType {
   brand: string;
@@ -41,4 +42,15 @@ export interface DataToSaveBrandMeasure {
 export interface DataBrandMeasureResponse {
   userid: string;
   dataBrandAnalysis:DataToSaveBrandMeasure[];
+}
+export interface SendMailRequest {
+  to: string;
+  subject: string;
+  body: string;
+  attachments: Attachment;
+}
+export interface Attachment {
+  filenames: string;
+  mineType: string;
+  base64: string;
 }
