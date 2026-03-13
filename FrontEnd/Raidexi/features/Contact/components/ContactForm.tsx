@@ -1,4 +1,5 @@
 "use client"
+import { SendMailContactService } from '@/Shared/Service/MailService';
 import React, { useState } from 'react';
 
 const ContactForm: React.FC = () => {
@@ -15,11 +16,24 @@ const ContactForm: React.FC = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form Submitted:', formData);
-    // Add submission logic here
-    alert("Cảm ơn bạn! Yêu cầu đã được gửi.");
+   const data= await SendMailContactService({
+      name: formData.name,
+      email: formData.email,
+      message: formData.message,
+      tier: formData.brand
+    });
+    if(data){
+      setFormData({
+        name: '',
+        brand: '',
+        email: '',
+        title: '',
+        message: ''
+      });
+      alert("Cảm ơn bạn! Yêu cầu đã được gửi.");
+    }
   };
 
   return (

@@ -230,6 +230,15 @@ D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\Raidexi.runtimeconfig.json
 D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\Raidexi.pdb
 D:\Frontend\Raidexi\Backend\Raidexi\obj\Debug\net10.0\Raidexi.genruntimeconfig.cache
 D:\Frontend\Raidexi\Backend\Raidexi\obj\Debug\net10.0\ref\Raidexi.dll
-D:\Frontend\Raidexi\Backend\Raidexi\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\MailKit.dll
 D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\MimeKit.dll
+D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\package-lock.json
+D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\package.json
+D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\OpenAI.dll
+D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\System.ClientModel.dll
+D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\System.Memory.Data.dll
+D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\Json.More.dll
+D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\JsonPointer.Net.dll
+D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\JsonSchema.Net.dll
+D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\JsonSchema.Net.Generation.dll
+D:\Frontend\Raidexi\Backend\Raidexi\bin\Debug\net10.0\Mscc.GenerativeAI.dll

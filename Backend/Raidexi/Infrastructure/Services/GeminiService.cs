@@ -1,27 +1,62 @@
 ﻿using Google.GenAI;
-using Microsoft.Extensions.Logging;
 using Raidexi.Application.Dtos;
-using Raidexi.Domain.Interfaces;
 using Raidexi.Application.Interfaces;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-
+using Google.GenAI.Types;
 namespace Raidexi.Infrastructure.Services
 {
     public class GeminiService : IGeminiService
     {
         private static readonly string Model = "gemini-3-flash-preview";
+        private string promptTemplate =
+        @"
+You are an AI that extracts structured data from images.
+
+The image may contain a clothing size chart or measurement table.
+
+Tasks:
+1. Detect the table in the image.
+2. Identify columns such as size, chest, waist, hip, length, sleeve, etc.
+3. Extract all rows of the table.
+4. Convert all numeric values to numbers (not text).
+5. Return ONLY valid JSON.
+
+JSON format example:
+{
+  ""sizes"": [
+    {
+      ""size"": ""S"",
+      ""chest"": 90,
+      ""waist"": 70,
+      ""length"": 65
+    },
+    {
+      ""size"": ""M"",
+      ""chest"": 95,
+      ""waist"": 75,
+      ""length"": 68
+    }
+  ]
+}
+
+Rules:
+- Detect columns automatically.
+- Ignore unrelated text in the image.
+- If a value is missing return null.
+- Return ONLY JSON without explanation.
+";
         private readonly Client _client;
         private readonly ILogger<GeminiService>? _logger;
 
         public GeminiService(ILogger<GeminiService>? logger = null)
         {
             _logger = logger;
-            var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
+            var apiKey = System.Environment.GetEnvironmentVariable("GEMINI_API_KEY");
             if (string.IsNullOrEmpty(apiKey))
                 throw new InvalidOperationException("Missing GEMINI_API_KEY environment variable");
 
-            _client = new Client(apiKey: apiKey);
+            _client = new Google.GenAI.Client(apiKey: apiKey);
         }
 
         public string CreatePrompt(uploadDataToAnalysisMeasure data)
@@ -186,6 +221,56 @@ KHÔNG TRẢ BẤT KỲ TEXT NÀO KHÁC.
             catch (Exception ex)
             {
                 _logger?.LogError(ex, "Error calling Gemini API");
+                throw;
+            }
+        }
+        public async Task<string> GetMeasureFromImage(string base64Image)
+        {
+            try
+            {
+            
+                var bytes = Convert.FromBase64String(base64Image);
+                var content = new Content
+                {
+                    Parts = new List<Part>
+            {
+                new Part
+                {
+                    InlineData = new Blob
+                    {
+                        MimeType = "image/jpeg",
+                        Data = bytes
+
+                    }
+
+                },
+                new Part
+                {
+                    Text = promptTemplate
+                }
+            }
+                };
+
+                _logger?.LogInformation("Processing image with Gemini API");
+                var response = await _client.Models.GenerateContentAsync(
+                    model: Model,
+                    contents: content
+                );
+
+                if (response?.Candidates == null || response.Candidates.Count == 0)
+                {
+                    throw new InvalidOperationException("No candidates returned from Gemini API");
+                }
+                if (response.Candidates[0]?.Content?.Parts == null || response.Candidates[0].Content.Parts.Count == 0)
+                {
+                    throw new InvalidOperationException("No content parts in Gemini response");
+                }
+
+                return CleanJsonResponse(response.Candidates[0].Content.Parts[0].Text);
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "Error processing image with Gemini API");
                 throw;
             }
         }

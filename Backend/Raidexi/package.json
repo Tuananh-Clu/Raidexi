@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "chatgpt-api": "^0.0.6",
+    "openai": "^6.27.0"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Backend",
+    "\\Backend\\Raidexi",
+    "\\Backend\\Raidexi\\Domain",
+    "\\Backend\\Raidexi\\Infrastructure",
+    "\\Backend\\Raidexi\\Infrastructure\\Services"
+  ],
+  "SelectedNode": "\\Backend\\Raidexi\\Program.cs",
+  "PreviewInSolutionExplorer": false
+}

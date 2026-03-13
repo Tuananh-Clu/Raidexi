@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Raidexi.Application.Dtos;
@@ -22,6 +22,28 @@ namespace Raidexi.Presentation.Controller
             var data = await analyisService.AISuggestSize(uploadDataToAnalysisMeasure);
             return Ok(data);
 
+        }
+        [HttpPost("GetDataFromImage")]
+        public async Task<IActionResult> GetDataFromImage([FromBody] string base64Image)
+        {
+            if (string.IsNullOrWhiteSpace(base64Image))
+            {
+                return BadRequest("Image data is required.");
+            }
+
+            try
+            {
+                var data = await analyisService.ConvertImageToBase64(base64Image);
+                return Ok(data);
+            }
+            catch (FormatException)
+            {
+                return BadRequest("Invalid base64 image data.");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

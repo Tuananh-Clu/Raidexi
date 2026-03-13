@@ -1,11 +1,8 @@
-﻿using Raidexi.Application.Dtos;
+using Raidexi.Application.Dtos;
 using Raidexi.Domain.Entities;
-using Raidexi.Domain.Interfaces;
 using Raidexi.Application.Interfaces;
 using Raidexi.Presentation.Services.CacheServices;
-using System.Drawing;
-using System.Reflection;
-using Google.GenAI;
+using System.Text.RegularExpressions;
 
 namespace Raidexi.Infrastructure.Services
 {
@@ -13,9 +10,8 @@ namespace Raidexi.Infrastructure.Services
     {
         private readonly CacheAnalysisDataService cache;
         private readonly GeminiService geminiServices;
-        private Client _client;
 
-        public AnalyisService(CacheAnalysisDataService cacheAnalysisDataService,GeminiService geminiService)
+        public AnalyisService(CacheAnalysisDataService cacheAnalysisDataService, GeminiService geminiService)
         {
             cache = cacheAnalysisDataService;
             geminiServices = geminiService;
@@ -55,7 +51,7 @@ namespace Raidexi.Infrastructure.Services
                 var center = (min + max) / 2.0;
                 var distanceFromCenter = Math.Abs(user - center);
                 var radius = range / 2.0;
-                return 100 * (1 - (distanceFromCenter / radius) * 0.2); 
+                return 100 * (1 - (distanceFromCenter / radius) * 0.2);
             }
 
             double distanceOutside;
@@ -211,7 +207,7 @@ namespace Raidexi.Infrastructure.Services
                 results.Add(new SizeResult
                 {
                     SizeCode = size.Code ?? "Unknown",
-                    FitPercent = (int)Math.Round(finalFit) 
+                    FitPercent = (int)Math.Round(finalFit)
                 });
             }
 
@@ -236,8 +232,6 @@ namespace Raidexi.Infrastructure.Services
             var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
             if (string.IsNullOrEmpty(apiKey))
                 throw new InvalidOperationException("Missing GEMINI_API_KEY environment variable");
-
-            _client = new Client(apiKey: apiKey);
             var brandRules = await cache.BrandRuleAsync();
             var brandRule = brandRules.FirstOrDefault(b =>
                 b.Brand.Equals(uploadDataToAnalysisMeasure.brand, StringComparison.OrdinalIgnoreCase));
@@ -252,11 +246,11 @@ namespace Raidexi.Infrastructure.Services
                 Chest = measureData.Chest + brandRule.Chest,
                 Waist = measureData.Waist + brandRule.Waist,
                 Hip = measureData.Hip + brandRule.Hip,
-                ShoulderWidth = measureData.ShoulderWidth ,
+                ShoulderWidth = measureData.ShoulderWidth,
                 Height = measureData.Height
             };
 
-  
+
 
             dataMeasureAdjusted = AdjustByGenderSlight(
                 dataMeasureAdjusted,
@@ -303,8 +297,27 @@ namespace Raidexi.Infrastructure.Services
                     productFitNote = new GeminiContent { content = GeminiResponse.productFitNote.content }
                 }
             };
-           
+
             return result;
+        }
+
+        public async Task<string> ConvertImageToBase64(string base64String)
+        {
+            if (string.IsNullOrWhiteSpace(base64String))
+            {
+                throw new ArgumentException("Image data is required", nameof(base64String));
+            }
+            if (base64String.Contains(','))
+                base64String = base64String.Split(',')[1];
+
+            base64String = Regex.Replace(base64String, @"[^A-Za-z0-9\+/=]", string.Empty);
+
+            int padding = base64String.Length % 4;
+            if (padding > 0)
+                base64String = base64String.PadRight(base64String.Length + (4 - padding), '=');
+
+            var response = await geminiServices.GetMeasureFromImage(base64String);
+            return response;
         }
     }
 }

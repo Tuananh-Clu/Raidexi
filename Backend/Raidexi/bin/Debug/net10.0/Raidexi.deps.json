@@ -23,11 +23,13 @@
           "MongoDB.Bson": "3.5.2",
           "MongoDB.Driver": "3.5.2",
           "MongoDB.Driver.Core": "2.30.0",
+          "Mscc.GenerativeAI": "3.1.0",
           "MySql.Data": "9.5.0",
           "MySql.EntityFrameworkCore": "9.0.9",
           "MySqlConnector": "2.5.0",
           "Npgsql": "10.0.1",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "10.0.0",
+          "OpenAI": "2.9.1",
           "Swashbuckle.AspNetCore": "10.1.0"
         },
         "runtime": {
@@ -184,6 +186,49 @@
           "lib/net6.0/Humanizer.dll": {
             "assemblyVersion": "2.14.0.0",
             "fileVersion": "2.14.1.48190"
+          }
+        }
+      },
+      "Json.More.Net/2.1.1": {
+        "runtime": {
+          "lib/net9.0/Json.More.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.1.1.0"
+          }
+        }
+      },
+      "JsonPointer.Net/5.3.1": {
+        "dependencies": {
+          "Humanizer.Core": "2.14.1",
+          "Json.More.Net": "2.1.1"
+        },
+        "runtime": {
+          "lib/net9.0/JsonPointer.Net.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.3.1.0"
+          }
+        }
+      },
+      "JsonSchema.Net/7.3.4": {
+        "dependencies": {
+          "JsonPointer.Net": "5.3.1"
+        },
+        "runtime": {
+          "lib/net9.0/JsonSchema.Net.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.3.4.0"
+          }
+        }
+      },
+      "JsonSchema.Net.Generation/5.0.4": {
+        "dependencies": {
+          "Humanizer.Core": "2.14.1",
+          "JsonSchema.Net": "7.3.4"
+        },
+        "runtime": {
+          "lib/net9.0/JsonSchema.Net.Generation.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.4.0"
           }
         }
       },
@@ -836,6 +881,17 @@
           }
         }
       },
+      "Mscc.GenerativeAI/3.1.0": {
+        "dependencies": {
+          "JsonSchema.Net.Generation": "5.0.4"
+        },
+        "runtime": {
+          "lib/net10.0/Mscc.GenerativeAI.dll": {
+            "assemblyVersion": "3.1.0.0",
+            "fileVersion": "3.1.0.0"
+          }
+        }
+      },
       "MySql.Data/9.5.0": {
         "dependencies": {
           "BouncyCastle.Cryptography": "2.6.2",
@@ -929,6 +985,17 @@
           }
         }
       },
+      "OpenAI/2.9.1": {
+        "dependencies": {
+          "System.ClientModel": "1.9.0"
+        },
+        "runtime": {
+          "lib/net10.0/OpenAI.dll": {
+            "assemblyVersion": "2.9.1.0",
+            "fileVersion": "2.9.1.0"
+          }
+        }
+      },
       "SharpCompress/0.30.1": {
         "runtime": {
           "lib/net5.0/SharpCompress.dll": {
@@ -987,6 +1054,17 @@
           "lib/net10.0/Swashbuckle.AspNetCore.SwaggerUI.dll": {
             "assemblyVersion": "10.1.0.0",
             "fileVersion": "10.1.0.2093"
+          }
+        }
+      },
+      "System.ClientModel/1.9.0": {
+        "dependencies": {
+          "System.Memory.Data": "10.0.1"
+        },
+        "runtime": {
+          "lib/net10.0/System.ClientModel.dll": {
+            "assemblyVersion": "1.9.0.0",
+            "fileVersion": "1.900.26.7706"
           }
         }
       },
@@ -1105,6 +1183,14 @@
             "assetType": "runtime",
             "assemblyVersion": "7.0.0.2",
             "fileVersion": "7.0.723.27404"
+          }
+        }
+      },
+      "System.Memory.Data/10.0.1": {
+        "runtime": {
+          "lib/net10.0/System.Memory.Data.dll": {
+            "assemblyVersion": "10.0.0.1",
+            "fileVersion": "10.0.125.57005"
           }
         }
       },
@@ -1282,6 +1368,34 @@
       "sha512": "sha512-lQKvtaTDOXnoVJ20ibTuSIOf2i0uO0MPbDhd1jm238I+U/2ZnRENj0cktKZhtchBMtCUSRQ5v4xBCUbKNmyVMw==",
       "path": "humanizer.core/2.14.1",
       "hashPath": "humanizer.core.2.14.1.nupkg.sha512"
+    },
+    "Json.More.Net/2.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ZXAKl2VsdnIZeUo1PFII3Oi1m1L4YQjEyDjygHfHln5vgsjgIo749X6xWkv7qFYp8RROES+vOEfDcvvoVgs8kA==",
+      "path": "json.more.net/2.1.1",
+      "hashPath": "json.more.net.2.1.1.nupkg.sha512"
+    },
+    "JsonPointer.Net/5.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3e2OJjU0OaE26XC/klgxbJuXvteFWTDJIJv0ITYWcJEoskq7jzUwPSC1s0iz4wPPQnfN7vwwFmg2gJfwRAPwgw==",
+      "path": "jsonpointer.net/5.3.1",
+      "hashPath": "jsonpointer.net.5.3.1.nupkg.sha512"
+    },
+    "JsonSchema.Net/7.3.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7GggWrdzKrtGWETRn3dcMnmuLSyWaDkBK94TK80LEHQEVz4bmsQc7FYO7qL40RDdZU2YPz5d98aT9lW5OYExuA==",
+      "path": "jsonschema.net/7.3.4",
+      "hashPath": "jsonschema.net.7.3.4.nupkg.sha512"
+    },
+    "JsonSchema.Net.Generation/5.0.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-VNcQd95tHbpWRvKjRfWOjFXHRPKH+zMBEmrgQCavsDZYI3+zMjCyKXTtOScI2dMbYllgYbVu9aH7JHgluE1lpA==",
+      "path": "jsonschema.net.generation/5.0.4",
+      "hashPath": "jsonschema.net.generation.5.0.4.nupkg.sha512"
     },
     "JWT/11.0.0": {
       "type": "package",
@@ -1542,6 +1656,13 @@
       "path": "mono.texttemplating/3.0.0",
       "hashPath": "mono.texttemplating.3.0.0.nupkg.sha512"
     },
+    "Mscc.GenerativeAI/3.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6fwCuE0rTSfX/BnyT+a06wpnec09/0+fQiEYfoqGdq1omMr5QEM8b4F5mGkTKOrbVmNDGfOynUDyz8UGBMvcLA==",
+      "path": "mscc.generativeai/3.1.0",
+      "hashPath": "mscc.generativeai.3.1.0.nupkg.sha512"
+    },
     "MySql.Data/9.5.0": {
       "type": "package",
       "serviceable": true,
@@ -1583,6 +1704,13 @@
       "sha512": "sha512-E2+uSWxSB8LdsUVwPaqRWOcGOP92biry2JEwc0KJMdLJF+aZdczeIdEXVwEyv4nSVMQJH0o8tLhyAMiR6VF0lw==",
       "path": "npgsql.entityframeworkcore.postgresql/10.0.0",
       "hashPath": "npgsql.entityframeworkcore.postgresql.10.0.0.nupkg.sha512"
+    },
+    "OpenAI/2.9.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-KPTFYEt1EhrPeIZXGBE+DlutFEpMo/RspqSdUJ3p6pMqsw3NeGJcIja/K0He1j9KyRq8ASfzBgp2biWbNUGnFA==",
+      "path": "openai/2.9.1",
+      "hashPath": "openai.2.9.1.nupkg.sha512"
     },
     "SharpCompress/0.30.1": {
       "type": "package",
@@ -1632,6 +1760,13 @@
       "sha512": "sha512-ilUsTvGA9hO1ulR7ibdWMWSg3438Iu+pDFcEYUorp+/ClHwaHFdpp/ATfBsFXv2sIRVDbQlEwd5BWBOdMdtKCA==",
       "path": "swashbuckle.aspnetcore.swaggerui/10.1.0",
       "hashPath": "swashbuckle.aspnetcore.swaggerui.10.1.0.nupkg.sha512"
+    },
+    "System.ClientModel/1.9.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1wdwKtMMMEFEYsxJmtrOd3G+7zVOVO3MlVZAsbKv9H0PnIx6J27fYAarMn0eQS0vKJPQL018DOb7YRK1O97p0A==",
+      "path": "system.clientmodel/1.9.0",
+      "hashPath": "system.clientmodel.1.9.0.nupkg.sha512"
     },
     "System.CodeDom/9.0.0": {
       "type": "package",
@@ -1709,6 +1844,13 @@
       "sha512": "sha512-/qEUN91mP/MUQmJnM5y5BdT7ZoPuVrtxnFlbJ8a3kBJGhe2wCzBfnPFtK2wTtEEcf3DMGR9J00GZZfg6HRI6yA==",
       "path": "system.management/7.0.2",
       "hashPath": "system.management.7.0.2.nupkg.sha512"
+    },
+    "System.Memory.Data/10.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-BZC4mhdL569AXV56ep9YO6ShjhxFXGP7SwVX0Bc/e0dJPWnS6aBEXZJXqh64RVx8HquqWHkJUINBydLRQ1yq0g==",
+      "path": "system.memory.data/10.0.1",
+      "hashPath": "system.memory.data.10.0.1.nupkg.sha512"
     },
     "System.Reflection.MetadataLoadContext/7.0.0": {
       "type": "package",

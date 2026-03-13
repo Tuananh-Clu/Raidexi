@@ -3,6 +3,8 @@ export type loadingState = {
     note: string;
     startLoading?: (note?: string) => void;
     stopLoading?: () => void;
+    loadingAnalyze?: boolean;
+    setLoadingAnalyze?: (loading: boolean) => void;
 
 };
 import { create } from "zustand";
@@ -13,4 +15,6 @@ export const useLoadingStore = create<loadingState>((set) => ({
     startLoading: (note?:string) =>
         set(() => ({ isLoading: true, note })),
     stopLoading: () => set(() => ({ isLoading: false, note: "Đang tải..." })),
+    loadingAnalyze: false,
+    setLoadingAnalyze: (loading: boolean) => set(() => ({ loadingAnalyze: loading })),
 }));

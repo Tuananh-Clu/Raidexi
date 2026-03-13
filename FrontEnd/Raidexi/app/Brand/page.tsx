@@ -21,6 +21,7 @@ export default function Page() {
   const context = useContext(AuthContext);
   const BrandContexts = useContext(BrandContext);
   const isLoggedIn = context?.isLoggedIn;
+  const [popUpAI, setPopUpAI] = useState(false);
   const itemsPerPage = 8;
 
   const filteredBrands = useMemo(() => {
@@ -92,7 +93,6 @@ export default function Page() {
           </div>
         </div>
       )}
-
       <NavBar />
       {isLoggedIn ? (
         <main className="flex flex-col w-full gap-10 px-6 py-10 mx-auto grow max-w-350">

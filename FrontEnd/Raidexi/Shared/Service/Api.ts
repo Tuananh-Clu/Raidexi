@@ -16,12 +16,13 @@ export const API={
     },
     "AnalysisDataMeasurement":{
         "GetSuggestSize":"/api/AnalysisDataMeasure/AISuggest",
+        "GetDataFromImage":"/api/AnalysisDataMeasure/GetDataFromImage",
     },
     "Mail":{
         "SendMail":"/api/Mail/send",
     }
 }
-export const BASE_URL="https://localhost:7133"
+export const BASE_URL="http://localhost:5000"
 
 export const api_Response=async(endpoint:string,method:'GET'|'POST'|'PUT'|'DELETE',data?:any,headers?:any)=>{
     try {
