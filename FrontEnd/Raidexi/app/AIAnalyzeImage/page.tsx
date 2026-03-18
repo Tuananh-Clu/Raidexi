@@ -16,6 +16,7 @@ import { OpenAIService } from "@/Shared/Service/OpenAIService";
 import { useLoadingStore } from "@/Shared/store/loading.store";
 import { sizeTransferFromPic } from "@/Shared/store/sizeTransferFromPic";
 import ResultAnalyzePic from "@/features/AnalyzeFromPic/components/Result";
+
 export interface SystemDiagnostics {
   calibrationStatus: "OPERATIONAL" | "CALIBRATING" | "OFFLINE";
   confidence: number;
@@ -53,6 +54,7 @@ export default function AIAnalyzeImage() {
   const refCamera = React.useRef<HTMLVideoElement>(null);
   const [cameraActive, setCameraActive] = useState(false);
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  const [showResult, setShowResult] = useState(false);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -63,48 +65,61 @@ export default function AIAnalyzeImage() {
     e.preventDefault();
     setIsDragging(false);
   }, []);
+
   useEffect(() => {
     if (!file) return;
 
     const reader = new FileReader();
-
     reader.onload = () => {
       setBase64Image(reader.result as string);
     };
-
     reader.readAsDataURL(file.file);
   }, [file]);
+
   const handleClick = async () => {
-    console.log("Base64 Image:", base64Image);
+    if (!base64Image) {
+      alert("No image selected. Please upload or capture an image first.");
+      return;
+    }
     setLoadingAnalyze(true);
-    const sizeData = await OpenAIService().getMeasureWithPicture(base64Image!);
+    setProgress(0);
+    const sizeData = await OpenAIService().getMeasureWithPicture(base64Image);
+    setProgress(100);
     SetSizes(sizeData.sizes);
     setLoadingAnalyze(false);
     console.log("Received Size Data:", sizeData);
+    setShowResult(true);
+    setFile(null);
+    setBase64Image(null);
   };
+
   const handleOpenCamera = () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices
         .getUserMedia({ video: true })
         .then((stream) => {
+          setCameraActive(true);
           if (refCamera.current) {
             refCamera.current.srcObject = stream;
-            setCameraActive(true);
           }
         })
         .catch((err) => {
           console.error("Error accessing camera: ", err);
           alert(
-            "Unable to access camera. Please check permissions and try again.",
+            "Unable to access camera. Please check permissions and try again."
           );
         });
+    } else {
+      alert("Camera not supported on this device or browser.");
     }
   };
+
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
     const droppedFile = e.dataTransfer.files[0];
     if (droppedFile) {
+      setBase64Image(null); 
       setFile({
         name: droppedFile.name,
         size: `${(droppedFile.size / (1024 * 1024)).toFixed(2)} MB`,
@@ -114,42 +129,47 @@ export default function AIAnalyzeImage() {
       });
     }
   }, []);
+
   const capturePicture = () => {
-    if (refCamera.current && canvasRef.current) {
-      const video = refCamera.current;
-      const canvas = canvasRef.current;
-
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-
-      const ctx = canvas.getContext("2d");
-
-      if (ctx) {
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        canvas.toBlob((blob) => {
-          if (!blob) return;
-
-          const capturedFile = new File([blob], "capture.png", {
-            type: "image/png",
-          });
-
-          setFile({
-            name: capturedFile.name,
-            size: `${(capturedFile.size / (1024 * 1024)).toFixed(2)} MB`,
-            type: capturedFile.type,
-            status: "complete",
-            file: capturedFile,
-          });
-        }, "image/png");
-      }
+    if (!refCamera.current || !canvasRef.current) {
+      alert("Camera is not ready yet. Please wait and try again.");
+      return;
     }
+
+    const video = refCamera.current;
+    const canvas = canvasRef.current;
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const dataUrl = canvas.toDataURL("image/png");
+    setBase64Image(dataUrl);
+
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const capturedFile = new File([blob], "capture.png", {
+        type: "image/png",
+      });
+      setFile({
+        name: capturedFile.name,
+        size: `${(capturedFile.size / (1024 * 1024)).toFixed(2)} MB`,
+        type: capturedFile.type,
+        status: "complete",
+        file: capturedFile,
+      });
+    }, "image/png");
   };
+
   return (
     <div className="min-h-screen font-sans bg-background-dark text-aged-white selection:bg-brass selection:text-background-dark">
-      {sizes != null ? (
+      {sizes && sizes.length > 0 && showResult === true? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-          <ResultAnalyzePic />
+          <ResultAnalyzePic CLosed={() => setShowResult(false)} />
         </div>
       ) : null}
       <div className="flex flex-col w-full min-h-screen mx-auto border-x border-brass/20">
@@ -279,40 +299,34 @@ export default function AIAnalyzeImage() {
                       )}
                     </p>
                   </div>
-                 <label htmlFor="fileInput" className="mt-6 border border-brass px-8 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-brass cursor-pointer transition-all hover:bg-black hover:text-background-dark">
-                  <h1>Select File</h1>
-                   <input type="file" accept="image/*" className="hidden" id="fileInput" onChange={(e) => {  
-                    const selectedFile = e.target.files?.[0];
-                    if (selectedFile) {
-                      setFile({
-                        name: selectedFile.name,
-                        size: `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB`,
-                        type: selectedFile.type,
-                        status: "complete",
-                        file: selectedFile,
-                      });
-                    }
-                  }}>
-                    </input>
-
+                  <label
+                    htmlFor="fileInput"
+                    className="mt-6 border border-brass px-8 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-brass cursor-pointer transition-all hover:bg-black hover:text-background-dark"
+                  >
+                    <span>Select File</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      id="fileInput"
+                      onChange={(e) => {
+                        const selectedFile = e.target.files?.[0];
+                        if (selectedFile) {
+                          setBase64Image(null); 
+                          setFile({
+                            name: selectedFile.name,
+                            size: `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB`,
+                            type: selectedFile.type,
+                            status: "complete",
+                            file: selectedFile,
+                          });
+                        }
+                      }}
+                    />
                   </label>
                 </div>
               </div>
-            ) : 
-            cameraActive==true && refCamera ? (
-                            <div className="relative flex flex-col items-center justify-center p-16 transition-all duration-300 border-2 border-dashed border-brass/40 bg-brass/5 hover:border-brass/70">
-                <video
-                  ref={refCamera}
-                  autoPlay
-                  className="w-full max-w-md border rounded-md border-brass/20"
-                />
-                <p className="mt-4 font-mono text-[11px] uppercase leading-relaxed tracking-wide text-aged-white/60">
-                  Camera mode is active. Please capture a clear image of the
-                  size chart for analysis.
-                </p>
-              </div>
-            ):
-            (
+            ) : (
               <div className="flex flex-col items-center justify-center p-20 border-2 border-dashed border-brass/30 bg-brass/[0.03] text-center">
                 <Camera className="w-16 h-16 text-brass" />
                 <p className="mt-4 font-serif text-xl font-bold tracking-wider uppercase text-aged-white">
@@ -337,6 +351,22 @@ export default function AIAnalyzeImage() {
                 </button>
               </div>
             )}
+
+            {/* Camera preview — always mounted so ref is available */}
+            <div className={`${cameraActive ? "block" : "hidden"} relative flex flex-col items-center justify-center p-16 transition-all duration-300 border-2 border-dashed border-brass/40 bg-brass/5 hover:border-brass/70`}>
+              <video
+                ref={refCamera}
+                autoPlay
+                playsInline
+                className="w-full max-w-md border rounded-md border-brass/20"
+              />
+              {/* Hidden canvas for capturing frames */}
+              <canvas ref={canvasRef} className="hidden" />
+              <p className="mt-4 font-mono text-[11px] uppercase leading-relaxed tracking-wide text-aged-white/60">
+                Camera mode is active. Please capture a clear image of the size
+                chart for analysis.
+              </p>
+            </div>
 
             {/* Specs Grid */}
             <div className="grid grid-cols-3 gap-6 pt-8 mt-8 border-t border-brass/10">
@@ -417,7 +447,7 @@ export default function AIAnalyzeImage() {
                 </span>
               </button>
             </div>
-            <div className="flex flex-row justify-between ">
+            <div className="flex flex-row justify-between">
               <p className="mb-1 font-mono text-[10px] uppercase text-brass/50">
                 Module Version
               </p>
@@ -447,7 +477,6 @@ export default function AIAnalyzeImage() {
                 </div>
               </div>
 
-              {/* System Confidence */}
               <div className="p-5 border border-brass/20 bg-background-dark/50">
                 <div className="flex items-center justify-between mb-2">
                   <p className="font-mono text-[10px] uppercase tracking-widest text-brass/60">
@@ -476,10 +505,21 @@ export default function AIAnalyzeImage() {
                 </p>
               </div>
             </div>
-            {file && (
+
+            {cameraActive && (
+              <button
+                onClick={capturePicture}
+                className="mt-4 border border-brass px-8 py-3 font-mono text-[11px] uppercase tracking-[0.2em] cursor-pointer text-brass transition-all hover:bg-black hover:text-background-dark"
+              >
+                Capture Image
+              </button>
+            )}
+
+            {base64Image && (
               <button
                 onClick={handleClick}
-                className="mt-4 border border-brass px-8 py-3 font-mono text-[11px] uppercase tracking-[0.2em] cursor-pointer text-brass transition-all hover:bg-black hover:text-background-dark"
+                disabled={loadingAnalyze}
+                className="mt-4 border border-brass px-8 py-3 font-mono text-[11px] uppercase tracking-[0.2em] cursor-pointer text-brass transition-all hover:bg-black hover:text-background-dark disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loadingAnalyze ? "Analyzing..." : "Analyze Image"}
               </button>
@@ -508,7 +548,6 @@ export default function AIAnalyzeImage() {
             </div>
           </aside>
         </main>
-
 
         <footer className="flex items-center justify-between px-8 py-4 border-t border-brass/20 bg-background-dark">
           <p className="font-mono text-[9px] uppercase tracking-widest-plus text-brass/40">

@@ -45,5 +45,13 @@ namespace Raidexi.Presentation.Controller
                 return StatusCode(500, ex.Message);
             }
         }
+        [HttpPost("AnalyseImage")]
+        public async Task<IActionResult> AnalyseImage([FromBody] UploadAnalyisForImage uploadAnalyisForImage)
+        {
+            var data = await analyisService.AnalysisPictureToSize(uploadAnalyisForImage.SizeAnalysisResponse, uploadAnalyisForImage.MeasureData);
+            return Ok(data);
+
+        }
+
     }
 }

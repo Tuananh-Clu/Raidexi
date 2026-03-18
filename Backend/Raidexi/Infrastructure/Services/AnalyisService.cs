@@ -3,6 +3,7 @@ using Raidexi.Domain.Entities;
 using Raidexi.Application.Interfaces;
 using Raidexi.Presentation.Services.CacheServices;
 using System.Text.RegularExpressions;
+using Raidexi.Models;
 
 namespace Raidexi.Infrastructure.Services
 {
@@ -192,8 +193,6 @@ namespace Raidexi.Infrastructure.Services
                     totalFit += fit * w;
                     totalWeight += w;
                     matchedFields++;
-
-                    Console.WriteLine($"  ✓ {field}: user={userValue}, range=[{min}-{max}], fit={fit:F1}%, weight={w:F2}");
                 }
 
                 var finalFit = totalWeight > 0 ? totalFit / totalWeight : 0;
@@ -318,6 +317,86 @@ namespace Raidexi.Infrastructure.Services
 
             var response = await geminiServices.GetMeasureFromImage(base64String);
             return response;
+        }
+        private (double min, double max) ParseRange(string range)
+        {
+            var parts = range.Split('-');
+            return (double.Parse(parts[0].Trim()), double.Parse(parts[1].Trim()));
+        }
+        private double Score(double value, double min, double max)
+        {
+            if (value >= min && value <= max)
+                return 100;
+
+            double center = (min + max) / 2;
+            double distance = Math.Abs(value - center);
+
+            return Math.Max(0, 100 - distance * 5);
+        }
+        public async Task<ResultAnalysis> AnalysisPictureToSize(
+         SizeAnalysisResponse uploadData,
+         MeasureData measureData)
+        {
+            double bestScore = -1;
+            string bestSize = "";
+
+            foreach (var s in uploadData.Sizes)
+            {
+                var chestRange = ParseRange(s.ChestCm);
+                var waistRange = ParseRange(s.WaistCm);
+                var hipRange = ParseRange(s.HipCm);
+
+                double chestScore = Score(measureData.Chest, chestRange.min, chestRange.max);
+                double waistScore = Score(measureData.Waist, waistRange.min, waistRange.max);
+                double hipScore = Score(measureData.Hip, hipRange.min, hipRange.max);
+
+                double totalScore =
+                    chestScore * 0.5 +
+                    waistScore * 0.3 +
+                    hipScore * 0.2;
+
+                if (totalScore > bestScore)
+                {
+                    bestScore = totalScore;
+                    bestSize = s.SizeUs;
+                }
+            }
+            var data = new uploadDataToAnalysisMeasure
+            {
+                brand = "Generic",
+                userCustom =
+                {
+                    gender = "Unisex",
+                    typeProduct = "Top",
+                    sizeOutput = "US"
+                },
+                dataMeasure = measureData,
+            };
+            var prompt = geminiServices.CreatePrompt(data);
+            var GeminiResponse = await geminiServices.GetAIMeasure(prompt);
+            var result = new ResultAnalysis
+            {
+                analysisCode = Guid.NewGuid().ToString(),
+                analysisDate = DateTime.UtcNow,
+                typeCustom = null,
+                fitSuggest = bestScore switch
+                {
+                    >= 90 => "Rất vừa vặn",
+                    >= 80 => "Vừa vặn",
+                    >= 70 => "Tạm ổn",
+                    >= 60 => "Hơi lệch",
+                    _ => "Không phù hợp"
+                },
+                sizeSuggest = bestSize,
+                reliableRate = (int)Math.Round(bestScore),
+                fitSuggestFromAI = new GeminiResponse
+                {
+                    expectedFit = new GeminiContent { content = GeminiResponse.expectedFit.content },
+                    measurementInsight = new GeminiContent { content = GeminiResponse.measurementInsight.content },
+                    productFitNote = new GeminiContent { content = GeminiResponse.productFitNote.content }
+                }
+            };
+            return result;
         }
     }
 }

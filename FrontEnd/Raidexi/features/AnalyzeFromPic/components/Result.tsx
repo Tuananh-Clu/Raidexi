@@ -3,10 +3,10 @@ import { sizeTransferFromPic } from "@/Shared/store/sizeTransferFromPic";
 import { motion } from "framer-motion";
 import { Ruler, Info,  X, RulerDimensionLine } from "lucide-react";
 
-export default function ResultAnalyzePic() {
+export default function ResultAnalyzePic({CLosed}:{CLosed:()=>void}) {
     const {sizes}=sizeTransferFromPic();
   return (
-    <div className="relative flex flex-col w-full min-h-screen overflow-x-hidden selection:bg-primary selection:text-bg-dark">
+    <div className="relative flex flex-col w-full min-h-screen pt-10 overflow-x-hidden selection:bg-primary selection:text-bg-dark">
       <div className="flex flex-col h-full layout-container grow">
         <header className="flex items-center justify-between px-6 py-6 border-b border-primary/20 md:px-20">
           <motion.div 
@@ -17,21 +17,15 @@ export default function ResultAnalyzePic() {
             <Ruler className="size-6" strokeWidth={1.5} />
             <h2 className="text-2xl font-light tracking-widest uppercase font-display">RAIDEXI</h2>
           </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-6"
-          >
-            <button className="flex items-center gap-2 text-primary/70 hover:text-primary transition-colors uppercase text-xs tracking-[0.2em] font-medium group">
-              <span>Close</span>
-              <X className="transition-opacity opacity-50 size-4 group-hover:opacity-100" />
-            </button>
-          </motion.div>
+       
         </header>
 
         <main className="flex flex-col items-center flex-1 px-6 py-12 md:px-20">
           <div className="w-full max-w-6xl">
             {/* Title Section */}
+            <div className="flex items-start justify-between gap-4 mt-20" >
+              
+          
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -45,6 +39,13 @@ export default function ResultAnalyzePic() {
                 Professional Sizing Chart — Technical Specifications
               </p>
             </motion.div>
+               <button
+            onClick={CLosed}
+            className="flex items-center justify-center w-8 h-8 transition-colors rounded-full text-primary hover:bg-primary/10"
+          >
+            <X className="size-15" strokeWidth={1.5} />
+          </button>
+            </div>
 
             {/* Table Container */}
             <motion.div 
@@ -77,7 +78,7 @@ export default function ResultAnalyzePic() {
                       <td className="px-6 py-6 text-sm font-medium transition-colors text-slate-100 group-hover:text-primary">{row.us_size}</td>
                       <td className="px-6 py-6 text-sm text-slate-400">{row.uk_size}</td>
                       <td className="px-6 py-6 text-sm text-slate-400">{row.eu_size}</td>
-                      <td className="px-6 py-6 text-sm text-slate-400">{row.chest_max_cm - row.chest_min_cm}</td>
+                      <td className="px-6 py-6 text-sm text-slate-400">{row.chest_max_cm - row.chest_min_cm}  </td>
                       <td className="px-6 py-6 text-sm text-slate-400">{row.waist_max_cm - row.waist_min_cm}</td>
                       <td className="px-6 py-6 text-sm text-slate-400">{row.hip_max_cm - row.hip_min_cm}</td>
                       <td className="px-6 py-6 text-sm text-slate-400">{row.height_max_cm - row.height_min_cm}</td>
