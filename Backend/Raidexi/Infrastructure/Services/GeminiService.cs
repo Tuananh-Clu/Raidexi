@@ -11,40 +11,47 @@ namespace Raidexi.Infrastructure.Services
         private static readonly string Model = "gemini-3-flash-preview";
         private string promptTemplate =
         @"
-You are an AI that extracts structured data from images.
-
-The image may contain a clothing size chart or measurement table.
+You are an AI that extracts structured data from clothing size chart images.
 
 Tasks:
-1. Detect the table in the image.
-2. Identify columns such as size, chest, waist, hip, length, sleeve, etc.
-3. Extract all rows of the table.
-4. Convert all numeric values to numbers (not text).
-5. Return ONLY valid JSON.
+1. Detect the size table in the image.
+2. Extract all rows and map EXACTLY to the JSON format below.
+3. All numeric values must be numbers (not strings).
+4. If a value is missing or not found, return null.
+5. Return ONLY valid JSON, no explanation, no markdown.
 
-JSON format example:
+You MUST return JSON in this EXACT structure:
 {
   ""sizes"": [
     {
-      ""size"": ""S"",
-      ""chest"": 90,
-      ""waist"": 70,
-      ""length"": 65
-    },
-    {
-      ""size"": ""M"",
-      ""chest"": 95,
-      ""waist"": 75,
-      ""length"": 68
+      ""size_us"": ""S"",
+      ""size_uk"": 6,
+      ""size_eu"": 34,
+      ""chest_min_cm"": 74,
+      ""chest_max_cm"": 77,
+      ""height_min_cm"": 146,
+      ""height_max_cm"": 148,
+      ""weight_min_kg"": null,
+      ""weight_max_kg"": 40,
+      ""waist_min_cm"": 63,
+      ""waist_max_cm"": 65,
+      ""hip_min_cm"": 80,
+      ""hip_max_cm"": 82
     }
   ]
 }
 
-Rules:
-- Detect columns automatically.
-- Ignore unrelated text in the image.
-- If a value is missing return null.
-- Return ONLY JSON without explanation.
+Field rules:
+- size_us: String (e.g., S, M, L)
+- size_uk: Number (e.g., 6, 8, 10)
+- size_eu: Number (e.g., 34, 36, 38)
+- chest_min_cm, chest_max_cm, height_min_cm, height_max_cm, weight_min_kg, weight_max_kg, waist_min_cm, waist_max_cm, hip_min_cm, hip_max_cm: Number (in cm or kg)
+
+
+IMPORTANT:
+- Field names are CASE SENSITIVE. Use EXACTLY as shown above (PascalCase with underscores).
+- Do NOT rename, add, or remove any field.
+- Return ONLY the JSON object. No extra text, no markdown, no explanation.
 ";
         private readonly Client _client;
         private readonly ILogger<GeminiService>? _logger;
@@ -228,7 +235,7 @@ KHÔNG TRẢ BẤT KỲ TEXT NÀO KHÁC.
         {
             try
             {
-            
+
                 var bytes = Convert.FromBase64String(base64Image);
                 var content = new Content
                 {

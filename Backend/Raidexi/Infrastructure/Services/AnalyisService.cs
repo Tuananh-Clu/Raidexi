@@ -318,11 +318,6 @@ namespace Raidexi.Infrastructure.Services
             var response = await geminiServices.GetMeasureFromImage(base64String);
             return response;
         }
-        private (double min, double max) ParseRange(string range)
-        {
-            var parts = range.Split('-');
-            return (double.Parse(parts[0].Trim()), double.Parse(parts[1].Trim()));
-        }
         private double Score(double value, double min, double max)
         {
             if (value >= min && value <= max)
@@ -335,21 +330,38 @@ namespace Raidexi.Infrastructure.Services
         }
         public async Task<ResultAnalysis> AnalysisPictureToSize(
          SizeAnalysisResponse uploadData,
-         MeasureData measureData)
+         MeasureData measureData, CustomizeDataAiSuggest customizeDataAiSuggest)
         {
             double bestScore = -1;
             string bestSize = "";
 
             foreach (var s in uploadData.Sizes)
             {
-                var chestRange = ParseRange(s.ChestCm);
-                var waistRange = ParseRange(s.WaistCm);
-                var hipRange = ParseRange(s.HipCm);
-
-                double chestScore = Score(measureData.Chest, chestRange.min, chestRange.max);
-                double waistScore = Score(measureData.Waist, waistRange.min, waistRange.max);
-                double hipScore = Score(measureData.Hip, hipRange.min, hipRange.max);
-
+                double chestScore = Score(measureData.Chest, s.Chest_Min_Cm, s.Chest_Max_Cm);
+                double waistScore = Score(measureData.Waist, s.Waist_Min_Cm, s.Waist_Max_Cm);
+                double hipScore = Score(measureData.Hip, s.Hip_Min_Cm, s.Hip_Max_Cm);
+                var data1= AdjustByGenderSlight(measureData, customizeDataAiSuggest.gender);
+                 chestScore = Score(data1.Chest, s.Chest_Min_Cm, s.Chest_Max_Cm);
+                 waistScore = Score(data1.Waist, s.Waist_Min_Cm, s.Waist_Max_Cm);
+                 hipScore = Score(data1.Hip, s.Hip_Min_Cm, s.Hip_Max_Cm);
+                if (customizeDataAiSuggest.typeProduct.ToLower() == "dress")
+                {
+                    chestScore *= 0.25;
+                    waistScore *= 0.25;
+                    hipScore *= 0.30;
+                }
+                else if (customizeDataAiSuggest.typeProduct.ToLower() == "top")
+                {
+                    chestScore *= 0.45;
+                    waistScore *= 0.15;
+                    hipScore *= 0.10;
+                }
+                else if (customizeDataAiSuggest.typeProduct.ToLower() == "bottom")
+                {
+                    waistScore *= 0.45;
+                    hipScore *= 0.40;
+                }
+               
                 double totalScore =
                     chestScore * 0.5 +
                     waistScore * 0.3 +
@@ -358,7 +370,7 @@ namespace Raidexi.Infrastructure.Services
                 if (totalScore > bestScore)
                 {
                     bestScore = totalScore;
-                    bestSize = s.SizeUs;
+                    bestSize = s.Size_Us;
                 }
             }
             var data = new uploadDataToAnalysisMeasure
@@ -366,9 +378,9 @@ namespace Raidexi.Infrastructure.Services
                 brand = "Generic",
                 userCustom =
                 {
-                    gender = "Unisex",
-                    typeProduct = "Top",
-                    sizeOutput = "US"
+                    gender = customizeDataAiSuggest.gender,
+                    typeProduct = customizeDataAiSuggest.typeProduct,
+                    sizeOutput = customizeDataAiSuggest.sizeOutput
                 },
                 dataMeasure = measureData,
             };
@@ -378,7 +390,7 @@ namespace Raidexi.Infrastructure.Services
             {
                 analysisCode = Guid.NewGuid().ToString(),
                 analysisDate = DateTime.UtcNow,
-                typeCustom = null,
+                typeCustom = customizeDataAiSuggest,
                 fitSuggest = bestScore switch
                 {
                     >= 90 => "Rất vừa vặn",

@@ -48,7 +48,7 @@ namespace Raidexi.Presentation.Controller
         [HttpPost("AnalyseImage")]
         public async Task<IActionResult> AnalyseImage([FromBody] UploadAnalyisForImage uploadAnalyisForImage)
         {
-            var data = await analyisService.AnalysisPictureToSize(uploadAnalyisForImage.SizeAnalysisResponse, uploadAnalyisForImage.MeasureData);
+            var data = await analyisService.AnalysisPictureToSize(uploadAnalyisForImage.SizeAnalysisResponse, uploadAnalyisForImage.MeasureData, uploadAnalyisForImage.CustomizeDataAiSuggest);
             return Ok(data);
 
         }

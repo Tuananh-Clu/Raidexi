@@ -89,7 +89,7 @@ export default function Page() {
       {BrandContexts.popUpSettings.isopened == true && (
         <div className="fixed flex items-center justify-center w-full h-full pointer-events-none inset-1 z-400 backdrop-blur-2xl">
           <div className="pointer-events-auto ">
-            <SizeCustomizer />
+            <SizeCustomizer type="brand" />
           </div>
         </div>
       )}

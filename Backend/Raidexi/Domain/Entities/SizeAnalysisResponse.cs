@@ -6,33 +6,23 @@ namespace Raidexi.Models
     public class SizeAnalysisResponse
     {
         [JsonPropertyName("sizes")]
-        public List<SizeItem> Sizes { get; set; } = new();
+        public List<SizeInfo> Sizes { get; set; } = new();
     }
 
-    public class SizeItem
+    public class SizeInfo
     {
-        [JsonPropertyName("size_us")]
-        public string SizeUs { get; set; } = string.Empty;
-
-        [JsonPropertyName("size_uk")]
-        public int SizeUk { get; set; }
-
-        [JsonPropertyName("size_eu")]
-        public int SizeEu { get; set; }
-
-        [JsonPropertyName("chest_cm")]
-        public string ChestCm { get; set; } = string.Empty;
-
-        [JsonPropertyName("waist_cm")]
-        public string WaistCm { get; set; } = string.Empty;
-
-        [JsonPropertyName("hip_cm")]
-        public string HipCm { get; set; } = string.Empty;
-
-        [JsonPropertyName("height_cm")]
-        public string HeightCm { get; set; } = string.Empty;
-
-        [JsonPropertyName("weight_kg")]
-        public string WeightKg { get; set; } = string.Empty;
+        public string Size_Us { get; set; }
+        public int Size_Uk { get; set; }
+        public int Size_Eu { get; set; }
+        public int Chest_Min_Cm { get; set; }
+        public int Chest_Max_Cm { get; set; }
+        public int Height_Min_Cm { get; set; }
+        public int Height_Max_Cm { get; set; }
+        public int? Weight_Min_Kg { get; set; }
+        public int? Weight_Max_Kg { get; set; }
+        public int Waist_Min_Cm { get; set; }
+        public int Waist_Max_Cm { get; set; }
+        public int Hip_Min_Cm { get; set; }
+        public int Hip_Max_Cm { get; set; }
     }
 }

@@ -16,6 +16,7 @@ import { OpenAIService } from "@/Shared/Service/OpenAIService";
 import { useLoadingStore } from "@/Shared/store/loading.store";
 import { sizeTransferFromPic } from "@/Shared/store/sizeTransferFromPic";
 import ResultAnalyzePic from "@/features/AnalyzeFromPic/components/Result";
+import { SizeCustomizer } from "@/features/Brand/components/SizeCustomizer";
 
 export interface SystemDiagnostics {
   calibrationStatus: "OPERATIONAL" | "CALIBRATING" | "OFFLINE";
@@ -55,7 +56,8 @@ export default function AIAnalyzeImage() {
   const [cameraActive, setCameraActive] = useState(false);
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const [showResult, setShowResult] = useState(false);
-
+  const [openSizeCustomizer, setOpenSizeCustomizer] = useState(false);
+  
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
@@ -106,7 +108,7 @@ export default function AIAnalyzeImage() {
         .catch((err) => {
           console.error("Error accessing camera: ", err);
           alert(
-            "Unable to access camera. Please check permissions and try again."
+            "Unable to access camera. Please check permissions and try again.",
           );
         });
     } else {
@@ -119,7 +121,7 @@ export default function AIAnalyzeImage() {
     setIsDragging(false);
     const droppedFile = e.dataTransfer.files[0];
     if (droppedFile) {
-      setBase64Image(null); 
+      setBase64Image(null);
       setFile({
         name: droppedFile.name,
         size: `${(droppedFile.size / (1024 * 1024)).toFixed(2)} MB`,
@@ -167,11 +169,18 @@ export default function AIAnalyzeImage() {
 
   return (
     <div className="min-h-screen font-sans bg-background-dark text-aged-white selection:bg-brass selection:text-background-dark">
-      {sizes && sizes.length > 0 && showResult === true? (
+      {sizes && sizes.length > 0 && showResult === true  ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-          <ResultAnalyzePic CLosed={() => setShowResult(false)} />
+          <ResultAnalyzePic CLosed={() => setShowResult(false)} showCustomizer={setOpenSizeCustomizer} showResult={setShowResult} />
         </div>
       ) : null}
+      {
+        openSizeCustomizer && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black z-100 backdrop-blur-sm">
+            <SizeCustomizer />
+          </div>
+        )
+      }
       <div className="flex flex-col w-full min-h-screen mx-auto border-x border-brass/20">
         <NavBar />
         <main className="grid flex-1 grid-cols-12">
@@ -312,7 +321,7 @@ export default function AIAnalyzeImage() {
                       onChange={(e) => {
                         const selectedFile = e.target.files?.[0];
                         if (selectedFile) {
-                          setBase64Image(null); 
+                          setBase64Image(null);
                           setFile({
                             name: selectedFile.name,
                             size: `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB`,
@@ -326,7 +335,7 @@ export default function AIAnalyzeImage() {
                   </label>
                 </div>
               </div>
-            ) : (
+            ) : inputMode == "camera" ? (
               <div className="flex flex-col items-center justify-center p-20 border-2 border-dashed border-brass/30 bg-brass/[0.03] text-center">
                 <Camera className="w-16 h-16 text-brass" />
                 <p className="mt-4 font-serif text-xl font-bold tracking-wider uppercase text-aged-white">
@@ -350,17 +359,16 @@ export default function AIAnalyzeImage() {
                   Switch to Image Upload
                 </button>
               </div>
-            )}
-
-            {/* Camera preview — always mounted so ref is available */}
-            <div className={`${cameraActive ? "block" : "hidden"} relative flex flex-col items-center justify-center p-16 transition-all duration-300 border-2 border-dashed border-brass/40 bg-brass/5 hover:border-brass/70`}>
+            ) : null}
+            <div
+              className={`${cameraActive ? "block" : "hidden"} relative flex flex-col items-center justify-center p-16 transition-all duration-300 border-2 border-dashed border-brass/40 bg-brass/5 hover:border-brass/70`}
+            >
               <video
                 ref={refCamera}
                 autoPlay
                 playsInline
                 className="w-full max-w-md border rounded-md border-brass/20"
               />
-              {/* Hidden canvas for capturing frames */}
               <canvas ref={canvasRef} className="hidden" />
               <p className="mt-4 font-mono text-[11px] uppercase leading-relaxed tracking-wide text-aged-white/60">
                 Camera mode is active. Please capture a clear image of the size

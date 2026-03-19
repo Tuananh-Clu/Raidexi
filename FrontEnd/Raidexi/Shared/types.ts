@@ -1,8 +1,12 @@
 import { MeasurementDataResponse } from "@/features/Camera/types";
-import { GetAttachmentOptions } from "resend";
 
 export interface AISuggestSizeType {
   brand: string;
+  MeasureData: MeasurementDataResponse;
+  CustomizeDataAiSuggest: UserCustomSizeType;
+}
+
+export interface AISuggestSizeType {
   dataMeasure: MeasurementDataResponse;
   userCustom: UserCustomSizeType;
 }

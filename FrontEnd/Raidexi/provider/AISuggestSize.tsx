@@ -15,6 +15,7 @@ export const AISuggestSize= createContext(
 )
 export const AISuggestSizeProvider=({children}:{children:React.ReactNode})=>{
     const [dataMeasure, setDataMeasure]=useState<AISuggestSizeType|undefined>();
+    const [dataMeasureForImage, setDataMeasureForImage]=useState<AISuggestSizeType|undefined>();
     const [dataAnalysisResponse, setDataAnalysisResponse]=useState<AISuggestSizeResponse|undefined>();
     const { startLoading, stopLoading} = useLoadingStore();
     const {navigate}=useRouterService();

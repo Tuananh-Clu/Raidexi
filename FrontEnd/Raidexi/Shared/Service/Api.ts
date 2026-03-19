@@ -17,6 +17,7 @@ export const API={
     "AnalysisDataMeasurement":{
         "GetSuggestSize":"/api/AnalysisDataMeasure/AISuggest",
         "GetDataFromImage":"/api/AnalysisDataMeasure/GetDataFromImage",
+        "AnalyseFromImage":"/api/AnalysisDataMeasure/AnalyseImage",
     },
     "Mail":{
         "SendMail":"/api/Mail/send",

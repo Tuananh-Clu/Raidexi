@@ -8,5 +8,6 @@ namespace Raidexi.Application.Dtos
     {
         public MeasureData MeasureData { get; set; }
         public SizeAnalysisResponse SizeAnalysisResponse { get; set; }
+        public CustomizeDataAiSuggest CustomizeDataAiSuggest { get; set; }
     }
 }

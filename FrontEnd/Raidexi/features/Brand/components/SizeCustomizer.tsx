@@ -8,7 +8,7 @@ import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 import { useLoadingStore } from "@/Shared/store/loading.store";
 import { useRouterService } from "@/Shared/Service/routerService";
 
-export const SizeCustomizer = () => {
+export const SizeCustomizer = ({type}:{type: string}) => {
   const {navigate}=useRouterService()
   const [gender, setGender] = useState<Gender>(Gender.MALE);
   const [productType, setProductType] = useState<ProductType>(ProductType.TOP);
@@ -28,6 +28,7 @@ export const SizeCustomizer = () => {
   const { isLoading } = useLoadingStore();
 
   const handleSubmit = async () => {
+    type === "brand" &&
     AIContext.setDataMeasure({
       brand: context.popUpSettings.brandrefcode,
       dataMeasure: measurementData.dataMeasured,
