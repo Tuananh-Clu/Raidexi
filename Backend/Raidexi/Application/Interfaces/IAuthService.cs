@@ -12,7 +12,7 @@ namespace Raidexi.Application.Interfaces
         Task<AuthResult> LoginWithFirebase(string token);
         Task LogOut();
         Task SaveMeaure(MeasureData data);
-        Task<MeasureData> GetMeasureForUser(string id);
+        Task<SaveMeasureDataDto> GetMeasureForUser(string id);
         Task SaveBrandMeasure( DataBrand resultAnalysis);
         Task<DataBrandAnalysisResult> GetDataBrandAnalysisAsync();
 

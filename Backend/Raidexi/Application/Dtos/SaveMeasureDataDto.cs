@@ -2,11 +2,16 @@
 
 namespace Raidexi.Application.Dtos
 {
-    public class SaveMeasureDataDto
+    public class MeasureDataList
     {
-    
-        public string id { get; set; }
         public MeasureData dataMeasure { get; set; }
         public DateTime LastUpdate { get; set; }
+
+    }
+    public class SaveMeasureDataDto
+    {
+
+        public string id { get; set; }
+        public MeasureDataList[] dataMeasure { get; set; }
     }
 }

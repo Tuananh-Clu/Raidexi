@@ -45,8 +45,8 @@ export function Page() {
         />
         <ControlPanel
           status={status}
-          data={context.dataMeasured ? {
-            metrics: Object.entries(context.dataMeasured).map(([key, value]) => ({
+          data={context?.dataMeasured[0]?.dataMeasure ? {
+            metrics: Object.entries(context.dataMeasured[0].dataMeasure).map(([key, value]) => ({
               id: key,
               label: key.charAt(0).toUpperCase() + key.slice(1),
               value,

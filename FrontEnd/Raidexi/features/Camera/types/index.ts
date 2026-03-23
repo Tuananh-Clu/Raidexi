@@ -26,3 +26,7 @@ export type MeasurementDataResponse = {
   hip: number;
   shoulderWidth: number;
 }
+export interface data {
+  dataMeasure: MeasurementDataResponse;
+  lastUpdate: string;
+}

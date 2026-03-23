@@ -3,10 +3,11 @@ import { ArrowRight } from "lucide-react";
 import { Gender, ProductType, SizeSystem } from "../types";
 import { BrandContext } from "@/provider/BrandProvider";
 import { AISuggestSize } from "@/provider/AISuggestSize";
-import { AISuggestSizeType } from "@/Shared/types";
+import { AISuggestSizeImageType, AISuggestSizeType } from "@/Shared/types";
 import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 import { useLoadingStore } from "@/Shared/store/loading.store";
 import { useRouterService } from "@/Shared/Service/routerService";
+import { sizeTransferFromPic } from "@/Shared/store/sizeTransferFromPic";
 
 export const SizeCustomizer = ({type}:{type: string}) => {
   const {navigate}=useRouterService()
@@ -16,6 +17,7 @@ export const SizeCustomizer = ({type}:{type: string}) => {
   const context = useContext(BrandContext);
   const AIContext = useContext(AISuggestSize);
   const measurementData = useContext(BodyMeasureEstimateContext);
+  const size=sizeTransferFromPic((state)=>state.sizes);
   const onClose = () => {
     context.setPopUpSettings({
       isopened: false,
@@ -28,16 +30,30 @@ export const SizeCustomizer = ({type}:{type: string}) => {
   const { isLoading } = useLoadingStore();
 
   const handleSubmit = async () => {
-    type === "brand" &&
-    AIContext.setDataMeasure({
-      brand: context.popUpSettings.brandrefcode,
-      dataMeasure: measurementData.dataMeasured,
-      userCustom: {
-        gender: gender,
-        typeProduct: productType,
-        sizeOutput: sizeSystem,
-      },
-    } as AISuggestSizeType);
+    if (type === "brand") {
+      AIContext.setDataMeasure({
+        brand: context.popUpSettings.brandrefcode,
+        dataMeasure: measurementData.dataMeasured[0].dataMeasure,
+        userCustom: {
+          gender: gender,
+          typeProduct: productType,
+          sizeOutput: sizeSystem,
+        },
+      } as AISuggestSizeType);
+    } else {
+      AIContext.setDataMeasureForImage({
+        measureData: measurementData.dataMeasured[0].dataMeasure,
+        customizeDataAiSuggest: {
+          gender: gender,
+          typeProduct: productType,
+          sizeOutput: sizeSystem,
+        },
+        sizeAnalysisResponse: {
+          sizes: size && size.length > 0 ? size : null,
+        }
+      } as AISuggestSizeImageType);
+    }
+
     onClose();
   };
 

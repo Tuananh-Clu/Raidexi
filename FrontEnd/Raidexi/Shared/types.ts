@@ -1,14 +1,18 @@
 import { MeasurementDataResponse } from "@/features/Camera/types";
+import { SizeItem } from "./store/sizeTransferFromPic";
 
 export interface AISuggestSizeType {
   brand: string;
-  MeasureData: MeasurementDataResponse;
-  CustomizeDataAiSuggest: UserCustomSizeType;
-}
-
-export interface AISuggestSizeType {
-  dataMeasure: MeasurementDataResponse;
+ dataMeasure: MeasurementDataResponse;
   userCustom: UserCustomSizeType;
+}
+export type sizeAnalysisResponse = {
+  sizes: SizeItem[] | null;
+}
+export interface AISuggestSizeImageType {
+  measureData: MeasurementDataResponse;
+  customizeDataAiSuggest: UserCustomSizeType;
+  sizeAnalysisResponse: sizeAnalysisResponse;
 }
 export type UserCustomSizeType = {
   gender: string;

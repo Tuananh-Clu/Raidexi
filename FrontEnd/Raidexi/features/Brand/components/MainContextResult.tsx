@@ -15,14 +15,13 @@ export const MainContent = ({ brandData }: any) => {
   const { navigate, back } = useRouterService();
   const { HandleSaveSuggestBrand } = useBrandMeasure();
   const context = useContext(AISuggestSize);
-  const dataMeasured = useContext(BodyMeasureEstimateContext);
+  const measurementContext = useContext(BodyMeasureEstimateContext);
   const brandContext=useContext(BrandContext)
 
   const handleSave = () => {
-    const { userId, brand, ...restData } = context.dataAnalysisResponse!;
     const dataToSave: DataToSaveBrandMeasure = {
       brand: brandData.name,
-      dataMeasure: dataMeasured?.dataMeasured!,
+      dataMeasure: measurementContext?.dataMeasured!,
       dataAnalysis: context.dataAnalysisResponse!,
     };
 
@@ -42,7 +41,7 @@ export const MainContent = ({ brandData }: any) => {
         <div>
           <h1 className="mb-2 text-4xl text-white font-display-Newsreader">
             KẾT QUẢ FIT THƯƠNG HIỆU:{" "}
-            <span className="text-gold-500">{brandData.name}</span>
+            <span className="text-gold-500">{brandData?.name}</span>
           </h1>
           <p className="font-mono text-xs tracking-wider text-gray-500">
             MÃ PHÂN TÍCH: # {dataAnalysisWithFilter?.analysisCode} // DATE:{" "}

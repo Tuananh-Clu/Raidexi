@@ -13,23 +13,23 @@ export const BrandSidebar: React.FC<BrandSidebarProps> = ({ measurements, brandD
       <div className="overflow-hidden border rounded-sm bg-dark-800 border-dark-600">
         <div className="h-48 bg-[#d4cbb8] relative flex items-center justify-center">
             <div className="flex items-center justify-center w-24 h-24 font-serif text-3xl text-white bg-black shadow-lg">
-                <img className='w-20 h-20' src={brandData.icon}></img>
+                <img className='w-20 h-20' src={brandData?.icon}></img>
             </div>
         </div>
         <div className="p-6">
-          <h2 className="mb-4 font-serif text-3xl tracking-wide text-white">{brandData.name}</h2>
+          <h2 className="mb-4 font-serif text-3xl tracking-wide text-white">{brandData?.name}</h2>
           <div className="space-y-3 text-sm text-gray-400">
             <div className="flex items-center gap-3">
               <MapPin size={16} />
-              <span>{brandData.origin}</span>
+              <span>{brandData?.origin}</span>
             </div>
             <div className="flex items-center gap-3">
               <Shirt size={16} />
-              <span>{brandData.segment}</span>
+              <span>{brandData?.segment}</span>
             </div>
             <div className="flex items-center gap-3">
               <History size={16} />
-              <span>{brandData.dataSeason}</span>
+              <span>{brandData?.dataSeason}</span>
             </div>
           </div>
         </div>

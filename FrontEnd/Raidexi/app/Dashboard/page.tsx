@@ -9,6 +9,7 @@ import { useContext } from "react";
 export default function page() {
   const context=useContext(BodyMeasureEstimateContext);
   const dataMeasurements=context?.dataMeasured;
+  console.log("Data measurements in Dashboard page:", dataMeasurements);
   return (
     <>
       <NavBar></NavBar>
@@ -27,12 +28,15 @@ export default function page() {
               Quản lý Hồ sơ & Số đo
             </h2>
           </div>
+          
           <div className="hidden text-right md:block">
             <p className="font-mono text-sm tracking-wider text-primary">
               REF: RX-8821-VN
             </p>
             <p className="text-xs italic text-text-muted">
-              Cập nhật lần cuối: 12/10/2023
+              Cập nhật lần cuối: {dataMeasurements?.map((data) => new Date(data.lastUpdate).getDay()<10 ? `0${new Date(data.lastUpdate).getDay()}` : new Date(data.lastUpdate).getDay())}/{dataMeasurements?.map((data) => new Date(data.lastUpdate).getMonth()<9 ? `0${new Date(data.lastUpdate).getMonth()+1}` : new Date(data.lastUpdate).getMonth()+1)}/{dataMeasurements?.map((data) => new Date(data.lastUpdate).getFullYear())}
+              
+              
             </p>
           </div>
         </header>

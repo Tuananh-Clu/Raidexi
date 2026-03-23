@@ -52,25 +52,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return userData !== null;
   });
   const context = useContext(BodyMeasureEstimateContext)
-  useEffect(() => {
-    if(userData===null){
-      return;
-    }
-    const fetchUserData = async () => {
+      const fetchUserData = async () => {
       try {
         const data = await GetDataUser();
         if (data?.user) {
           setIsLoggedIn(true);
           setUserData(data.user);
           localStorage.setItem("userData", JSON.stringify(data.user));
-          context?.setDataMeasured?.({
-            height: data.user.measureData?.height || null,
-            waist: data.user.measureData?.waist || null,
-            hip: data.user.measureData?.hip || null,
-            chest: data.user.measureData?.chest || null,
-            shoulderWidth: data.user.measureData?.shoulderWidth || null,
-
-          });
+          console.log("Fetched user data:", data);
+          context?.setDataMeasured?.(data.measureData.dataMeasure);
+          console.log("Fetched measurement data:", data.measureData.dataMeasure);
           localStorage.setItem("userMeaurements", JSON.stringify({
             height: data.user.measureData?.height || null,
             waist: data.user.measureData?.waist || null,
@@ -89,12 +80,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       } finally {
       }
     };
+  useEffect(() => {
+    if(userData===null){
+      return;
+    }
+
 
     if (userData === null) {
       fetchUserData();
     } else {
 
     }
+  }, []);
+  useEffect(() => {
+    fetchUserData();
   }, []);
 
   const AuthLogin = useCallback(

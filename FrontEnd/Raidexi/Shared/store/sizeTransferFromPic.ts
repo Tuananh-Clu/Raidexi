@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 export interface SizeItem {
- size_us: string;
+  size_us: string;
   size_uk: number;
   size_eu: number;
   chest_min_cm: number;

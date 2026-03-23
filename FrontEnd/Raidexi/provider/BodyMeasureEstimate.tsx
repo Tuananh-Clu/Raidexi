@@ -1,5 +1,5 @@
 "use client";
-import { MeasurementDataResponse } from "@/features/Camera/types";
+import { data, MeasurementDataResponse } from "@/features/Camera/types";
 import { Landmark } from "@mediapipe/pose";
 import { createContext, useEffect, useRef, useState } from "react";
 
@@ -8,9 +8,9 @@ export interface BodyMeasureEstimateContextType {
   measuring?: boolean;
   setCountdown?: React.Dispatch<React.SetStateAction<number>>;
   setMeasuring?: React.Dispatch<React.SetStateAction<boolean>>;
-  dataMeasured?: MeasurementDataResponse;
+  dataMeasured?:data[];
   setDataMeasured?: React.Dispatch<
-    React.SetStateAction<MeasurementDataResponse>
+    React.SetStateAction<data[]>
   >;
   setCapturedFallback?: React.Dispatch<React.SetStateAction<boolean>>;
   Buffer?: React.MutableRefObject<Landmark[][]>;
@@ -22,13 +22,7 @@ export const BodyMeasureEstimateContext =
   createContext<BodyMeasureEstimateContextType>({
     countdown: 15000,
     measuring: false,
-    dataMeasured: {
-      height: 0,
-      chest: 0,
-      waist: 0,
-      hip: 0,
-      shoulderWidth: 0,
-    },
+    dataMeasured: [],
     setCountdown: () => {},
     setMeasuring: () => {},
     setDataMeasured: () => {},
@@ -48,10 +42,10 @@ export const BodyMeasureEstimateProvider = ({
   const [countdown, setCountdown] = useState(20);
   const [measuring, setMeasuring] = useState(false);
   const [capturedFallback, setCapturedFallback] = useState(false);
-  const [dataMeasured, setDataMeasured] = useState<MeasurementDataResponse>(
+  const [dataMeasured, setDataMeasured] = useState<data[]>(
     localStorage?.getItem("userMeaurements")
-      ? JSON.parse(localStorage.getItem("userMeaurements") || "{}")
-      : null
+      ? JSON.parse(localStorage.getItem("userMeaurements") || "[]")
+      : []  
   );
 
   const Buffer = useRef<Landmark[][]>([]);

@@ -164,6 +164,7 @@ namespace Raidexi.Infrastructure.Services
             var jwt =new JwtSecurityTokenHandler().ReadJwtToken(token);
             var userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
             var user = await _userRepository.GetByIdAsync(userId);
+            
             return new AuthResult
             {
                 IsSuccess = true,
@@ -186,9 +187,11 @@ namespace Raidexi.Infrastructure.Services
             var existingData = await dbContext.MeasureUserData.Find(filter).FirstOrDefaultAsync();
             if (existingData != null)
             {
-                var update = Builders<SaveMeasureDataDto>.Update
-                    .Set(u => u.dataMeasure, data)
-                    .Set(u => u.LastUpdate, DateTime.Now);
+                var update = Builders<SaveMeasureDataDto>.Update.Push(u => u.dataMeasure, new MeasureDataList
+                {
+                    dataMeasure = data,
+                    LastUpdate = DateTime.Now
+                });
                 await dbContext.MeasureUserData.UpdateOneAsync(filter, update);
                 return;
             }
@@ -197,8 +200,14 @@ namespace Raidexi.Infrastructure.Services
                 var datas = new SaveMeasureDataDto
                 {
                     id = userId,
-                    dataMeasure = data,
-                    LastUpdate = DateTime.Now
+                    dataMeasure = new MeasureDataList[]
+                    {
+                        new MeasureDataList
+                        {
+                            dataMeasure = data,
+                            LastUpdate = DateTime.Now
+                        }
+                    }
                 };
                 await dbContext.MeasureUserData.InsertOneAsync(datas);
                 return;
@@ -208,14 +217,13 @@ namespace Raidexi.Infrastructure.Services
         {
             await SaveMeasure(data);
         }
-        public async Task<MeasureData> GetMeasureForUser(string id)
+        public async Task<SaveMeasureDataDto> GetMeasureForUser(string id)
         {
             var rar = _httpContextAccessor.HttpContext.Request.Cookies[$"access_token_client"];
             var jwt = new JwtSecurityTokenHandler().ReadJwtToken(rar);
             var filter = Builders<SaveMeasureDataDto>.Filter.Eq(a => a.id , id);
             var data=await dbContext.MeasureUserData.Find(filter).FirstOrDefaultAsync();
-            return data.dataMeasure;
-
+            return data;
         }
        public async Task SaveBrandMeasure(DataBrand dataBrandAnalysis)
         {

@@ -51,16 +51,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
 
       <body>
-        
-        {isLoading && <GlobalLoading note={note} />}  
+        {isLoading && <GlobalLoading note={note} />}
         <Toaster position="top-right" />
-        <AuthProvider>
-          <AISuggestSizeProvider>
-          <BodyMeasureEstimateProvider>
-            <BrandProvider>{children}</BrandProvider>
-          </BodyMeasureEstimateProvider>
-          </AISuggestSizeProvider>
-        </AuthProvider>
+        <BodyMeasureEstimateProvider>
+          <AuthProvider>
+            <AISuggestSizeProvider>
+              <BrandProvider>{children}</BrandProvider>
+            </AISuggestSizeProvider>
+          </AuthProvider>
+        </BodyMeasureEstimateProvider>
       </body>
     </html>
   );

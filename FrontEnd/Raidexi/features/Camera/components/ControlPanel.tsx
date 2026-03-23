@@ -129,7 +129,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                 </p>
                 <div className="flex items-baseline gap-1">
                   <span className="font-mono text-xl font-medium text-white">
-                    {metric.value.toFixed(1)}
+                    {metric?.value?.toFixed(1)}
                   </span>
                   <span className="text-[10px] font-mono text-brass-light">
                     {metric.unit}
@@ -291,3 +291,4 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
 };
 
 export default ControlPanel;
+

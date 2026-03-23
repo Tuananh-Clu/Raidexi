@@ -376,7 +376,7 @@ namespace Raidexi.Infrastructure.Services
             var data = new uploadDataToAnalysisMeasure
             {
                 brand = "Generic",
-                userCustom =
+                userCustom = new CustomizeDataAiSuggest
                 {
                     gender = customizeDataAiSuggest.gender,
                     typeProduct = customizeDataAiSuggest.typeProduct,
