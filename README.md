@@ -1,10 +1,10 @@
 <div align="center">
 
-# Hi there, I'm Tuan Anh 👋
+# 👨‍💻 Hi there, I'm Tuan Anh (Clu) 👋
 
-**Junior Web Developer — Ho Chi Minh City**
+<img src="https://readme-typing-svg.herokuapp.com?font=Sora&weight=600&size=24&pause=1000&color=512BD4&center=true&vCenter=true&width=435&lines=Junior+Web+Developer;ASP.NET+Core+Specialist;React+%2F+Next.js+Enthusiast;Clean+Architecture+Follower" alt="Typing SVG" />
 
-*React · Next.js · ASP.NET Core · Clean Architecture*
+**Based in Ho Chi Minh City, Vietnam 🇻🇳**
 
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Tuananh-Clu)
 [![Facebook](https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white)](https://www.facebook.com/tuan.anh.827144)
@@ -14,91 +14,97 @@
 
 ---
 
-## 💻 Tech Stack
-
-**Frontend**
-<br>
-[![My Skills](https://skillicons.dev/icons?i=html,css,js,ts,react,nextjs,tailwind,bootstrap&theme=light)](https://skillicons.dev) 
-<br>
-![Framer Motion](https://img.shields.io/badge/Framer_Motion-black?style=flat-square&logo=framer&logoColor=blue)
-![Zustand](https://img.shields.io/badge/Zustand-764ABC?style=flat-square&logo=react&logoColor=white)
-
-**Backend**
-<br>
-[![My Skills](https://skillicons.dev/icons?i=cs,dotnet&theme=light)](https://skillicons.dev)
-<br>
-![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-512BD4?style=flat-square&logo=dotnet&logoColor=white)
-
-**Database & Tools**
-<br>
-[![My Skills](https://skillicons.dev/icons?i=mongodb,postgres,mysql,git,vercel&theme=light)](https://skillicons.dev)
-<br>
-![SQL Server](https://img.shields.io/badge/SQL_Server-CC2927?style=flat-square&logo=microsoft-sql-server&logoColor=white)
-![Postman](https://img.shields.io/badge/Postman-FF6C37?style=flat-square&logo=postman&logoColor=white)
-
----
-
-## 🚀 Projects
-
-### 📏 [Raidexi — AI Body Measurement & Size Advisor](https://github.com/Tuananh-Clu/Raidexi) `[Monorepo]`
-*Nền tảng đo số đo cơ thể bằng AI và gợi ý kích cỡ quần áo theo từng thương hiệu. Người dùng đứng trước webcam — hệ thống tự động phát hiện landmark cơ thể, tính toán vai, ngực, eo, hông, chiều cao rồi đối chiếu với bảng size của brand để trả về kết quả cùng nhận xét fit từ Gemini AI.*
-
-* **Tính năng nổi bật:**
-  * Đo số đo từ webcam bằng MediaPipe Pose — thu 50 frame, lấy trung bình landmark, tính chu vi theo công thức ellipse với hệ số scale riêng từng vùng.
-  * Phân tích ảnh bảng size bằng Gemini Vision — trích xuất JSON chuẩn rồi đối chiếu trực tiếp với số đo người dùng.
-  * Gợi ý size theo brand với trọng số riêng cho top / bottom / dress.
-  * Gemini AI sinh nhận xét fit 3 chiều: measurement insight, product fit note, expected fit.
-  * Dual database: PostgreSQL cho user & lịch sử đo, MongoDB cho brand rules / category rules / size mappings linh hoạt.
-  * Auth đa phương thức: email/password + Firebase token — JWT phân quyền từng endpoint. Rate limiting 5 request/24h cho anonymous client.
-  * Clean Architecture: tách biệt Application / Domain / Infrastructure / Presentation.
-* **Tech:** ![Next.js](https://img.shields.io/badge/-Next.js-black?style=flat-square&logo=next.js) ![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white) ![ASP.NET Core](https://img.shields.io/badge/-ASP.NET_Core-512BD4?style=flat-square&logo=dotnet) ![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-4169E1?style=flat-square&logo=postgresql) ![MongoDB](https://img.shields.io/badge/-MongoDB-47A248?style=flat-square&logo=mongodb) ![Gemini](https://img.shields.io/badge/-Gemini_API-8E75B2?style=flat-square&logo=google)
-
-### 🛍️ [Aurelia — Smart Fashion E-Commerce](https://github.com/Tuananh-Clu/Aurelia_E-commerce) `[Production]`
-*Nền tảng thương mại điện tử thời trang tích hợp AI đo số đo cơ thể bằng camera. Người dùng có thể tự đo và nhận gợi ý size quần áo phù hợp theo thời gian thực. Hệ thống bao gồm dashboard riêng cho User, Shop và Admin.*
-
-* **Tính năng nổi bật:**
-  * AI đo số đo cơ thể qua camera (MediaPipe Pose) — tự động gợi ý size chính xác.
-  * Ba dashboard độc lập: User mua hàng, Shop quản lý sản phẩm/đơn hàng, Admin toàn hệ thống.
-  * Loyalty & Tier system — tích điểm, nâng hạng thành viên, ưu đãi theo cấp bậc.
-  * Realtime notification qua SignalR — cập nhật trạng thái đơn hàng tức thì.
-  * JWT Authentication + Google OAuth 2.0 — bảo mật và tiện lợi.
-* **Tech:** ![React](https://img.shields.io/badge/-React-61DAFB?style=flat-square&logo=react&logoColor=black) ![Vite](https://img.shields.io/badge/-Vite-646CFF?style=flat-square&logo=vite&logoColor=white) ![ASP.NET Core](https://img.shields.io/badge/-ASP.NET_Core-512BD4?style=flat-square&logo=dotnet) ![MongoDB](https://img.shields.io/badge/-MongoDB-47A248?style=flat-square&logo=mongodb) ![SignalR](https://img.shields.io/badge/-SignalR-00599C?style=flat-square)
-* 🔗 **[Live Demo](https://aureliashop.vercel.app/)**
-
-### 🎬 [Movie Booking System](https://github.com/Tuananh-Clu/Movie_Booking) `[Fullstack]`
-*Hệ thống đặt vé xem phim mô phỏng luồng thực tế của rạp chiếu phim. Từ xem lịch chiếu, chọn ghế theo sơ đồ phòng chiếu, đến thanh toán và xác nhận vé.*
-
-* **Tính năng nổi bật:**
-  * Chọn ghế theo sơ đồ phòng chiếu trực quan — trạng thái ghế realtime.
-  * Quản lý suất chiếu, phòng chiếu, phim — đầy đủ CRUD cho admin.
-  * Phân quyền hai cấp User / Admin với JWT — kiểm soát truy cập từng endpoint.
-  * RESTful API thiết kế rõ ràng — dễ tích hợp và mở rộng.
-* **Tech:** ![ASP.NET Core](https://img.shields.io/badge/-ASP.NET_Core-512BD4?style=flat-square&logo=dotnet) ![MongoDB](https://img.shields.io/badge/-MongoDB-47A248?style=flat-square&logo=mongodb) ![React](https://img.shields.io/badge/-React-61DAFB?style=flat-square&logo=react&logoColor=black)
-
----
-
-## ⚙️ Core Skills
-
-| Backend — .NET | Frontend — React / Next.js |
-| :--- | :--- |
-| <ul><li>ASP.NET Core Web API</li><li>RESTful API Design</li><li>JWT Auth & Authorization</li><li>Google OAuth 2.0 / Firebase</li><li>PostgreSQL + EF Core</li><li>MongoDB & Entity Modeling</li><li>Dependency Injection</li><li>SignalR (Realtime)</li><li>Background Services</li><li>Clean Architecture</li></ul> | <ul><li>Hooks & Custom Hooks</li><li>Component-driven architecture</li><li>Zustand / Context API</li><li>API integration</li><li>Authentication flow</li><li>MediaPipe Pose (CV)</li><li>Performance optimization</li><li>TailwindCSS / Framer Motion</li><li>TypeScript</li></ul> |
-
----
-
-## 📊 GitHub Stats
-
+## 🏆 GitHub Achievements
 <div align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=Tuananh-Clu&show_icons=true&theme=transparent&hide_border=true&title_color=512BD4&icon_color=512BD4&text_color=333" alt="Tuan Anh's GitHub Stats" />
-  <br/>
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Tuananh-Clu&layout=compact&theme=transparent&hide_border=true&title_color=512BD4&text_color=333" alt="Top Languages" />
+  <img src="https://github-profile-trophy.vercel.app/?username=Tuananh-Clu&theme=flat&column=7&margin-w=15&no-bg=true" alt="github trophy" />
 </div>
 
 ---
 
-## 🌱 Currently Learning
-`JWT / OAuth2 / OpenID Connect` &nbsp;•&nbsp; `Clean Architecture & DDD` &nbsp;•&nbsp; `React & .NET Performance` &nbsp;•&nbsp; `Docker & CI/CD`
+## 🛠 My Specialized Stack
+
+### 🎨 Frontend Development
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/javascript-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Framer](https://img.shields.io/badge/Framer-black?style=for-the-badge&logo=framer&logoColor=blue)
+
+### ⚙️ Backend Development
+![C#](https://img.shields.io/badge/c%23-%23239120.svg?style=for-the-badge&logo=c-sharp&logoColor=white)
+![.Net](https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=.net&logoColor=white)
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
+![SignalR](https://img.shields.io/badge/SignalR-00599C?style=for-the-badge&logo=dotnet&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
+
+### 🗄️ Databases & Infrastructure
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
+![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
+![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)
+![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
+![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)
 
 ---
 
-## 🎯 Goal
-> Trở thành developer có khả năng **thiết kế hệ thống**, hiểu sâu backend, tối ưu frontend — và tiến tới **Senior / Solution Architect** trong tương lai.
+## 🚀 Featured Projects
+
+### 📏 [Raidexi — AI Body Measurement & Size Advisor](https://github.com/Tuananh-Clu/Raidexi) `[Monorepo]`
+Nền tảng đo số đo cơ thể bằng AI và gợi ý kích cỡ quần áo theo từng thương hiệu. Người dùng đứng trước webcam — hệ thống tự động phát hiện landmark cơ thể, tính toán vai, ngực, eo, hông, chiều cao rồi đối chiếu với bảng size của brand để trả về kết quả cùng nhận xét fit từ Gemini AI. Monorepo gồm Next.js frontend và ASP.NET Core backend.
+
+**Key Features:**
+- **Đo số đo từ webcam:** Sử dụng MediaPipe Pose — thu 50 frame, lấy trung bình landmark, tính chu vi theo công thức ellipse với hệ số scale riêng từng vùng.
+- **Phân tích bảng size:** Sử dụng Gemini Vision — trích xuất JSON chuẩn rồi đối chiếu trực tiếp với số đo người dùng.
+- **Gợi ý size thông minh:** Tính fit percent từng size, map sang US/UK/EU theo yêu cầu với trọng số riêng cho top / bottom / dress.
+- **AI Insights:** Gemini AI sinh nhận xét fit 3 chiều: measurement insight, product fit note, expected fit (Regular / Slim / Oversized).
+- **System Architecture:** Dual database (PostgreSQL cho user & MongoDB cho rules); Auth đa phương thức (Firebase/JWT); Cache layer cho rules/mappings; Tổ chức theo **Clean Architecture**.
+
+### 🛍️ [Aurelia — Smart Fashion E-Commerce](https://github.com/Tuananh-Clu/Aurelia_E-commerce) `[Production]`
+Nền tảng thương mại điện tử thời trang tích hợp AI đo số đo cơ thể bằng camera. Hệ thống bao gồm dashboard riêng cho User, Shop và Admin với phân quyền rõ ràng và logic nghiệp vụ đầy đủ.
+
+**Key Features:**
+- AI đo số đo cơ thể qua camera (MediaPipe Pose) — tự động gợi ý size chính xác.
+- Ba dashboard độc lập quản lý sản phẩm, đơn hàng và hệ thống.
+- **Loyalty & Tier system:** Tích điểm, nâng hạng thành viên, ưu đãi theo cấp bậc.
+- **Realtime:** Cập nhật trạng thái đơn hàng tức thì qua SignalR.
+- **Security:** JWT Authentication + Google OAuth 2.0.
+- 🔗 **[Live Demo](https://aureliashop.vercel.app/)**
+
+### 🎬 [Movie Booking System](https://github.com/Tuananh-Clu/Movie_Booking) `[Fullstack]`
+Hệ thống đặt vé xem phim mô phỏng luồng thực tế của rạp chiếu phim từ xem lịch chiếu, chọn ghế theo sơ đồ trực quan đến thanh toán.
+
+**Key Features:**
+- Chọn ghế theo sơ đồ phòng chiếu trực quan — trạng thái ghế realtime.
+- Quản lý suất chiếu, phòng chiếu, phim — đầy đủ CRUD cho admin.
+- Phân quyền User / Admin với JWT và RESTful API thiết kế rõ ràng.
+
+---
+
+## 📊 GitHub Activities
+
+<div align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=Tuananh-Clu&show_icons=true&theme=vue-dark&hide_border=true&title_color=512BD4&icon_color=512BD4" alt="Stats" />
+  <br/>
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Tuananh-Clu&layout=compact&theme=vue-dark&hide_border=true&title_color=512BD4" alt="Top Langs" />
+</div>
+
+---
+
+## ⚙️ Core Expertise
+- **Backend (.NET):** ASP.NET Core Web API, EF Core, Dependency Injection, SignalR, Background Services, Clean Architecture.
+- **Frontend (React/Next.js):** Custom Hooks, Zustand/Context API, Framer Motion, MediaPipe Pose integration.
+- **Database:** PostgreSQL, MongoDB (Entity Modeling), SQL Server.
+
+---
+
+## 🌱 Currently Learning & Goal
+- **Learning:** `JWT / OAuth2 / OpenID Connect` • `DDD` • `Docker & CI/CD`.
+- **Goal:** Trở thành developer có khả năng **thiết kế hệ thống**, tiến tới **Senior / Solution Architect**.
+
+<div align="center">
+  <br/>
+  <img src="https://komarev.com/ghpvc/?username=Tuananh-Clu&color=512BD4&style=flat-square&label=PROFILE+VIEWS" alt="views" />
+</div>
