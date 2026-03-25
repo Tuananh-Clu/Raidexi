@@ -21,29 +21,30 @@ const App: React.FC = () => {
     name: context.userData?.fullName || "",
     date: new Date().toLocaleDateString("vi-VN"),
   };
+  const data= measureContext.dataMeasured[0].dataMeasure;
   const MEASUREMENTS = [
     {
       id: "1",
       label: "Vai",
-      value: measureContext.dataMeasured?.shoulderWidth,
+      value: data?.shoulderWidth,
       unit: "cm",
     },
     {
       id: "2",
       label: "Ngực",
-      value: measureContext.dataMeasured?.chest,
+      value: data?.chest,
       unit: "cm",
     },
     {
       id: "3",
       label: "Eo",
-      value: measureContext.dataMeasured?.waist,
+      value: data?.waist,
       unit: "cm",
     },
     {
       id: "4",
       label: "Hông",
-      value: measureContext.dataMeasured?.hip,
+      value: data?.hip,
       unit: "cm",
     },
   ];

@@ -13,6 +13,8 @@ import {
 import { BodyMeasureEstimateContext } from "./BodyMeasureEstimate";
 import { useRouterService } from "@/Shared/Service/routerService";
 import { useLoadingStore } from "@/Shared/store/loading.store";
+import { UserData } from "@/features/Auth/types";
+import { API, api_Response } from "@/Shared/Service/Api";
 
 
 export interface AuthContextType {
@@ -27,6 +29,7 @@ export interface AuthContextType {
   AuthLoginWithGoogle: () => Promise<boolean>;
   AuthLogout: () => Promise<void>;
   AuthGetDataUser: () => Promise<any>;
+  updateAccount: (formData: UserData, setIsOpen: (isOpen: boolean) => void) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -36,6 +39,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const [updateAccounts, setUpdateAccounts] = useState(false);
   const { Login, LoginWithGoogle, Logout, Register, GetDataUser } =
     useAuth();
 
@@ -92,9 +96,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     }
   }, []);
+  
+  const UpdateAccount=async (formData:UserData, setIsOpen: (isOpen: boolean) => void)=>{
+    try
+    {
+      await api_Response(API.Authentication.UpdateUserData,'PUT',formData);
+      setIsOpen(false);
+      ToasterUi("Cập Nhật Thành Công","success");
+      setUpdateAccounts(prev=>!prev);
+      localStorage.removeItem("userData");
+    }
+    catch
+    {
+      ToasterUi("Cập Nhật Thất Bại","error");
+    }
+  }
   useEffect(() => {
     fetchUserData();
-  }, []);
+  }, [updateAccounts]);
 
   const AuthLogin = useCallback(
     async (email: string, password: string) => {
@@ -158,6 +177,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return data;
   }, [GetDataUser]);
 
+
   const contextValue = useMemo(
     () => ({
       isLoggedIn,
@@ -167,6 +187,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       AuthLoginWithGoogle,
       AuthLogout,
       AuthGetDataUser,
+      updateAccount: UpdateAccount,
     }),
     [
       isLoggedIn,
@@ -176,6 +197,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       AuthLoginWithGoogle,
       AuthLogout,
       AuthGetDataUser,
+      UpdateAccount,
 
     ]
   );

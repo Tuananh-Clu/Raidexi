@@ -1,951 +1,670 @@
-# Raidexi - AI Body Measurement System
+# Raidexi
 
 <div align="center">
 
 ![Raidexi Logo](./FrontEnd/Raidexi/public/logo.png)
 
-**Hệ thống đo lường cơ thể chính xác bằng AI, chuyển đổi số đo thành kích cỡ cụ thể của từng thương hiệu**
+**Nền tảng đo số đo cơ thể bằng AI và gợi ý kích cỡ theo thương hiệu**
 
-[Features](#-tính-năng) • [Tech Stack](#-tech-stack) • [Installation](#-cài-đặt) • [Usage](#-sử-dụng) • [Architecture](#-kiến-trúc) • [Contributing](#-đóng-góp)
+Monorepo gồm frontend Next.js và backend ASP.NET Core phục vụ bài toán đo cơ thể, phân tích bảng size và đề xuất size theo brand.
 
 </div>
 
----
+## Mục lục
 
-## 📋 Giới thiệu
+- [1. Giới thiệu](#1-giới-thiệu)
+- [2. Bài toán và mục tiêu](#2-bài-toán-và-mục-tiêu)
+- [3. Phạm vi tính năng](#3-phạm-vi-tính-năng)
+- [4. Kiến trúc hệ thống](#4-kiến-trúc-hệ-thống)
+- [5. Công nghệ sử dụng](#5-công-nghệ-sử-dụng)
+- [6. Cấu trúc thư mục](#6-cấu-trúc-thư-mục)
+- [7. Luồng nghiệp vụ chi tiết](#7-luồng-nghiệp-vụ-chi-tiết)
+- [8. API chính](#8-api-chính)
+- [9. Dữ liệu và lưu trữ](#9-dữ-liệu-và-lưu-trữ)
+- [10. Cài đặt và chạy local](#10-cài-đặt-và-chạy-local)
+- [11. Biến môi trường và cấu hình](#11-biến-môi-trường-và-cấu-hình)
+- [12. Kiểm tra sau khi setup](#12-kiểm-tra-sau-khi-setup)
+- [13. Lưu ý hiện trạng dự án](#13-lưu-ý-hiện-trạng-dự-án)
+- [14. Troubleshooting](#14-troubleshooting)
+- [15. Hướng phát triển tiếp theo](#15-hướng-phát-triển-tiếp-theo)
+- [16. Đóng góp](#16-đóng-góp)
+- [17. License](#17-license)
 
-**Raidexi** là một hệ thống đo lường cơ thể thông minh sử dụng công nghệ AI và Computer Vision. Hệ thống cho phép người dùng đo lường các chỉ số cơ thể (ngực, eo, hông) một cách chính xác chỉ bằng camera webcam, sau đó chuyển đổi số đo thành kích cỡ phù hợp với từng thương hiệu thời trang.
+## 1. Giới thiệu
 
-### Vấn đề giải quyết
+Raidexi là dự án hỗ trợ người dùng lấy số đo cơ thể và chuyển đổi số đo đó thành đề xuất kích cỡ quần áo theo thương hiệu. Hệ thống kết hợp:
 
-- ❌ Loại bỏ sự mơ hồ khi đoán mò kích cỡ quần áo
-- ✅ Cung cấp số đo chính xác dựa trên dữ liệu khách quan
-- ✅ Tự động đề xuất size phù hợp cho từng thương hiệu
-- ✅ Trải nghiệm đo lường nhanh chóng, không cần thiết bị chuyên dụng
+- Computer Vision với MediaPipe Pose để lấy landmark cơ thể từ webcam.
+- Logic tính số đo và đối sánh size ở frontend/backend.
+- AI Gemini để sinh nhận xét fit và trích xuất bảng size từ ảnh.
+- Backend ASP.NET Core để xác thực người dùng, lưu dữ liệu đo và phục vụ API.
 
----
+Repository này được tổ chức theo dạng monorepo:
 
-## ✨ Tính năng
+- `FrontEnd/Raidexi`: giao diện người dùng, trải nghiệm đo và trang phân tích.
+- `Backend/Raidexi`: Web API xử lý nghiệp vụ, xác thực, phân tích size, mail, cache và truy cập dữ liệu.
 
-### 🎯 Tính năng chính
+## 2. Bài toán và mục tiêu
 
-- **📸 Đo lường bằng Camera**: Sử dụng MediaPipe Pose để nhận diện và đo lường cơ thể từ webcam
-- **📏 Đo lường tự động**: Tự động tính toán chu vi ngực, eo, hông từ pose landmarks
-- **🏷️ Đề xuất Size theo Brand**: AI đề xuất size phù hợp dựa trên số đo và thương hiệu
-- **👤 Quản lý Profile**: Lưu trữ và quản lý số đo cá nhân
-- **🔐 Xác thực người dùng**: Hệ thống đăng nhập/đăng ký với Firebase Authentication
-- **📊 Dashboard**: Theo dõi lịch sử đo lường và số đo
+### Bài toán
 
-### 🎨 Giao diện
+Khi mua quần áo online, người dùng thường gặp các vấn đề:
 
-- **Modern UI/UX**: Thiết kế hiện đại với Tailwind CSS
-- **Responsive Design**: Tối ưu cho mọi thiết bị
-- **Real-time Feedback**: Hiển thị trực tiếp quá trình đo lường
-- **Dark Theme**: Giao diện tối với accent màu vàng đồng (brass)
+- Không biết chính xác số đo cơ thể của mình.
+- Mỗi thương hiệu có bảng size khác nhau.
+- Size `M` của brand này không đồng nghĩa với size `M` của brand khác.
+- Việc đọc bảng size thủ công gây mất thời gian và dễ sai lệch.
 
----
+### Mục tiêu của dự án
 
-## ?? Tech Stack
+Raidexi hướng tới việc:
+
+- Tự động hóa quá trình lấy số đo cơ thể từ webcam hoặc ảnh.
+- Chuẩn hóa việc suy luận size theo giới tính, loại sản phẩm và brand.
+- Trả về kết quả dễ hiểu gồm size đề xuất, mức độ phù hợp và nhận xét khi mặc.
+- Lưu lịch sử để người dùng có thể tái sử dụng số đo cho các lần phân tích sau.
+
+## 3. Phạm vi tính năng
+
+### Tính năng cho người dùng
+
+- Đăng ký và đăng nhập bằng email/password.
+- Đăng nhập bằng Firebase token.
+- Đo số đo cơ thể từ webcam.
+- Xem trước dữ liệu đo và sử dụng lại cho bước phân tích.
+- Phân tích từ ảnh bảng size hoặc ảnh sản phẩm có thông tin size.
+- Nhận gợi ý size theo brand và loại sản phẩm.
+- Xem dashboard và lịch sử dữ liệu phân tích theo tài khoản.
+- Gửi form liên hệ tại trang `Contact`.
+
+### Tính năng backend
+
+- Xác thực người dùng và lưu profile.
+- Lưu dữ liệu số đo và lịch sử phân tích brand-size.
+- Đối sánh size theo category rules, brand rules và size mappings.
+- Gọi Gemini để sinh nhận xét fit.
+- Gọi Gemini để trích xuất bảng size từ ảnh.
+- Giới hạn tốc độ với anonymous request ở API gợi ý size.
+- Cache dữ liệu rules/mappings để giảm truy vấn lặp lại.
+
+## 4. Kiến trúc hệ thống
+
+### Tổng quan kiến trúc
+
+```text
+User
+  |
+  v
+Next.js Frontend
+  |-- Webcam + MediaPipe Pose
+  |-- Image-based analysis flow
+  |-- Auth / Dashboard / Brand pages
+  |
+  v
+ASP.NET Core API
+  |-- UserController
+  |-- AnalysisDataMeasureController
+  |-- MappingSizeController
+  |-- MailController
+  |
+  +--> PostgreSQL (user, auth, measure data)
+  +--> MongoDB (brand profiles, rules, size mappings)
+  +--> Gemini API (fit insight, extract size chart from image)
+  +--> Firebase Admin (token verification)
+```
+
+### Cách phân lớp backend
+
+Backend đang đi theo cấu trúc gần với Clean Architecture:
+
+- `Application`: DTO và interface nghiệp vụ.
+- `Domain`: entity và hợp đồng domain.
+- `Infrastructure`: persistence, security, service xử lý chính.
+- `Presentation`: controller và presentation services.
+
+### Trách nhiệm từng phần
+
+#### Frontend
+
+- Điều phối UI, state, form và trải nghiệm người dùng.
+- Khởi tạo camera và MediaPipe Pose.
+- Hiển thị landmark, countdown, trạng thái đo.
+- Gọi API backend để phân tích size và lưu dữ liệu.
+
+#### Backend
+
+- Nhận dữ liệu số đo từ frontend.
+- Điều chỉnh số đo theo brand và gender.
+- Tính size phù hợp theo category rule.
+- Sinh phần nhận xét AI bằng Gemini.
+- Xử lý lưu trữ, xác thực, giới hạn truy cập và mail.
+
+## 5. Công nghệ sử dụng
 
 ### Frontend
 
-- **Framework**: [Next.js 16.1.1](https://nextjs.org/) với React 19.2.3
-- **Language**: TypeScript 5
-- **Styling**: Tailwind CSS 4.1.18
-- **Animation**: Framer Motion 12.26.2
-- **State Management**: 
-  - React Context API
-  - Zustand 5.0.10
-- **Computer Vision**: 
-  - [MediaPipe Pose](https://google.github.io/mediapipe/solutions/pose) 0.5.1675469404
-  - [MediaPipe Camera Utils](https://google.github.io/mediapipe/solutions/camera_utils) 0.3.1675466862
-- **Authentication**: Firebase 12.7.0
-- **HTTP Client**: Axios 1.13.2
-- **Notifications**: React Hot Toast 2.6.0
-- **Icons**: Lucide React 0.562.0
+- Next.js `16.1.1`
+- React `19.2.3`
+- TypeScript `5`
+- Tailwind CSS `4.1.18`
+- Framer Motion `12.26.2`
+- Zustand `5.0.10`
+- Firebase `12.7.0`
+- Axios `1.13.2`
+- MediaPipe Pose `0.5.1675469404`
+- MediaPipe Camera Utils `0.3.1675466862`
+- Lucide React `0.562.0`
+- React Hot Toast `2.6.0`
 
 ### Backend
 
-- **Framework**: .NET 10.0 (ASP.NET Core)
-- **Language**: C#
-- **Database**: 
-  - PostgreSQL (Entity Framework Core) - User data, authentication
-  - MongoDB - Brand rules, size mappings, analysis data
-- **Authentication**: 
-  - JWT Bearer Tokens
-  - Firebase Admin SDK (Google Sign-In)
-  - BCrypt password hashing
-- **AI Integration**: 
-  - Google Gemini 3 Flash Preview API
-  - Custom prompt engineering
-- **Caching**: In-memory cache cho brand rules và size mappings
-- **Rate Limiting**: Fixed window (5 requests/24h cho anonymous users)
-- **API Documentation**: Swagger/OpenAPI
-- **Location**: `Backend/Raidexi/`
+- ASP.NET Core trên `.NET 10`
+- Entity Framework Core `10.0.1`
+- Npgsql + PostgreSQL
+- MongoDB Driver `3.5.2`
+- Firebase Admin `3.4.0`
+- Google.GenAI `0.13.1`
+- JWT `11.0.0`
+- BCrypt.Net-Next `4.0.3`
+- MailKit `4.14.1`
+- Swagger / OpenAPI
 
-#### Backend Dependencies
+## 6. Cấu trúc thư mục
 
-- **Google.GenAI** 0.13.1 - Gemini AI integration
-- **FirebaseAdmin** 3.4.0 - Firebase authentication
-- **JWT** 11.0.0 - Token generation
-- **BCrypt.Net-Next** 4.0.3 - Password hashing
-- **MongoDB.Driver** 3.5.2 - MongoDB operations
-- **Npgsql.EntityFrameworkCore.PostgreSQL** 10.0.0 - PostgreSQL provider
-- **Microsoft.EntityFrameworkCore** 10.0.1 - ORM
-- **Swashbuckle.AspNetCore** 10.1.0 - Swagger documentation
-
-### Development Tools
-
-- **Linting**: ESLint 9
-- **Package Manager**: npm
-- **Version Control**: Git
-
----
-
-## 📦 Cài đặt
-
-### Yêu cầu hệ thống
-
-- Node.js >= 18.x
-- npm >= 9.x
-- Webcam/Camera để đo lường
-- Trình duyệt hiện đại (Chrome, Firefox, Edge, Safari)
-
-### Cài đặt Frontend
-
-1. **Clone repository**
-   ```bash
-   git clone <repository-url>
-   cd Raidexi/FrontEnd/Raidexi
-   ```
-
-2. **Cài đặt dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Cấu hình Firebase** (nếu chưa có)
-   - Tạo project trên [Firebase Console](https://console.firebase.google.com/)
-   - Lấy Firebase config và thêm vào file cấu hình
-
-4. **Chạy development server**
-   ```bash
-   npm run dev
-   ```
-
-5. **Mở trình duyệt**
-   ```
-   http://localhost:3000
-   ```
-
-### Cài đặt Backend (.NET)
-
-1. **Di chuyển vào thư mục Backend**
-   ```bash
-   cd Backend/Raidexi
-   ```
-
-2. **Restore packages**
-   ```bash
-   dotnet restore
-   ```
-
-3. **Chạy ứng dụng**
-   ```bash
-   dotnet run
-   ```
-
----
-
-## 🚀 Sử dụng
-
-### Quy trình đo lường
-
-1. **Đăng nhập/Đăng ký**
-   - Truy cập trang Login hoặc SignUp
-   - Tạo tài khoản mới hoặc đăng nhập
-
-2. **Bắt đầu đo lường**
-   - Điều hướng đến trang `/Measurements`
-   - Nhập chiều cao của bạn (cm)
-   - Click "CAPTURE IMAGE" để mở camera
-
-3. **Thực hiện đo lường**
-   - Đứng trong khung hình với tư thế FRONT (mặt trước)
-   - Chờ đếm ngược 3 giây
-   - Giữ nguyên tư thế trong 15 giây để thu thập dữ liệu FRONT
-   - Chuyển sang tư thế SIDE (mặt bên)
-   - Giữ nguyên tư thế đến khi hoàn tất
-
-4. **Xem kết quả**
-   - Hệ thống tự động tính toán:
-     - Chu vi ngực (Chest)
-     - Chu vi eo (Waist)
-     - Chu vi hông (Hip)
-   - Kết quả hiển thị trên Control Panel
-
-5. **Đề xuất Size**
-   - Chọn thương hiệu tại trang `/Brand`
-   - Hệ thống sẽ đề xuất size phù hợp dựa trên số đo
-
-### Tư thế đo lường
-
-- **FRONT (Mặt trước)**: Đứng thẳng, mặt hướng camera, hai tay để tự nhiên
-- **SIDE (Mặt bên)**: Xoay người 90 độ, mặt bên hướng camera
-
----
-
-## 🏗 Kiến trúc
-
-### Cấu trúc thư mục
-
-```
+```text
 Raidexi/
-├── FrontEnd/
-│   └── Raidexi/
-│       ├── app/                    # Next.js App Router
-│       │   ├── page.tsx            # Trang chủ
-│       │   ├── Login/              # Trang đăng nhập
-│       │   ├── SignUp/             # Trang đăng ký
-│       │   ├── Measurements/       # Trang đo lường
-│       │   ├── Dashboard/          # Dashboard người dùng
-│       │   ├── Brand/              # Quản lý thương hiệu
-│       │   ├── WorkFlow/           # Giải thích quy trình
-│       │   └── Architecture/       # Kiến trúc hệ thống
-│       │
-│       ├── features/               # Feature modules
-│       │   ├── Camera/             # Module đo lường camera
-│       │   │   ├── components/    # ViewPort, ControlPanel
-│       │   │   └── hook/           # Custom hooks
-│       │   ├── Auth/               # Module xác thực
-│       │   ├── Brand/              # Module thương hiệu
-│       │   ├── Home/               # Module trang chủ
-│       │   ├── DashboardUser/      # Module dashboard
-│       │   └── WorkFlow/           # Module workflow
-│       │
-│       ├── provider/               # Context Providers
-│       │   ├── AuthProvider.tsx
-│       │   ├── BodyMeasureEstimate.tsx
-│       │   ├── BrandProvider.tsx
-│       │   └── AISuggestSize.tsx
-│       │
-│       ├── Shared/                 # Shared components & utilities
-│       │   ├── Components/        # NavBar, Footer, LoadingScreen
-│       │   ├── Service/            # API, Firebase, Router services
-│       │   ├── store/              # Zustand stores
-│       │   └── Ui/                 # Shared UI components
-│       │
-│       └── public/                 # Static assets
-│
-└── Backend/
-    └── Raidexi/                    # .NET Backend
+|-- FrontEnd/
+|   `-- Raidexi/
+|       |-- app/                         # App Router pages
+|       |-- features/
+|       |   |-- Camera/                 # Luồng đo bằng webcam
+|       |   |-- AnalyzeFromPic/         # Luồng phân tích từ ảnh
+|       |   |-- Auth/                   # Đăng nhập/đăng ký
+|       |   |-- Brand/                  # Chọn brand và hiển thị kết quả
+|       |   |-- DashboardUser/          # Dashboard người dùng
+|       |   |-- Home/                   # Landing page
+|       |   |-- Contact/                # Liên hệ
+|       |   `-- WorkFlow/               # Giải thích quy trình
+|       |-- provider/                   # Context providers
+|       |-- Shared/
+|       |   |-- Components/             # UI dùng chung
+|       |   |-- Service/                # API, mail, firebase, router
+|       |   |-- store/                  # Global stores
+|       |   `-- Ui/                     # UI helpers / toast
+|       `-- public/                     # Asset tĩnh
+|-- Backend/
+|   `-- Raidexi/
+|       |-- Application/                # DTOs và application contracts
+|       |-- Domain/                     # Entities và interfaces
+|       |-- Infrastructure/
+|       |   |-- Persistence/            # EF Core, Mongo access, repository
+|       |   |-- Security/               # JWT, hashing
+|       |   `-- Services/               # Analysis, Auth, Gemini, Mail
+|       |-- Presentation/
+|       |   |-- Controller/             # API controllers
+|       |   `-- Services/               # Cache services
+|       |-- Migrations/                 # EF migrations
+|       `-- Program.cs                  # Startup / DI / middleware
+|-- README.md
+`-- License
 ```
 
-### Luồng dữ liệu
+## 7. Luồng nghiệp vụ chi tiết
 
-```
-User → Camera → MediaPipe Pose → Pose Landmarks → 
-Calculate Measurements → Context Provider → 
-Display Results → AI Size Suggestion → Brand Matching
-```
+### 7.1 Luồng đo bằng webcam
 
-### Components chính
+Luồng webcam nằm chủ yếu ở `features/Camera` và `provider/BodyMeasureEstimate.tsx`.
 
-- **ViewPort**: Component hiển thị camera và canvas vẽ landmarks
-- **ControlPanel**: Panel điều khiển đo lường và hiển thị kết quả
-- **BodyMeasureEstimateProvider**: Context quản lý state đo lường
-- **BrandProvider**: Context quản lý thông tin thương hiệu
+#### Trình tự xử lý
 
----
+1. Người dùng mở trang `Measurements`.
+2. Frontend bật camera và khởi tạo MediaPipe Pose.
+3. UI hiển thị countdown 5 giây chuẩn bị.
+4. Sau countdown, hệ thống bắt đầu thu frame pose world landmarks.
+5. Các frame hợp lệ được đưa vào buffer.
+6. Khi đạt đủ số frame mục tiêu, frontend tính số đo từ landmark trung bình.
+7. Kết quả được lưu vào provider/localStorage và dùng cho bước phân tích tiếp theo.
 
-## 🔬 Chi tiết Cơ chế Hoạt động
+#### Chi tiết logic đo
 
-### 📸 Hệ thống Camera & MediaPipe Pose
+Một số điểm đáng chú ý từ implementation hiện tại:
 
-#### Cấu trúc Component
+- MediaPipe chạy với `modelComplexity = 2`, `minDetectionConfidence = 0.7`, `minTrackingConfidence = 0.7`.
+- Buffer mục tiêu đang dùng `TARGET_FRAMES = 50`.
+- Hệ thống hiện chỉ nhận posture `BODY` khi độ lệch trục `z` giữa hai vai đủ nhỏ.
+- Số đo được ước lượng từ các landmark chính: vai, hông, mũi, gối.
+- Chu vi được tính xấp xỉ theo ellipse circumference.
+- Có thêm hệ số scale riêng cho từng vùng như vai, eo, hông, chiều cao.
 
-```
-ViewPort Component
-??? MediaPipe Camera Utils
-?   ??? Video Stream (640x480)
-?   ??? Frame Capture (30fps)
-??? MediaPipe Pose Detection
-?   ??? Model: Pose Landmark Detection
-?   ??? Model Complexity: 2 (High accuracy)
-?   ??? Confidence Threshold: 0.7
-??? Canvas Rendering
-    ??? Real-time Landmark Visualization
-    ??? Measurement Status Display
-```
+#### Công thức đang dùng
 
-#### Quy trình Thu thập Dữ liệu
+- `shoulderWidth`: khoảng cách 3D giữa hai vai, nhân hệ số `1.38`.
+- `chest`, `waist`, `hip`: tính chu vi ellipse từ width/depth rồi nhân hệ số scale.
+- `height`: suy ra từ khoảng cách theo trục `y` giữa mũi và trung điểm gối, sau đó quy đổi sang cm.
 
-**1. Khởi tạo Camera**
-```typescript
-// MediaPipe Camera được khởi tạo với video element
-mpCameraRef.current = new camera.Camera(videoRef.current, {
-  onFrame: async () => {
-    await poseRef.current.send({ image: videoRef.current });
-  },
-  width: 640,
-  height: 480,
-});
-```
+### 7.2 Luồng gợi ý size theo brand
 
-**2. Pose Detection Pipeline**
-- Mỗi frame được gửi đến MediaPipe Pose
-- Pose model trả về 33 landmarks (điểm mốc trên cơ thể)
-- Landmarks được normalize về tọa độ [0, 1] với depth (z-axis)
+Luồng này đi qua `provider/AISuggestSize.tsx` ở frontend và `AnalyisService.cs` ở backend.
 
-**3. Tư thế Detection**
-```typescript
-function detectPose(lm: Landmark[]) {
-  const leftShoulder = lm[11];
-  const rightShoulder = lm[12];
-  
-  // Tính toán khoảng cách và độ sâu
-  const dx = Math.abs(leftShoulder.x - rightShoulder.x);
-  const dz = Math.abs(leftShoulder.z - rightShoulder.z);
-  
-  // Phân loại: FRONT, SIDE, hoặc INVALID
-  if (dz / dx > 2.2 && dx < 0.04) return "SIDE";
-  if (dz < 0.05) return "FRONT";
-  return "UNKNOWN";
-}
-```
+#### Input
 
-**4. Buffer Management**
-- **FrontBuffer**: Lưu trữ 10-20 frames tư thế FRONT
-- **SideBuffer**: Lưu trữ 10-20 frames tư thế SIDE
-- Chỉ frames hợp lệ (đúng tư thế) được thêm vào buffer
-- Buffer tự động giới hạn tối đa 20 frames
+- Brand.
+- Dữ liệu số đo cơ thể.
+- Tùy chọn người dùng: `gender`, `typeProduct`, `sizeOutput`.
 
-### 📏 Quá trình Đo lường & Tính toán
+#### Xử lý ở backend
 
-#### Thu thập Dữ liệu
+1. Tải `BrandRule` tương ứng với brand.
+2. Điều chỉnh số đo thô theo brand rule.
+3. Điều chỉnh nhẹ theo giới tính bằng `AdjustByGenderSlight()`.
+4. Chọn trọng số theo loại sản phẩm:
+   - `top`: ưu tiên `Chest`, `ShoulderWidth`.
+   - `bottom`: ưu tiên `Waist`, `Hip`.
+   - `dress`: cân bằng `Chest`, `Waist`, `Hip`.
+5. Tính `fit percent` cho từng size bằng `CalculateRangeFit()`.
+6. Chọn size có điểm cao nhất.
+7. Map từ universal size sang size output mong muốn nếu có.
+8. Gọi Gemini để sinh nhận xét `measurementInsight`, `productFitNote`, `expectedFit`.
 
-**Phase 1: Countdown (3 giây)**
-- Hiển thị đếm ngược để người dùng chuẩn bị
-- Reset các buffers và states
+#### Cách diễn giải độ phù hợp
 
-**Phase 2: FRONT Pose Collection (15 giây)**
-- Thu thập frames khi `countdown > 10`
-- Chỉ lưu frames có `type === "FRONT"`
-- Hiển thị progress: "Đang Thu Thập Dữ Liệu FRONT"
-- Khi đủ 10 frames: "Đã Thu Thập Đủ Dữ Liệu FRONT"
+Backend đang ánh xạ `FitPercent` thành nhãn như sau:
 
-**Phase 3: SIDE Pose Collection (5 giây còn lại)**
-- Chuyển sang thu thập frames SIDE
-- Hiển thị: "Đang Thu Thập Dữ Liệu SIDE"
-- Khi đủ 10 frames: "Đã Thu Thập Đủ Dữ Liệu SIDE"
+- `>= 90`: Rất vừa vặn
+- `>= 80`: Vừa vặn
+- `>= 70`: Tạm ổn
+- `>= 60`: Hơi lệch
+- `>= 50`: Không khuyến nghị
+- `< 50`: Không phù hợp
 
-#### Tính toán Measurements
+### 7.3 Luồng phân tích từ ảnh
 
-**1. Extract Key Measurements**
+Luồng này dùng khi người dùng có ảnh chứa bảng size hoặc dữ liệu size.
 
-```typescript
-// Tính chiều rộng/độ sâu từ landmarks
-function extractAxis(frames, type, L, R) {
-  const values = frames.map(lm => 
-    type === "FRONT" 
-      ? Math.abs(lm[L].x - lm[R].x)  // Chiều rộng (x-axis)
-      : Math.abs(lm[L].z - lm[R].z)   // Độ sâu (z-axis)
-  );
-  // Lấy median value để loại bỏ outliers
-  values.sort((a, b) => a - b);
-  return values[Math.floor(values.length / 2)];
-}
-```
+#### Các bước
 
-**2. Tính toán Waist Landmarks**
+1. Frontend gửi base64 ảnh lên `POST /api/AnalysisDataMeasure/GetDataFromImage`.
+2. Backend gọi Gemini Vision để trích xuất bảng size thành JSON chuẩn.
+3. Frontend hoặc backend tiếp tục gửi dữ liệu đó vào `POST /api/AnalysisDataMeasure/AnalyseImage`.
+4. Backend so điểm từng size dựa trên `Chest`, `Waist`, `Hip`.
+5. Trả về `ResultAnalysis` giống luồng gợi ý size thông thường.
 
-```typescript
-function getWaistLandmarks(lm, type) {
-  // Tính điểm giữa vai và hông
-  const waistX = (shoulderX + hipX) / 2;
-  const waistY = (shoulderY + hipY) / 2;
-  const waistZ = (shoulderZ + hipZ) / 2;
-  
-  // Tính chiều rộng/độ sâu eo
-  const waistHalfWidth = (shoulderWidth + hipWidth) / 4;
-  const waistHalfDepth = (shoulderDepth + hipDepth) / 4;
-  
-  // Trả về left và right waist points
-}
-```
+#### Prompt ảnh hiện tại
 
-**3. Tính Chu vi (Circumference)**
+Gemini được yêu cầu trả về đúng JSON có các field như:
 
-```typescript
-function calculateEllipseCircumference(a, b) {
-  // Sử dụng công thức Ramanujan approximation
-  const h = Math.pow(a - b, 2) / Math.pow(a + b, 2);
-  const circumference = 
-    Math.PI * (a + b) * (1 + (3 * h) / (10 + Math.sqrt(4 - 3 * h)));
-  return circumference;
-}
+- `size_us`
+- `size_uk`
+- `size_eu`
+- `chest_min_cm`, `chest_max_cm`
+- `height_min_cm`, `height_max_cm`
+- `weight_min_kg`, `weight_max_kg`
+- `waist_min_cm`, `waist_max_cm`
+- `hip_min_cm`, `hip_max_cm`
 
-// Áp dụng cho từng phần cơ thể
-const chestCircumference = calculateEllipseCircumference(
-  frontShoulderWidth / 2,  // Bán kính ngang
-  sideChestDepth / 2        // Bán kính sâu
-);
-```
+### 7.4 Luồng xác thực
 
-**4. Scale to Real World**
+Backend có các endpoint cho:
 
-```typescript
-function Scale(lm, realHeight) {
-  const nose = lm[0];           // ?i?m m?c m?i
-  const ankleL = lm[27];        // M?t c? ch?n tr?i
-  const ankleR = lm[28];        // M?t c? ch?n ph?i
-  const avgAnkleY = (ankleL.y + ankleR.y) / 2;
-  
-  // T?nh scale factor d?a tr?n chi?u cao th?c t?
-  return realHeight / (avgAnkleY - nose.y);
-}
+- Login bằng email/password.
+- Register.
+- Login bằng Firebase token.
+- Logout.
+- Lấy user data.
+- Cập nhật thông tin người dùng.
 
-// ?p d?ng scale
-const scale = Scale(FrontBuffer[0], userHeight);
-const scaledChest = chestCircumference * scale;
-const scaledWaist = waistCircumference * scale;
-const scaledHip = hipCircumference * scale;
-```
+Dữ liệu đo và kết quả phân tích có thể được lưu gắn với tài khoản sau đăng nhập.
 
-#### Landmarks được sử dụng
+## 8. API chính
 
-| Landmark Index | Body Part | Usage |
-|---------------|-----------|-------|
-| 0 | Nose | Tính chiều cao, scale factor |
-| 11 | Left Shoulder | Tính chiều rộng ngực, vai |
-| 12 | Right Shoulder | Tính chiều rộng ngực, vai |
-| 23 | Left Hip | Tính chiều rộng hông |
-| 24 | Right Hip | Tính chiều rộng hông |
-| 25-26 | Waist (Calculated) | Tính chu vi eo |
-| 27-28 | Ankles | Tính chiều cao, scale factor |
+## 8.1 User API
 
-### 🤖 Tích hợp Gemini AI
+Base route: `/api/User`
 
-#### Luồng xử lý Backend
+- `POST /Login`
+- `POST /Register`
+- `POST /LoginWithFirebase`
+- `GET /GetUserData`
+- `POST /Logout`
+- `POST /SaveMeasure`
+- `POST /SaveMeasureBrandSize`
+- `GET /GetBrandSizeMeasure`
+- `PUT /UpdateUser`
 
-```
-Frontend (Số đo)
-    ↓
-Backend API: /api/AnalysisDataMeasure/AISuggest
-    ↓
-1. Điều chỉnh số đo theo Brand Rules
-    ├── Chest += brandRule.Chest
-    ├── Waist += brandRule.Waist
-    └── Hip += brandRule.Hip
-    ↓
-2. Điều chỉnh theo Gender
-    └── AdjustByGenderSlight()
-    ↓
-3. Tính toán Size Match
-    ├── GetSizeFromMeasure()
-    ├── So sánh với Size Rules
-    └── Tính Fit Percent (0-100%)
-    ↓
-4. Tạo Prompt cho Gemini
-    └── CreatePrompt()
-    ↓
-5. Gọi Gemini API
-    ├── Model: gemini-3-flash-preview
-    ├── Input: Prompt với số đo + brand info
-    └── Output: JSON với 3 fields
-    ↓
-6. Parse & Combine Results
-    ├── Size Suggest (từ Size Matching)
-    ├── Fit Suggest (từ Fit Percent)
-    └── AI Insights (từ Gemini)
-```
+### Ví dụ request đăng nhập
 
-#### Gemini Prompt Structure
-
-```csharp
-SYSTEM ROLE:
-- API sinh dữ liệu JSON (KHÔNG phải chatbot)
-- CHỈ trả về JSON hợp lệ
-- KHÔNG markdown, KHÔNG text thừa
-
-DỮ LIỆU ĐẦU VÀO:
-- Thương hiệu: {brand}
-- Loại sản phẩm: {typeProduct}
-- Chiều cao: {height} cm
-- Vòng ngực: {chest} cm
-- Vai: {shoulderWidth} cm
-- Vòng eo: {waist} cm
-
-JSON OUTPUT:
+```json
 {
-  "measurementInsight": {
-    "content": "Phân tích số đo cơ thể, tập trung vào chiều cao và vòng ngực"
+  "email": "user@example.com",
+  "password": "your_password"
+}
+```
+
+## 8.2 Analysis API
+
+Base route: `/api/AnalysisDataMeasure`
+
+- `POST /AISuggest`
+- `POST /GetDataFromImage`
+- `POST /AnalyseImage`
+
+### Ví dụ request `AISuggest`
+
+```json
+{
+  "brand": "Zara",
+  "userCustom": {
+    "gender": "female",
+    "typeProduct": "dress",
+    "sizeOutput": "US"
   },
-  "productFitNote": {
-    "content": "Mô tả độ ôm, độ thoải mái khi mặc"
-  },
-  "expectedFit": {
-    "content": "Slim / Regular / Relaxed - cảm nhận dự kiến"
+  "dataMeasure": {
+    "shoulderWidth": 39,
+    "chest": 84,
+    "waist": 67,
+    "hip": 90,
+    "height": 160
   }
 }
 ```
 
-#### Brand Rules & Size Matching
+### Ví dụ response `ResultAnalysis`
 
-**Brand Rules Adjustment**
-```csharp
-// Mỗi brand có offset riêng để điều chỉnh số đo
-dataMeasureAdjusted = {
-  Chest: measureData.Chest + brandRule.Chest,
-  Waist: measureData.Waist + brandRule.Waist,
-  Hip: measureData.Hip + brandRule.Hip
-};
-```
-
-**Size Matching Algorithm**
-```csharp
-// So sánh số đo với từng size trong brand
-foreach (var size in brandSizes) {
-  var fit = CalculateRangeFit(userValue, size.Min, size.Max);
-  totalFit += fit * weight;
-}
-
-// Fit Percent Categories
->= 90%: "Rất vừa vặn"
->= 80%: "Vừa vặn"
->= 70%: "Tạm ổn"
->= 60%: "Hơi lệch"
->= 50%: "Không khuyến nghị"
-< 50%:  "Không phù hợp"
-```
-
-#### Response Structure
-
-```typescript
-interface ResultAnalysis {
-  analysisCode: string;           // GUID
-  analysisDate: DateTime;
-  sizeSuggest: string;             // Size được đề xuất (S, M, L, etc.)
-  fitSuggest: string;             // "Rất vừa vặn", "Vừa vặn", etc.
-  reliableRate: number;            // Fit Percent (0-100)
-  fitSuggestFromAI: {
-    measurementInsight: {          // Phân tích số đo từ Gemini
-      content: string;
-    };
-    productFitNote: {              // Ghi chú về độ fit từ Gemini
-      content: string;
-    };
-    expectedFit: {                 // Fit dự kiến (Slim/Regular/Relaxed)
-      content: string;
-    };
-  };
+```json
+{
+  "analysisCode": "4f5ddf4a-6f08-4e51-b6fc-55fca5b43b4c",
+  "analysisDate": "2026-03-25T12:34:56Z",
+  "typeCustom": {
+    "gender": "female",
+    "typeProduct": "dress",
+    "sizeOutput": "US"
+  },
+  "fitSuggest": "Vừa vặn",
+  "sizeSuggest": "M",
+  "reliableRate": 84,
+  "fitSuggestFromAI": {
+    "measurementInsight": {
+      "content": "Chiều cao và vòng ngực cho thấy form áo sẽ lên cân đối, thân áo không quá ngắn."
+    },
+    "productFitNote": {
+      "content": "Khi mặc sẽ có độ ôm vừa, dễ vận động và ít bị bó phần thân trên."
+    },
+    "expectedFit": {
+      "content": "Regular"
+    }
+  }
 }
 ```
 
-### 🔄 Data Flow Diagram
+### Ví dụ request `GetDataFromImage`
 
-```
-┌─────────────┐
-│   User      │
-│  (Camera)   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────────┐
-│  MediaPipe Pose │ ◄─── Video Frames (30fps)
-│   Detection     │
-└──────┬──────────┘
-       │
-       ▼
-┌─────────────────┐
-│  Pose Landmarks │ (33 points với x, y, z, visibility)
-│   (33 points)   │
-└──────┬──────────┘
-       │
-       ├──► Detect Pose Type (FRONT/SIDE)
-       │
-       ├──► Buffer Frames (FrontBuffer/SideBuffer)
-       │
-       └──► Extract Measurements
-              │
-              ├──► Shoulder Width (FRONT)
-              ├──► Hip Width (FRONT)
-              ├──► Chest Depth (SIDE)
-              ├──► Hip Depth (SIDE)
-              └──► Waist Width/Depth
-                     │
-                     ▼
-              ┌──────────────────┐
-              │ Calculate        │ ◄─── Ellipse Formula
-              │ Circumference    │
-              │ (Chest/Waist/Hip)│
-              └──────┬───────────┘
-                     │
-                     ▼
-              ┌──────────────────┐
-              │ Scale to Real     │ ◄─── User Height Input
-              │ World (cm)        │
-              └──────┬───────────┘
-                     │
-                     ▼
-              ┌──────────────────┐
-              │ Frontend Context  │
-              │ (BodyMeasureEstimate)│
-              └──────┬───────────┘
-                     │
-                     ▼
-              ┌──────────────────┐
-              │ API Call          │
-              │ /AISuggest        │
-              └──────┬───────────┘
-                     │
-                     ▼
-              ┌──────────────────┐
-              │ Backend           │
-              │ AnalysisService   │
-              └──────┬───────────┘
-                     │
-                     ├──► Adjust by Brand Rules
-                     ├──► Adjust by Gender
-                     ├──► Size Matching Algorithm
-                     └──► Create Gemini Prompt
-                            │
-                            ▼
-                     ┌──────────────────┐
-                     │ Gemini API        │
-                     │ (gemini-3-flash)   │
-                     └──────┬───────────┘
-                            │
-                            ▼
-                     ┌──────────────────┐
-                     │ Parse JSON        │
-                     │ Response          │
-                     └──────┬───────────┘
-                            │
-                            ▼
-                     ┌──────────────────┐
-                     │ Combine Results   │
-                     │ (Size + AI)       │
-                     └──────┬───────────┘
-                            │
-                            ▼
-                     ┌──────────────────┐
-                     │ Return to         │
-                     │ Frontend          │
-                     └──────────────────┘
+Body là chuỗi base64 của ảnh:
+
+```json
+"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ..."
 ```
 
-### 🏗️ Backend Architecture
+### Ví dụ request `AnalyseImage`
 
-#### Cấu trúc Backend
-
-```
-Backend/Raidexi/
-├── Application/              # Application Layer
-│   ├── Dtos/                 # Data Transfer Objects
-│   │   ├── GeminiResponse.cs
-│   │   ├── ResultAnalysis.cs
-│   │   ├── SizeResult.cs
-│   │   └── uploadDataToAnalysisMeasure.cs
-│   └── Interfaces/           # Service Interfaces
-│       ├── IAnalysisDataService.cs
-│       ├── IAuthService.cs
-│       └── IGeminiService.cs
-│
-├── Domain/                   # Domain Layer
-│   ├── Entities/            # Domain Models
-│   │   ├── User.cs
-│   │   ├── MeasureData.cs
-│   │   ├── MappingSize.cs
-│   │   └── DataBrandAnalysis.cs
-│   └── Interfaces/          # Repository Interfaces
-│       ├── IUserRepository.cs
-│       ├── ISizeMapping.cs
-│       └── ITokenServices.cs
-│
-├── Infrastructure/          # Infrastructure Layer
-│   ├── Persistence/        # Data Access
-│   │   ├── AppDBContext.cs (PostgreSQL)
-│   │   ├── MongoDbContext.cs
-│   │   ├── UserRepository.cs
-│   │   └── MappingSizeRepo.cs
-│   ├── Security/           # Security Services
-│   │   ├── PasswordHasher.cs (BCrypt)
-│   │   └── TokenGenerate.cs (JWT)
-│   └── Services/           # Business Logic
-│       ├── AnalyisService.cs
-│       ├── AuthService.cs
-│       └── GeminiService.cs
-│
-└── Presentation/           # Presentation Layer
-    ├── Controller/        # API Controllers
-    │   ├── UserController.cs
-    │   ├── AnalysisDataMeasureController.cs
-    │   └── MappingSizeController.cs
-    └── Services/
-        └── CacheServices/
-            └── CacheAnalysisDataService.cs
+```json
+{
+  "measureData": {
+    "shoulderWidth": 39,
+    "chest": 84,
+    "waist": 67,
+    "hip": 90,
+    "height": 160
+  },
+  "customizeDataAiSuggest": {
+    "gender": "female",
+    "typeProduct": "dress",
+    "sizeOutput": "US"
+  },
+  "sizeAnalysisResponse": {
+    "sizes": [
+      {
+        "size_us": "S",
+        "size_uk": 8,
+        "size_eu": 36,
+        "chest_min_cm": 82,
+        "chest_max_cm": 86,
+        "height_min_cm": 158,
+        "height_max_cm": 162,
+        "weight_min_kg": null,
+        "weight_max_kg": null,
+        "waist_min_cm": 64,
+        "waist_max_cm": 68,
+        "hip_min_cm": 88,
+        "hip_max_cm": 92
+      }
+    ]
+  }
+}
 ```
 
-#### API Endpoints
+## 8.3 Brand Mapping API
 
-**Authentication Endpoints** (`/api/User`)
-- `POST /api/User/Login` - Đăng nhập với email/password
-- `POST /api/User/Register` - Đăng ký tài khoản mới
-- `POST /api/User/LoginWithFirebase` - Đăng nhập với Firebase token
-- `POST /api/User/Logout` - Đăng xuất
-- `GET /api/User/GetUserData` - Lấy thông tin người dùng
+Base route: `/api/MappingSize`
 
-**Analysis Endpoints** (`/api/AnalysisDataMeasure`)
-- `POST /api/AnalysisDataMeasure/AISuggest` - Đề xuất size với AI
-  - Rate Limit: 5 requests/24h (anonymous)
-  - Request Body: `uploadDataToAnalysisMeasure`
-  - Response: `ResultAnalysis`
+- `GET /brand-profiles`
+- `POST /AddBrandProfile`
+- `POST /AddSizeMapping`
+- `POST /AddUniversalSize`
+- `POST /AddCategoryRule`
+- `POST /AddBrandRule`
 
-**Size Mapping Endpoints** (`/api/MappingSize`)
-- `GET /api/MappingSize/brand-profiles` - Lấy danh sách brand profiles
-- `POST /api/MappingSize/AddBrandProfile` - Thêm brand profile
-- `POST /api/MappingSize/AddSizeMapping` - Thêm size mapping
-- `POST /api/MappingSize/AddUniversalSize` - Thêm universal size
-- `POST /api/MappingSize/AddCategoryRule` - Thêm category rule
-- `POST /api/MappingSize/AddBrandRule` - Thêm brand rule
+## 8.4 Mail API
 
-#### Database Schema
+Base route: `/api/Mail`
 
-**PostgreSQL (User Data)**
-```sql
-Users Table:
-- Id (Guid, PK)
-- Email (string, unique)
-- FullName (string)
-- HashPassword (string)
-- CreatedAt (DateTime)
-- MeasureData (JSON)
-```
+- `POST /send`
 
-**MongoDB (Brand & Size Data)**
-```javascript
-Collections:
-- BrandProfiles: Thông tin thương hiệu
-- SizeMappings: Mapping giữa universal size và brand size
-- UniversalSizes: Kích thước chuẩn (S, M, L, XL, etc.)
-- CategoryRules: Quy tắc theo loại sản phẩm (top, bottom, dress)
-- BrandRules: Quy tắc điều chỉnh số đo theo brand
-```
+## 9. Dữ liệu và lưu trữ
 
-#### Backend Services
+### PostgreSQL
 
-**AnalyisService**
-- `GetSizeFromMeasure()`: Tính toán size phù hợp từ số đo
-- `AISuggestSize()`: Tích hợp Gemini AI để đề xuất size
-- `AdjustByGenderSlight()`: Điều chỉnh số đo theo giới tính
-- `CalculateRangeFit()`: Tính toán độ phù hợp (0-100%)
+Được dùng cho dữ liệu quan hệ, chủ yếu gồm:
 
-**GeminiService**
-- `CreatePrompt()`: Tạo prompt cho Gemini AI
-- `GetAIMeasure()`: Gọi Gemini API và parse response
+- Tài khoản người dùng.
+- Thông tin hồ sơ.
+- Dữ liệu số đo lưu theo user.
+- Dữ liệu brand-size người dùng đã phân tích.
 
-**AuthService**
-- `LoginAsync()`: Xác thực người dùng
-- `RegisterAsync()`: Đăng ký người dùng mới
-- `LoginWithFirebaseAsync()`: Xác thực với Firebase
+### MongoDB
 
-**CacheAnalysisDataService**
-- Cache brand rules, size mappings, category rules
-- Giảm số lần query database
+Được dùng cho dữ liệu linh hoạt liên quan đến size system:
 
-#### Rate Limiting
+- Brand profiles.
+- Brand rules.
+- Universal sizes.
+- Category rules.
+- Size mappings.
 
-```csharp
-Policy: "anon05"
-- Limit: 5 requests per 24 hours
-- Window: Fixed window (24 hours)
-- Scope: Per IP address
-- Status Code: 429 Too Many Requests
-```
+### Cache
 
-#### Environment Variables
+`CacheAnalysisDataService` được dùng để cache rule và mapping, giúp giảm truy vấn lặp cho các endpoint phân tích.
 
-```env
-# Database
-DefaultConnection=PostgreSQL connection string
-MongoUrl=MongoDB connection string
-Databasename=MongoDB database name
+## 10. Cài đặt và chạy local
 
-# Firebase
-FIREBASE_CREDENTIALS_JSON=Firebase service account JSON
+### 10.1 Yêu cầu hệ thống
 
-# Gemini AI
-GEMINI_API_KEY=Google Gemini API key
+- Node.js `20+`
+- npm `10+`
+- .NET SDK `10.0`
+- PostgreSQL
+- MongoDB
+- Trình duyệt hiện đại có hỗ trợ webcam
 
-# JWT
-JWT_SECRET_KEY=Secret key for JWT tokens
-```
-
-### ⚙️ Technical Details
-
-#### MediaPipe Configuration
-
-```typescript
-poseRef.current.setOptions({
-  modelComplexity: 2,              // 0-2, cao hơn = chính xác hơn
-  smoothLandmarks: true,           // Làm mượt landmarks
-  enableSegmentation: true,         // Bật segmentation
-  smoothSegmentation: true,         // Làm mượt segmentation
-  minDetectionConfidence: 0.7,     // Ngưỡng phát hiện
-  minTrackingConfidence: 0.7       // Ngưỡng tracking
-});
-```
-
-#### Error Handling
-
-- **Camera không khả dụng**: Hiển thị "OFFLINE" status
-- **Pose không detect được**: Bỏ qua frame, không thêm vào buffer
-- **Buffer chưa đủ**: Hiển thị "Đang Thu Thập Dữ Liệu"
-- **Gemini API lỗi**: Trả về size suggest từ algorithm, không có AI insights
-- **Rate limiting**: Hiển thị thông báo "Đã hết lượt dùng thử"
-
-#### Performance Optimization
-
-- **Frame Buffering**: Chỉ xử lý frames hợp lệ
-- **Median Filtering**: Loại bỏ outliers trong measurements
-- **Lazy Loading**: MediaPipe chỉ load khi mở camera
-- **Canvas Optimization**: Clear và redraw chỉ khi cần
-- **Context Memoization**: Tránh re-render không cần thiết
-- **Backend Caching**: In-memory cache cho brand rules và size mappings
-- **Database Indexing**: Index trên email và các trường thường query
-
----
-
-## 🔧 Cấu hình
-
-### Environment Variables
-
-Tạo file `.env.local` trong `FrontEnd/Raidexi/`:
-
-```env
-NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-# ... các config Firebase khác
-```
-
-### Tailwind Config
-
-File `tailwind.config.js` đã được cấu hình với:
-- Custom colors (brass, background-dark, etc.)
-- Custom fonts (Newsreader, JetBrains Mono)
-- Custom spacing và utilities
-
----
-
-## 📝 Scripts
+### 10.2 Chạy frontend
 
 ```bash
-# Development
-npm run dev          # Chạy development server
-
-# Production
-npm run build        # Build production
-npm run start        # Chạy production server
-
-# Linting
-npm run lint         # Chạy ESLint
+cd FrontEnd/Raidexi
+npm install
+npm run dev
 ```
 
----
+Frontend mặc định chạy tại:
 
-## 🧪 Testing
+- [http://localhost:3000](http://localhost:3000)
 
-### Kiểm tra Camera
+### 10.3 Chạy backend
 
-1. Đảm bảo camera được cấp quyền truy cập
-2. Kiểm tra console browser để xem lỗi (nếu có)
-3. Đảm bảo đủ ánh sáng khi đo lường
+```bash
+cd Backend/Raidexi
+dotnet restore
+dotnet run --urls http://localhost:5000
+```
 
-### Kiểm tra MediaPipe
+Swagger development:
 
-- MediaPipe Pose được load từ CDN
-- Kiểm tra network tab để đảm bảo các file MediaPipe được tải thành công
+- [http://localhost:5000/swagger](http://localhost:5000/swagger)
 
----
+### 10.4 Thứ tự khuyến nghị khi chạy local
 
-## 🐛 Troubleshooting
+1. Khởi động PostgreSQL và MongoDB.
+2. Thiết lập biến môi trường backend.
+3. Chạy backend trước.
+4. Chạy frontend sau.
+5. Kiểm tra Swagger rồi mới test luồng UI.
+
+## 11. Biến môi trường và cấu hình
+
+## 11.1 Backend
+
+Backend đang đọc cấu hình từ `appsettings.json` và biến môi trường.
+
+Các giá trị tối thiểu cần có:
+
+```env
+# PostgreSQL
+ConnectionStrings__DefaultConnection=Host=...;Port=5432;Database=...;Username=...;Password=...
+
+# MongoDB
+MongoUrl=mongodb://localhost:27017
+Databasename=raidexi
+
+# Firebase Admin service account JSON string
+FIREBASE_CREDENTIALS_JSON={...json...}
+
+# Gemini
+GEMINI_API_KEY=your_gemini_api_key
+
+# Mail
+MailAdmin=your_email@example.com
+MailAdminPassword=your_app_password
+```
+
+Ngoài ra backend còn dùng khóa JWT ở `appsettings.json` với key:
+
+- `Jwt:Key`
+
+## 11.2 Frontend
+
+Hiện tại frontend chưa dùng đầy đủ `.env.local` cho các cấu hình quan trọng. Một số thông tin đang hardcode trực tiếp trong source.
+
+Về mặt chuẩn dự án, nên hướng tới mẫu cấu hình như sau:
+
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:5000
+NEXT_PUBLIC_FIREBASE_API_KEY=...
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=...
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
+NEXT_PUBLIC_FIREBASE_APP_ID=...
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=...
+NEXT_PUBLIC_EMAILJS_SERVICE_ID=...
+NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=...
+NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=...
+```
+
+Lưu ý: mẫu trên là định hướng chuẩn hóa, không phải toàn bộ code hiện tại đã đọc những biến này.
+
+## 12. Kiểm tra sau khi setup
+
+Sau khi chạy xong local, nên kiểm tra lần lượt:
+
+1. Mở frontend và xác nhận landing page render bình thường.
+2. Mở backend Swagger để kiểm tra API đã khởi động.
+3. Test `POST /api/User/Register` hoặc đăng ký qua UI.
+4. Mở trang `Measurements` và cho phép truy cập camera.
+5. Thực hiện một lượt đo để kiểm tra localStorage và provider state.
+6. Gọi `GET /api/MappingSize/brand-profiles` để xác nhận MongoDB hoạt động.
+7. Gửi thử `POST /api/AnalysisDataMeasure/AISuggest` với payload mẫu.
+
+## 13. Lưu ý hiện trạng dự án
+
+Đây là các điểm rất quan trọng để onboard đúng với code hiện tại:
+
+- Frontend đang hardcode `BASE_URL = "http://localhost:5000"` trong `FrontEnd/Raidexi/Shared/Service/Api.ts`.
+- Frontend đang hardcode cấu hình Firebase trong `FrontEnd/Raidexi/Shared/Service/firebaseService.ts`.
+- Service gửi mail phía frontend đang hardcode thông tin EmailJS trong `FrontEnd/Raidexi/Shared/Service/MailService.ts`.
+- Backend đang cấu hình CORS cho `https://localhost:3000`, trong khi frontend local thường chạy `http://localhost:3000`.
+- `dotnet run` sẽ tự gọi migration PostgreSQL khi API khởi động.
+- API `AISuggest` có rate limiting `5 request / 24h` cho anonymous client theo IP.
+- Hiện chưa thấy test suite hoặc script test riêng cho frontend/backend trong repo.
+
+## 14. Troubleshooting
+
+### Backend không lên
+
+- Kiểm tra .NET SDK có đúng version `10.0`.
+- Kiểm tra đủ biến môi trường bắt buộc như `FIREBASE_CREDENTIALS_JSON`, `GEMINI_API_KEY`, `MongoUrl`.
+- Kiểm tra PostgreSQL có kết nối được không.
+- Đọc log startup để xác định service nào fail trong DI hoặc migration.
+
+### Frontend gọi API lỗi CORS
+
+- Kiểm tra backend có đang chạy ở `http://localhost:5000`.
+- Kiểm tra `BASE_URL` trong `FrontEnd/Raidexi/Shared/Service/Api.ts`.
+- Cập nhật `WithOrigins(...)` trong `Backend/Raidexi/Program.cs` nếu frontend đang chạy bằng `http` thay vì `https`.
+
+### Login Firebase không hoạt động
+
+- Kiểm tra Firebase project frontend có đúng với service account backend đang verify.
+- Kiểm tra biến `FIREBASE_CREDENTIALS_JSON` có chứa JSON hợp lệ và không bị lỗi escape `\n`.
+
+### Gemini trả lỗi
+
+- Kiểm tra `GEMINI_API_KEY`.
+- Kiểm tra mạng outbound từ máy chạy backend.
+- Xem log backend để biết lỗi xảy ra ở bước tạo prompt, gọi model hay parse JSON.
 
 ### Camera không hoạt động
 
-- Kiểm tra quyền truy cập camera trong browser settings
-- Đảm bảo không có ứng dụng khác đang sử dụng camera
-- Thử trên trình duyệt khác
+- Kiểm tra quyền camera của trình duyệt.
+- Tắt ứng dụng khác đang dùng webcam.
+- Dùng Chrome hoặc Edge bản mới để giảm lỗi tương thích MediaPipe.
 
-### MediaPipe không load
+### Phân tích size không ra kết quả hợp lý
 
-- Kiểm tra kết nối internet (MediaPipe load từ CDN)
-- Kiểm tra console để xem lỗi cụ thể
-- Thử clear cache và reload
+- Kiểm tra dữ liệu `BrandRule`, `CategoryRule`, `UniversalSize`, `SizeMapping` trong MongoDB.
+- Kiểm tra `gender`, `typeProduct`, `sizeOutput` có khớp dữ liệu backend không.
+- Kiểm tra ảnh đầu vào có đủ rõ nếu dùng luồng phân tích từ ảnh.
 
-### Đo lường không chính xác
+## 15. Hướng phát triển tiếp theo
 
-- Đảm bảo đủ ánh sáng
-- Đứng đúng vị trí trong khung hình
-- Giữ nguyên tư thế trong suốt quá trình đo
+Để dự án đạt mức production-ready hơn, nên ưu tiên các hạng mục sau:
 
----
+- Tách toàn bộ config nhạy cảm khỏi source code và chuyển sang env.
+- Đồng bộ CORS, base URL và scheme `http/https` giữa frontend và backend.
+- Bổ sung tài liệu seed dữ liệu MongoDB.
+- Bổ sung unit test cho `AnalyisService` và integration test cho API chính.
+- Tách riêng DTO public API và model nội bộ rõ ràng hơn.
+- Chuẩn hóa naming giữa frontend/backend, đặc biệt ở các field JSON và type.
+- Thêm logging có cấu trúc cho các luồng phân tích.
+- Bổ sung Docker Compose để chạy local với PostgreSQL và MongoDB dễ hơn.
 
-## 🤝 Đóng góp
+## 16. Đóng góp
 
-Chúng tôi hoan nghênh mọi đóng góp! Vui lòng:
+Quy trình đề xuất khi đóng góp:
 
-1. Fork repository
-2. Tạo feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Mở Pull Request
+1. Tạo branch mới từ nhánh đang làm việc.
+2. Mô tả rõ mục tiêu thay đổi.
+3. Kiểm tra lại các luồng bị ảnh hưởng.
+4. Cập nhật tài liệu nếu có thay đổi API hoặc cấu hình.
+5. Mở pull request kèm ảnh chụp màn hình hoặc payload minh họa nếu cần.
 
-### Code Style
+## 17. License
 
-- Sử dụng TypeScript cho type safety
-- Tuân thủ ESLint rules
-- Format code với Prettier (nếu có)
-- Viết comments cho các function phức tạp
-
----
-
-## 📄 License
-
-Dự án này là private và không có license công khai.
-
----
-
-## 👥 Team
-
-- **Development**: Raidexi Team
-- **AI/ML**: MediaPipe Integration
-- **Design**: Custom UI/UX
-
----
-
-## 📞 Liên hệ
-
-- **Website**: [Raidexi](http://localhost:3000)
-- **Email**: support@raidexi.com
-- **Issues**: Tạo issue trên repository
-
----
-
-## 🙏 Acknowledgments
-
-- [MediaPipe](https://mediapipe.dev/) - Computer Vision framework
-- [Next.js](https://nextjs.org/) - React framework
-- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
-- [Firebase](https://firebase.google.com/) - Backend services
-
----
-
-<div align="center">
-
-**Made with ❤️ by Raidexi Team**
-
-⭐ Star this repo nếu bạn thấy hữu ích!
-
-</div>
+Repository hiện có file `License` tại thư mục gốc. Hãy đọc kỹ file này trước khi tái sử dụng hoặc phân phối mã nguồn.

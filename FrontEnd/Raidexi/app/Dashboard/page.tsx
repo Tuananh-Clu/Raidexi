@@ -4,12 +4,12 @@ import Dashboard from "@/features/DashboardUser/components/Dashboard";
 import Sidebar from "@/features/DashboardUser/components/Sidebar";
 import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 import { NavBar } from "@/Shared/Components/components/NavBar";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 export default function page() {
   const context=useContext(BodyMeasureEstimateContext);
   const dataMeasurements=context?.dataMeasured;
-  console.log("Data measurements in Dashboard page:", dataMeasurements);
+    const [editProfileOpen, setEditProfileOpen] = useState(false);
   return (
     <>
       <NavBar></NavBar>
@@ -41,8 +41,8 @@ export default function page() {
           </div>
         </header>
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-          <Sidebar  />
-          <Dashboard dataMeasurements={dataMeasurements} />
+          <Sidebar setIsOpenProfile={setEditProfileOpen} />
+          <Dashboard dataMeasurements={dataMeasurements} setEditProfileOpen={setEditProfileOpen} editProfileOpen={editProfileOpen} />
         </div>
       </main>
     </>

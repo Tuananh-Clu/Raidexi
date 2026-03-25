@@ -10,6 +10,7 @@ export const API={
         "SaveDataMeasurement":"/api/User/SaveMeasure",
         "SaveMeasureBrandSize":"/api/User/SaveMeasureBrandSize",
         "GetBrandMeasurements":"/api/User/GetBrandSizeMeasure",
+        "UpdateUserData":"/api/User/UpdateUser",
     },
     "Brand":{
         "GetBrandProfile":"/api/MappingSize/brand-profiles",
@@ -41,6 +42,7 @@ export const api_Response=async(endpoint:string,method:'GET'|'POST'|'PUT'|'DELET
             case 'DELETE':
                 response=await axios.delete(BASE_URL + endpoint,{headers,withCredentials:true});
                 break;
+            
         }
         return response.data as any;
     } catch (error) {

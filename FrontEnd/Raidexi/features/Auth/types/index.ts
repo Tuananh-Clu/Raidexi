@@ -22,6 +22,9 @@ export interface UserData {
     name: string;
     email: string;
     hashPassword: string;
+    imageUrl: string;
+    phone: string;
+    address: string;
     createdAt: string;
 }
 

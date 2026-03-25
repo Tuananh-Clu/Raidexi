@@ -19,7 +19,7 @@ namespace Raidexi.Infrastructure.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AppDBContext appDBContext;
         private readonly MongoDbContext dbContext;
-        public AuthService(IUserRepository userRepository, IPassWordHash passWordHash, ITokenServices tokenService, IHttpContextAccessor httpContextAccessor, AppDBContext context, MongoDbContext dbContext)    
+        public AuthService(IUserRepository userRepository, IPassWordHash passWordHash, ITokenServices tokenService, IHttpContextAccessor httpContextAccessor, AppDBContext context, MongoDbContext dbContext)
         {
             _userRepository = userRepository;
             _passWordHash = passWordHash;
@@ -32,7 +32,7 @@ namespace Raidexi.Infrastructure.Services
         public async Task<AuthResult> LoginAsync(string email, string password)
         {
             var user = await _userRepository.GetByEmailAsync(email);
-            if (user == null || !_passWordHash.VerifyPassword(user.HashPassword,password))
+            if (user == null || !_passWordHash.VerifyPassword(user.HashPassword, password))
             {
                 return new AuthResult
                 {
@@ -42,7 +42,8 @@ namespace Raidexi.Infrastructure.Services
                 };
             }
             var token = _tokenService.CreateToken(user);
-            if (token == null) {
+            if (token == null)
+            {
                 return new AuthResult
                 {
                     IsSuccess = false,
@@ -86,7 +87,8 @@ namespace Raidexi.Infrastructure.Services
                 Email = email,
                 FullName = fullName,
                 HashPassword = hashedPassword,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                ImageUrl = ""
             };
             await _userRepository.AddAsync(newUser);
             var token = _tokenService.CreateToken(newUser);
@@ -105,6 +107,24 @@ namespace Raidexi.Infrastructure.Services
                 User = newUser
             };
         }
+        public async Task UpdateUserAsync(User user)
+        {
+            var existingUser = await _userRepository.GetByIdAsync(user.Id);
+            if (existingUser == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            existingUser.Email = user.Email ?? existingUser.Email;
+            existingUser.FullName = user.FullName ?? existingUser.FullName;
+            existingUser.HashPassword = existingUser.HashPassword; 
+            existingUser.CreatedAt = user.CreatedAt != default ? user.CreatedAt : existingUser.CreatedAt;
+            existingUser.Phone= user.Phone ?? existingUser.Phone;
+            existingUser.Address = user.Address ?? existingUser.Address;
+            existingUser.ImageUrl = user.ImageUrl ?? existingUser.ImageUrl;
+
+            await _userRepository.UpdateAsync(existingUser);
+        }
         public async Task<AuthResult> LoginWithFirebase(string token)
         {
             FirebaseAdmin.Auth.FirebaseToken decodeToken = await FirebaseAdmin.Auth.FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(token);
@@ -122,7 +142,8 @@ namespace Raidexi.Infrastructure.Services
                     Email = decodeToken.Claims["email"]?.ToString(),
                     FullName = decodeToken.Claims["name"]?.ToString(),
                     HashPassword = "",
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow,
+                    ImageUrl = decodeToken.Claims["picture"]?.ToString()
                 };
                 await _userRepository.AddAsync(user);
                 var tokens = _tokenService.CreateToken(user);
@@ -137,7 +158,7 @@ namespace Raidexi.Infrastructure.Services
             }
             else
             {
-                var tokens=_tokenService.CreateToken(user);
+                var tokens = _tokenService.CreateToken(user);
                 _httpContextAccessor.HttpContext?.Response.Cookies.Append("access_token_client", tokens, new CookieOptions
                 {
                     HttpOnly = true,
@@ -157,14 +178,14 @@ namespace Raidexi.Infrastructure.Services
         public async Task<AuthResult> GetDataUser()
         {
             var token = _httpContextAccessor.HttpContext?.Request.Cookies[$"access_token_client"];
-            if(token==null)
+            if (token == null)
             {
                 return null;
             }
-            var jwt =new JwtSecurityTokenHandler().ReadJwtToken(token);
+            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
             var userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
             var user = await _userRepository.GetByIdAsync(userId);
-            
+
             return new AuthResult
             {
                 IsSuccess = true,
@@ -183,7 +204,7 @@ namespace Raidexi.Infrastructure.Services
             var jwt = new JwtSecurityTokenHandler().ReadJwtToken(id);
             var userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
 
-            var filter= Builders<SaveMeasureDataDto>.Filter.Eq(u => u.id, userId);
+            var filter = Builders<SaveMeasureDataDto>.Filter.Eq(u => u.id, userId);
             var existingData = await dbContext.MeasureUserData.Find(filter).FirstOrDefaultAsync();
             if (existingData != null)
             {
@@ -215,24 +236,25 @@ namespace Raidexi.Infrastructure.Services
         }
         async Task IAuthService.SaveMeaure(MeasureData data)
         {
+
             await SaveMeasure(data);
         }
         public async Task<SaveMeasureDataDto> GetMeasureForUser(string id)
         {
             var rar = _httpContextAccessor.HttpContext.Request.Cookies[$"access_token_client"];
             var jwt = new JwtSecurityTokenHandler().ReadJwtToken(rar);
-            var filter = Builders<SaveMeasureDataDto>.Filter.Eq(a => a.id , id);
-            var data=await dbContext.MeasureUserData.Find(filter).FirstOrDefaultAsync();
+            var filter = Builders<SaveMeasureDataDto>.Filter.Eq(a => a.id, id);
+            var data = await dbContext.MeasureUserData.Find(filter).FirstOrDefaultAsync();
             return data;
         }
-       public async Task SaveBrandMeasure(DataBrand dataBrandAnalysis)
+        public async Task SaveBrandMeasure(DataBrand dataBrandAnalysis)
         {
             var jwtToken = _httpContextAccessor.HttpContext?.Request.Cookies[$"access_token_client"];
-            
+
             var jwt = new JwtSecurityTokenHandler().ReadJwtToken(jwtToken);
             Console.WriteLine("JWT Token: " + jwtToken);
             string? userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
-            await _userRepository.SaveBrandMeasure(userId,dataBrandAnalysis);
+            await _userRepository.SaveBrandMeasure(userId, dataBrandAnalysis);
         }
         public async Task<DataBrandAnalysisResult> GetDataBrandAnalysisAsync()
         {

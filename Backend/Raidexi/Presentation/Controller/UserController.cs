@@ -34,7 +34,10 @@ namespace Raidexi.Presentation.Controller
                     FullName = result.User.FullName,
                     Email = result.User.Email,
                     CreatedAt = result.User.CreatedAt,
-                    HashPassword = ""
+                    HashPassword = "",
+                    ImageUrl = result.User.ImageUrl,
+                    Phone = result.User.Phone,
+                    Address = result.User.Address
                 }
             });
         }
@@ -73,6 +76,9 @@ namespace Raidexi.Presentation.Controller
                     FullName = result.User.FullName,
                     Email = result.User.Email,
                     CreatedAt = result.User.CreatedAt,
+                    Phone = result.User.Phone,
+                    Address = result.User.Address,
+                    ImageUrl = result.User.ImageUrl,
                     HashPassword = ""
                 },
                 measureData = dataMeasure
@@ -102,7 +108,10 @@ namespace Raidexi.Presentation.Controller
                     FullName = result.User.FullName,
                     Email = result.User.Email,
                     CreatedAt = result.User.CreatedAt,
-                    HashPassword = ""
+                    HashPassword = "",
+                    Phone = result.User.Phone,
+                    Address = result.User.Address,
+                    ImageUrl = result.User.ImageUrl
                 }
             });
         }
@@ -136,6 +145,16 @@ namespace Raidexi.Presentation.Controller
                 message = "Lấy Thành Công",
                 isSuccess = true,
                 data = result
+            });
+        }
+        [HttpPut("UpdateUser")]
+        public async Task<IActionResult> UpdateUser([FromBody] User user)
+        {
+            await authService.UpdateUserAsync(user);
+            return Ok(new
+            {
+                message = "Cập Nhật Thành Công",
+                isSuccess = true
             });
         }
     }

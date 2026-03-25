@@ -1,10 +1,13 @@
 "use client";
 import { useContext } from 'react';
 import { AuthContext } from '@/provider/AuthProvider';
+import { BodyMeasureEstimateContext } from '@/provider/BodyMeasureEstimate';
 
 
-const Sidebar = () => {
-  const context=useContext(AuthContext)
+const Sidebar = ({setIsOpenProfile}: { setIsOpenProfile: React.Dispatch<React.SetStateAction<boolean>> }) => {
+  const context=useContext(AuthContext);
+  const dataMeasure=useContext(BodyMeasureEstimateContext);
+  const userData=localStorage.getItem("userData");
    if (!context || context.loading || !context.userData) {
     return (
       <div className="flex flex-col gap-8 p-8 lg:col-span-4">
@@ -15,11 +18,15 @@ const Sidebar = () => {
     );
   }
   const profile={
-    id: context?.userData.id??"",
-    name: context?.userData.name??"",
-    email: context?.userData.email??"",
-    createdAt: context?.userData.createdAt??"",
-  }
+    id: userData? JSON.parse(userData).id : "",
+    name: userData? JSON.parse(userData).username : "",
+    email: userData? JSON.parse(userData).email : "",
+    createdAt: userData? JSON.parse(userData).createdAt : "",
+    phone: userData? JSON.parse(userData).phone : "",
+    address: userData? JSON.parse(userData).address : "",
+    imageUrl: userData? JSON.parse(userData).imageUrl : "",
+    };
+  
   
   return (
     <div className="flex flex-col gap-8 lg:col-span-4">
@@ -32,7 +39,7 @@ const Sidebar = () => {
             <img 
               alt="Portrait" 
               className="object-cover w-full h-full grayscale opacity-90 contrast-125" 
-              src={"https://i.pinimg.com/736x/23/b7/c4/23b7c4cf67425a4586f52b5ab3193485.jpg"} 
+              src={profile.imageUrl || "/default-avatar.png"} 
             />
             <div className="absolute -bottom-2 -right-2 bg-primary text-background-dark text-[10px] font-bold px-2 py-0.5 font-mono border border-background-dark">
               ID: {profile.id}
@@ -50,18 +57,18 @@ const Sidebar = () => {
             </div>
             <div className="flex items-baseline justify-between pb-2 border-b border-border-color/20">
               <span className="text-text-muted text-[10px] uppercase tracking-widest font-mono">Điện thoại</span>
-              <span className="ml-4 font-mono text-xs text-white truncate">{}</span>
+              <span className="ml-4 font-mono text-xs text-white truncate">{profile.phone}</span>
             </div>
             <div className="flex items-baseline justify-between pb-2 border-b border-border-color/20">
               <span className="text-text-muted text-[10px] uppercase tracking-widest font-mono">Khu vực</span>
-              <span className="ml-4 font-mono text-xs text-white truncate">{}</span>
+              <span className="ml-4 font-mono text-xs text-white truncate">{profile.address}</span>
             </div>
             <div className="flex items-baseline justify-between">
               <span className="text-text-muted text-[10px] uppercase tracking-widest font-mono">Ngày tham gia</span>
               <span className="ml-4 font-mono text-xs text-white truncate">{profile.createdAt}</span>
             </div>
           </div>
-          <button className="mt-6 w-full h-12 flex items-center justify-center bg-primary hover:bg-primary-dark text-background-dark text-sm font-bold uppercase tracking-[0.15em] transition-all shadow-lg hover:shadow-primary/20">
+          <button onClick={()=>setIsOpenProfile(true)} className="mt-6 w-full h-12 flex items-center justify-center bg-primary hover:bg-primary-dark text-background-dark text-sm font-bold uppercase tracking-[0.15em] transition-all shadow-lg hover:shadow-primary/20">
             <span className="material-symbols-outlined text-[18px] mr-2">edit_square</span>
             Chỉnh sửa hồ sơ
           </button>
@@ -73,7 +80,7 @@ const Sidebar = () => {
         <h4 className="text-white text-sm font-bold uppercase tracking-[0.2em] mb-6 border-b border-border-color pb-3">Tổng quan hồ sơ</h4>
         <div className="grid grid-cols-2 gap-8">
           <div className="flex flex-col">
-            <span className="font-mono text-4xl font-light leading-none text-primary">{}</span>
+            <span className="font-mono text-4xl font-light leading-none text-primary">{dataMeasure?.dataMeasured?.length}</span>
             <span className="text-text-muted text-[10px] uppercase tracking-widest mt-2 font-mono">Tổng số đo</span>
           </div>
           <div className="flex flex-col pl-8 border-l border-border-color">

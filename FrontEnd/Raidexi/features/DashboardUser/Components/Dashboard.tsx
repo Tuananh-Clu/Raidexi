@@ -1,12 +1,18 @@
 import { data } from "@/features/Camera/types";
 import { useRouterService } from "@/Shared/Service/routerService";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { ListMeasure } from "./ListMeasure";
+import { EditProfile } from "./EditProfile";
+import { AuthContext } from "@/provider/AuthProvider";
 
 const Dashboard = ({
   dataMeasurements,
+  setEditProfileOpen,
+  editProfileOpen
 }: {
   dataMeasurements?:data[];
+  setEditProfileOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  editProfileOpen: boolean;
 }) => {
   console.log("Received dataMeasurements in Dashboard component:", dataMeasurements);
   const data = [
@@ -37,9 +43,16 @@ const Dashboard = ({
   ];
   const {navigate}=useRouterService();
   const [isOpen, setIsOpen] = useState(false);
+  const context=useContext(AuthContext);
   return (
     <div className="flex flex-col h-full gap-8 lg:col-span-8">
       <ListMeasure isOpen={isOpen} onClose={() => setIsOpen(false)} dataMeasured={dataMeasurements || []} />
+        {
+          editProfileOpen==true && <EditProfile isOpen={editProfileOpen} setIsOpen={() => setEditProfileOpen(false)} data={context?.userData} />
+        }
+        <div>
+          
+        </div>
       <div className="relative flex flex-col flex-1 border border-border-color bg-background-card">
         <div className="absolute -top-[1px] -left-[1px] w-4 h-4 border-l border-t border-primary z-10"></div>
         <div className="absolute -top-[1px] -right-[1px] w-4 h-4 border-r border-t border-primary z-10"></div>
