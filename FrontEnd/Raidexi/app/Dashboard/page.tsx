@@ -1,4 +1,3 @@
-"use client"
 
 import Dashboard from "@/features/DashboardUser/components/Dashboard";
 import Sidebar from "@/features/DashboardUser/components/Sidebar";

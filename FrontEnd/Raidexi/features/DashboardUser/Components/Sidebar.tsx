@@ -8,7 +8,7 @@ const Sidebar = ({setIsOpenProfile}: { setIsOpenProfile: React.Dispatch<React.Se
   const context=useContext(AuthContext);
   const dataMeasure=useContext(BodyMeasureEstimateContext);
   const userData=localStorage.getItem("userData");
-   if (!context || context.loading || !context.userData) {
+   if (!context || context?.loading || !context.userData) {
     return (
       <div className="flex flex-col gap-8 p-8 lg:col-span-4">
         <div className="text-center text-white animate-pulse">
