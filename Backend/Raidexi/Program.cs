@@ -13,6 +13,8 @@ using Raidexi.Infrastructure.Security;
 using Raidexi.Infrastructure.Services;
 using Raidexi.Application.Interfaces;
 using System;
+using System.Text;
+using System.Text.Json;
 using System.Threading.RateLimiting;
 using System.Xml.Linq;
 var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
@@ -80,9 +82,80 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+static string ResolveGoogleCredentialJson()
+{
+    var credentialSources = new[]
+    {
+        Environment.GetEnvironmentVariable("FIREBASE_CREDENTIALS_JSON"),
+        Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS")
+    };
 
-var firebaseJson =Environment.GetEnvironmentVariable("FIREBASE_CREDENTIALS_JSON") ?? "";
-firebaseJson = firebaseJson.Replace("\\n", "\n");
+    foreach (var source in credentialSources)
+    {
+        var resolved = NormalizeGoogleCredentialSource(source);
+        if (!string.IsNullOrWhiteSpace(resolved))
+        {
+            return resolved;
+        }
+    }
+
+    throw new Exception("Missing Firebase credential configuration. Set FIREBASE_CREDENTIALS_JSON or GOOGLE_APPLICATION_CREDENTIALS.");
+}
+
+static string? NormalizeGoogleCredentialSource(string? source)
+{
+    if (string.IsNullOrWhiteSpace(source))
+    {
+        return null;
+    }
+
+    var value = source.Trim();
+
+    if (File.Exists(value))
+    {
+        value = File.ReadAllText(value);
+    }
+
+    if (value.StartsWith("\"") && value.EndsWith("\""))
+    {
+        try
+        {
+            value = JsonSerializer.Deserialize<string>(value) ?? value;
+        }
+        catch (JsonException)
+        {
+        }
+    }
+
+    if (!value.TrimStart().StartsWith("{"))
+    {
+        try
+        {
+            var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(value));
+            if (decoded.TrimStart().StartsWith("{"))
+            {
+                value = decoded;
+            }
+        }
+        catch (FormatException)
+        {
+        }
+    }
+
+    value = value
+        .Replace("\\r\\n", "\n")
+        .Replace("\\n", "\n");
+
+    if (!value.TrimStart().StartsWith("{") && value.Contains("\\\""))
+    {
+        value = value.Replace("\\\"", "\"");
+    }
+
+    return value.Trim();
+}
+
+
+var firebaseJson = ResolveGoogleCredentialJson();
 if (string.IsNullOrWhiteSpace(firebaseJson))
 {
     throw new Exception("Missing FIREBASE_CREDENTIALS_JSON environment variable");
