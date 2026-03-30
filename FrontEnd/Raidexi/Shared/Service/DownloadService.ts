@@ -1,9 +1,35 @@
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { Parser } from 'json2csv';
 import { SendMailRequest } from '../types';
 import { SendMailService } from './MailService';
 
+function formatCsvValue(value: unknown) {
+    if (value == null) {
+        return '';
+    }
+
+    const normalizedValue = typeof value === 'object'
+        ? JSON.stringify(value)
+        : String(value);
+
+    return `"${normalizedValue.replace(/"/g, '""')}"`;
+}
+
+function convertToCsv(data: Record<string, unknown>[]) {
+    if (data.length === 0) {
+        return '';
+    }
+
+    const headers = Array.from(
+        new Set(data.flatMap((row) => Object.keys(row)))
+    );
+
+    const rows = data.map((row) =>
+        headers.map((header) => formatCsvValue(row[header])).join(',')
+    );
+
+    return [headers.join(','), ...rows].join('\n');
+}
 
 export async function ExportPng(element: string, filename: string) {
     const input = document.getElementById(element);
@@ -39,8 +65,7 @@ export async function ExportPdf(element: string, filename: string) {
 
 
 export function ExportCsv(data: any[], filename: string = 'export.csv') {
-    const parser = new Parser();
-    const csv = parser.parse(data);
+    const csv = convertToCsv(data);
     const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
