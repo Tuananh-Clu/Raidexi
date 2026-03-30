@@ -24,7 +24,9 @@ export const API={
         "SendMail":"/api/Mail/send",
     }
 }
-export const BASE_URL="http://localhost:5000"
+const rawBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+
+export const BASE_URL = rawBaseUrl.replace(/\/+$/, "");
 
 export const api_Response=async(endpoint:string,method:'GET'|'POST'|'PUT'|'DELETE',data?:any,headers?:any)=>{
     try {

@@ -15,7 +15,12 @@ using Raidexi.Application.Interfaces;
 using System;
 using System.Threading.RateLimiting;
 using System.Xml.Linq;
-DotNetEnv.Env.Load();
+var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+if (File.Exists(envPath))
+{
+    DotNetEnv.Env.Load(envPath);
+}
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -97,11 +102,14 @@ if (FirebaseApp.DefaultInstance == null)
             .CreateScoped("https://www.googleapis.com/auth/cloud-platform")
     });
 }
+var corsOrigins = (Environment.GetEnvironmentVariable("CORS_ORIGINS") ?? "http://localhost:3000,https://localhost:3000")
+    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("AllowConfiguredOrigins", policy =>
     {
-        policy.WithOrigins("https://localhost:3000")
+        policy.WithOrigins(corsOrigins)
               .AllowAnyMethod()
               .AllowAnyHeader()
         .AllowCredentials();
@@ -138,8 +146,14 @@ if (app.Environment.IsDevelopment())
     });
 }
 app.UseRateLimiter();
-app.UseCors("AllowAll");
-app.UseHttpsRedirection();
+app.UseCors("AllowConfiguredOrigins");
+
+var enableHttpsRedirection = bool.TryParse(Environment.GetEnvironmentVariable("ENABLE_HTTPS_REDIRECTION"), out var useHttpsRedirection)
+    && useHttpsRedirection;
+if (enableHttpsRedirection)
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthorization();
 
