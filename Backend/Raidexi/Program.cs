@@ -116,10 +116,7 @@ static string? NormalizeGoogleCredentialSource(string? source)
         value = File.ReadAllText(value);
     }
 
-    string FinalizeJson(string candidate) => candidate
-        .Replace("\\r\\n", "\n")
-        .Replace("\\n", "\n")
-        .Trim();
+    string FinalizeJson(string candidate) => candidate.Trim();
 
     bool TryParseJsonObject(string candidate, out string normalized)
     {
