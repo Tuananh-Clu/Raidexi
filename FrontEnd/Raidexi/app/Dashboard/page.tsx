@@ -1,10 +1,10 @@
 "use client";
 
+import Dashboard from "@/features/DashboardUser/components/Dashboard";
 import { BodyMeasureEstimateContext } from "../../provider/BodyMeasureEstimate";
 import { NavBar } from "../../Shared/Components/components/NavBar";
 import { useContext, useState } from "react";
-import { Dashboard } from "../../features/DashboardUser/components/Dashboard";
-import { Sidebar } from "../../features/DashboardUser/components/Sidebar";
+import Sidebar from "@/features/DashboardUser/components/Sidebar";
 
 export default function page() {
   const context=useContext(BodyMeasureEstimateContext);
