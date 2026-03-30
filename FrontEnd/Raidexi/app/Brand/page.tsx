@@ -21,11 +21,11 @@ export default function Page() {
   const context = useContext(AuthContext);
   const BrandContexts = useContext(BrandContext);
   const isLoggedIn = context?.isLoggedIn;
-  const [popUpAI, setPopUpAI] = useState(false);
   const itemsPerPage = 8;
+  const allBrands = useMemo(() => BrandContexts?.dataBrand ?? [], [BrandContexts?.dataBrand]);
 
   const filteredBrands = useMemo(() => {
-    return BrandContexts?.dataBrand.filter((brand) => {
+    return allBrands.filter((brand) => {
       const matchesSearch =
         brand.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         brand.refCode.toLowerCase().includes(searchQuery.toLowerCase());
@@ -40,40 +40,23 @@ export default function Page() {
 
       return true;
     });
-  }, [searchQuery, activeFilter]);
+  }, [allBrands, searchQuery, activeFilter]);
 
-  const totalItems = BrandContexts?.dataBrand.length;
+  const totalItems = filteredBrands.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const currentBrands = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
-    return BrandContexts?.dataBrand.slice(start, start + itemsPerPage);
+    return filteredBrands.slice(start, start + itemsPerPage);
   }, [filteredBrands, currentPage]);
 
-  const brandAl = () => {
-    currentBrands.map((brand) => {
-      filteredBrands.map((fBrand) => {
-        if (brand.id == fBrand.id) {
-          return brand;
-        }
-      });
-    });
-    return filteredBrands.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage,
-    );
-  };
   const counts = useMemo(() => {
     return {
-      all: BrandContexts?.dataBrand.length ?? 0,
-      international:
-        BrandContexts?.dataBrand.filter((b) => b.category === "International")
-          .length ?? 0,
-      VietNam:
-        BrandContexts?.dataBrand.filter((b) => b.category === "Vietnam")
-          .length ?? 0,
+      all: allBrands.length,
+      international: allBrands.filter((b) => b.category === "International").length,
+      VietNam: allBrands.filter((b) => b.category === "Vietnam").length,
     };
-  }, []);
+  }, [allBrands]);
 
   const handleFilterChange = (newFilter: FilterType) => {
     setActiveFilter(newFilter);
@@ -120,10 +103,10 @@ export default function Page() {
           />
 
           <section className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {brandAl().map((brand) => (
+            {currentBrands.map((brand) => (
               <BrandCard key={brand.id} brand={brand} />
             ))}
-            {BrandContexts?.dataBrand.length === 0 && (
+            {filteredBrands.length === 0 && (
               <div className="py-12 font-mono text-center border border-dashed col-span-full border-border-sepia text-text-muted">
                 NO BRANDS FOUND MATCHING CRITERIA
               </div>

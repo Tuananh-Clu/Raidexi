@@ -1,25 +1,33 @@
 "use client";
 import { BrandSidebar } from "@/features/Brand/components/BrandSideBar";
+import { Brand } from "@/features/Brand/types";
 import { MainContent } from "@/features/Brand/components/MainContextResult";
 import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 import { Footer } from "@/Shared/Components/components/Footer";
 import { NavBar } from "@/Shared/Components/components/NavBar";
-import { useParams, useSearchParams } from "next/navigation";
-import { useContext } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useContext, useState } from "react";
 
-export default function Page() {
+function BrandResultPage() {
   const context = useContext(BodyMeasureEstimateContext);
+  const [brandData] = useState<Brand[]>(() => {
+    if (typeof window === "undefined") {
+      return [];
+    }
+
+    const storedBrandData = localStorage.getItem("brandData");
+    return storedBrandData ? JSON.parse(storedBrandData) : [];
+  });
   const measurements = {
     chest: context?.dataMeasured?.chest,
     waist: context?.dataMeasured?.waist,
     height: context?.dataMeasured?.height,
     shoulderWidth: context?.dataMeasured?.shoulderWidth,
   };
-  const brandData = JSON.parse(localStorage.getItem("brandData") || "[]");
 
   const searchParams = useSearchParams();
   const brand = searchParams.get("brand");
-  const brandResult:any = brandData.find((b: any) => b.name === brand);
+  const brandResult = brandData.find((b) => b.name === brand);
   return (
     <div>
       <NavBar />
@@ -41,5 +49,13 @@ export default function Page() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+      <BrandResultPage />
+    </Suspense>
   );
 }

@@ -15,7 +15,7 @@ import { MobileMenu } from "@/Shared/Components/components/mobileMenu";
 
 
 
-function page() {
+function HomePage() {
   const [scrollButtonVisible, setScrollButtonVisible] = useState(false);
   useEffect(() => {
     const onScroll = () => {
@@ -54,4 +54,4 @@ function page() {
     </div>
 };
 
-export default page;
+export default HomePage;

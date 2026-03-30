@@ -10,7 +10,7 @@ import { AuthContext } from "@/provider/AuthProvider";
 import { useLoadingStore } from "@/Shared/store/loading.store";
 
 
-const page: React.FC = () => {
+const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [keepActive, setKeepActive] = useState(false);
@@ -72,7 +72,7 @@ const page: React.FC = () => {
                 placeholder="user@raidexi.com"
                 icon="id_card"
                 value={email}
-                onChange={(e: any) => setEmail(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                 required
               />
 
@@ -82,7 +82,7 @@ const page: React.FC = () => {
                 placeholder="••••••••••••"
                 icon="key"
                 value={password}
-                onChange={(e: any) => setPassword(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                 required
               />
 
@@ -148,4 +148,4 @@ const page: React.FC = () => {
   );
 };
 
-export default page;
+export default LoginPage;

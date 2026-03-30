@@ -26,10 +26,14 @@ export const BrandProvider = ({children}: {children: React.ReactNode}) => {
     const {dataBrandMeasured,setDataBrandMeasured} =useBrandDataUserStore();
     const {GetBrandMeasureData}=useBrandMeasure();
     const {isLoggedIn}=useContext(AuthContext)!;
-    const [dataBrand, setDataBrand] = useState<Brand[]>(()=>{
+    const [dataBrand, setDataBrand] = useState<Brand[]>(() => {
+        if (typeof window === "undefined") {
+            return [];
+        }
+
         const storedData = localStorage.getItem("brandData");
         return storedData ? JSON.parse(storedData) : [];
-    }); 
+    });
     const [popUpSettings,setPopUpSettings] = useState({isopened:false,brandrefcode:"",gender:"",productType:"",sizeSystem:""});
     const {getBrandProfile}=useBrandProfile();
     useEffect(() => {

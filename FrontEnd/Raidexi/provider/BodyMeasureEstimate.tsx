@@ -1,5 +1,5 @@
 "use client";
-import { data, MeasurementDataResponse } from "@/features/Camera/types";
+import { data } from "@/features/Camera/types";
 import { Landmark } from "@mediapipe/pose";
 import { createContext, useEffect, useRef, useState } from "react";
 
@@ -42,11 +42,14 @@ export const BodyMeasureEstimateProvider = ({
   const [countdown, setCountdown] = useState(20);
   const [measuring, setMeasuring] = useState(false);
   const [capturedFallback, setCapturedFallback] = useState(false);
-  const [dataMeasured, setDataMeasured] = useState<data[]>(
-    localStorage?.getItem("userMeaurements")
-      ? JSON.parse(localStorage.getItem("userMeaurements") || "[]")
-      : []  
-  );
+  const [dataMeasured, setDataMeasured] = useState<data[]>(() => {
+    if (typeof window === "undefined") {
+      return [];
+    }
+
+    const storedMeasurements = localStorage.getItem("userMeaurements");
+    return storedMeasurements ? JSON.parse(storedMeasurements) : [];
+  });
 
   const Buffer = useRef<Landmark[][]>([]);
   useEffect(() => {

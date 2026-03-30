@@ -21,7 +21,7 @@ const App: React.FC = () => {
     name: context.userData?.fullName || "",
     date: new Date().toLocaleDateString("vi-VN"),
   };
-  const data= measureContext.dataMeasured[0].dataMeasure;
+  const data = measureContext.dataMeasured?.[0]?.dataMeasure;
   const MEASUREMENTS = [
     {
       id: "1",

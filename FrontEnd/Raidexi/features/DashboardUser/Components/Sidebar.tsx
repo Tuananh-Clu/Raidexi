@@ -7,7 +7,6 @@ import { BodyMeasureEstimateContext } from '@/provider/BodyMeasureEstimate';
 const Sidebar = ({setIsOpenProfile}: { setIsOpenProfile: React.Dispatch<React.SetStateAction<boolean>> }) => {
   const context=useContext(AuthContext);
   const dataMeasure=useContext(BodyMeasureEstimateContext);
-  const userData=localStorage.getItem("userData");
    if (!context || context?.loading || !context.userData) {
     return (
       <div className="flex flex-col gap-8 p-8 lg:col-span-4">
@@ -18,13 +17,13 @@ const Sidebar = ({setIsOpenProfile}: { setIsOpenProfile: React.Dispatch<React.Se
     );
   }
   const profile={
-    id: userData? JSON.parse(userData).id : "",
-    name: userData? JSON.parse(userData).username : "",
-    email: userData? JSON.parse(userData).email : "",
-    createdAt: userData? JSON.parse(userData).createdAt : "",
-    phone: userData? JSON.parse(userData).phone : "",
-    address: userData? JSON.parse(userData).address : "",
-    imageUrl: userData? JSON.parse(userData).imageUrl : "",
+    id: context.userData?.id ?? "",
+    name: context.userData?.username ?? "",
+    email: context.userData?.email ?? "",
+    createdAt: context.userData?.createdAt ?? "",
+    phone: context.userData?.phone ?? "",
+    address: context.userData?.address ?? "",
+    imageUrl: context.userData?.imageUrl ?? "",
     };
   
   

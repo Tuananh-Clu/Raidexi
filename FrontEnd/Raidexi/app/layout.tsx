@@ -3,6 +3,7 @@ import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import { AuthProvider } from "@/provider/AuthProvider";
 import { useEffect, type ReactNode } from "react";
+import Script from "next/script";
 import { BrandProvider } from "@/provider/BrandProvider";
 import { BodyMeasureEstimateProvider } from "@/provider/BodyMeasureEstimate";
 import { AISuggestSizeProvider } from "@/provider/AISuggestSize";
@@ -37,20 +38,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
           rel="stylesheet"
         />
-        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Noto+Sans:wght@400;500;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-          rel="stylesheet"
-        />
-        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-
       </head>
 
       <body>
+        <Script
+          src="https://cdn.tailwindcss.com?plugins=forms,container-queries"
+          strategy="afterInteractive"
+        />
         {isLoading && <GlobalLoading note={note} />}
         <Toaster position="top-right" />
         <BodyMeasureEstimateProvider>

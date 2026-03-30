@@ -6,7 +6,7 @@ import { NavBar } from "../../Shared/Components/components/NavBar";
 import { useContext, useState } from "react";
 import Sidebar from "@/features/DashboardUser/components/Sidebar";
 
-export default function page() {
+export default function Page() {
   const context=useContext(BodyMeasureEstimateContext);
   const dataMeasurements=context?.dataMeasured;
     const [editProfileOpen, setEditProfileOpen] = useState(false);

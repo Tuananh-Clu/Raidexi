@@ -64,7 +64,7 @@ export async function ExportPdf(element: string, filename: string) {
 }
 
 
-export function ExportCsv(data: any[], filename: string = 'export.csv') {
+export function ExportCsv(data: Record<string, unknown>[], filename: string = 'export.csv') {
     const csv = convertToCsv(data);
     const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
