@@ -116,42 +116,78 @@ static string? NormalizeGoogleCredentialSource(string? source)
         value = File.ReadAllText(value);
     }
 
+    string FinalizeJson(string candidate) => candidate
+        .Replace("\\r\\n", "\n")
+        .Replace("\\n", "\n")
+        .Trim();
+
+    bool TryParseJsonObject(string candidate, out string normalized)
+    {
+        try
+        {
+            using var document = JsonDocument.Parse(candidate);
+            if (document.RootElement.ValueKind == JsonValueKind.Object)
+            {
+                normalized = document.RootElement.GetRawText();
+                return true;
+            }
+        }
+        catch (JsonException)
+        {
+        }
+
+        normalized = string.Empty;
+        return false;
+    }
+
+    var candidates = new List<string>
+    {
+        value,
+        value.Replace("\\\"", "\""),
+        value.Replace("\\\"", "\"").Replace("\\r\\n", "\n").Replace("\\n", "\n")
+    };
+
     if (value.StartsWith("\"") && value.EndsWith("\""))
     {
         try
         {
-            value = JsonSerializer.Deserialize<string>(value) ?? value;
+            var deserialized = JsonSerializer.Deserialize<string>(value);
+            if (!string.IsNullOrWhiteSpace(deserialized))
+            {
+                candidates.Add(deserialized);
+                candidates.Add(deserialized.Replace("\\\"", "\""));
+            }
         }
         catch (JsonException)
         {
         }
     }
 
-    if (!value.TrimStart().StartsWith("{"))
+    if (value.StartsWith("\\"))
     {
-        try
+        candidates.Add(value.TrimStart('\\'));
+    }
+
+    try
+    {
+        var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(value));
+        candidates.Add(decoded);
+    }
+    catch (FormatException)
+    {
+    }
+
+    foreach (var candidate in candidates)
+    {
+        var finalized = FinalizeJson(candidate);
+        if (TryParseJsonObject(finalized, out var normalized))
         {
-            var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(value));
-            if (decoded.TrimStart().StartsWith("{"))
-            {
-                value = decoded;
-            }
-        }
-        catch (FormatException)
-        {
+            return normalized;
         }
     }
 
-    value = value
-        .Replace("\\r\\n", "\n")
-        .Replace("\\n", "\n");
-
-    if (!value.TrimStart().StartsWith("{") && value.Contains("\\\""))
-    {
-        value = value.Replace("\\\"", "\"");
-    }
-
-    return value.Trim();
+    throw new InvalidOperationException(
+        $"Firebase credential value is not valid JSON. Prefix='{value[..Math.Min(value.Length, 12)]}', Length={value.Length}.");
 }
 
 
