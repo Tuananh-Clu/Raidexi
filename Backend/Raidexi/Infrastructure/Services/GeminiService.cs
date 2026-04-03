@@ -282,6 +282,8 @@ KHÔNG TRẢ BẤT KỲ TEXT NÀO KHÁC.
             }
         }
 
+        
+
         private static string CleanJsonResponse(string text)
         {
             text = Regex.Replace(text, @"^```json\s*", "", RegexOptions.Multiline);

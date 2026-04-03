@@ -5634,24 +5634,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\yianh\\.nuget\\packages\\": {},
+    "C:\\Users\\Tuan Anh\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Frontend\\Raidexi\\Backend\\Raidexi\\Raidexi.csproj",
+      "projectUniqueName": "K:\\Project\\Raidexi\\backend\\raidexi\\Raidexi.csproj",
       "projectName": "Raidexi",
-      "projectPath": "D:\\Frontend\\Raidexi\\Backend\\Raidexi\\Raidexi.csproj",
-      "packagesPath": "C:\\Users\\yianh\\.nuget\\packages\\",
-      "outputPath": "D:\\Frontend\\Raidexi\\Backend\\Raidexi\\obj\\",
+      "projectPath": "K:\\Project\\Raidexi\\backend\\raidexi\\Raidexi.csproj",
+      "packagesPath": "C:\\Users\\Tuan Anh\\.nuget\\packages\\",
+      "outputPath": "K:\\Project\\Raidexi\\backend\\raidexi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "D:\\Frontend\\Raidexi\\NuGet.Config",
-        "C:\\Users\\yianh\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "K:\\Project\\Raidexi\\NuGet.Config",
+        "C:\\Users\\Tuan Anh\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -5678,7 +5678,7 @@
         "auditLevel": "low",
         "auditMode": "all"
       },
-      "SdkAnalysisLevel": "10.0.100"
+      "SdkAnalysisLevel": "10.0.200"
     },
     "frameworks": {
       "net10.0": {
@@ -5806,7 +5806,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.AspNetCore": "(,10.0.32767]",
           "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

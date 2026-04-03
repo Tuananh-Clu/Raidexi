@@ -27,5 +27,20 @@ namespace Raidexi.Infrastructure.Services
             kit.Disconnect(true);
             return Task.CompletedTask;
         }
+
+        public string EmailTemplate(string name, string link)
+        {
+            return $@"
+                <html>
+                    <body>
+                        <p>Hi {name},</p>
+                        <p>Thank you for signing up for Raidexi! Please click the link below to verify your email address:</p>
+                        <a href='{link}'>Verify Email</a>
+                        <p>If you did not sign up for Raidexi, please ignore this email.</p>
+                        <p>Best regards,<br/>The Raidexi Team</p>
+                    </body>
+                </html>
+            ";
+        }
     }
 }

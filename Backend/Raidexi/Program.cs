@@ -92,99 +92,30 @@ static string ResolveGoogleCredentialJson()
 
     foreach (var source in credentialSources)
     {
-        var resolved = NormalizeGoogleCredentialSource(source);
-        if (!string.IsNullOrWhiteSpace(resolved))
+        if (string.IsNullOrWhiteSpace(source))
+            continue;
+
+        var value = source.Trim();
+        if (File.Exists(value))
         {
-            return resolved;
+            value = File.ReadAllText(value);
         }
-    }
+        value = value.Replace("\\n", "\n");
 
-    throw new Exception("Missing Firebase credential configuration. Set FIREBASE_CREDENTIALS_JSON or GOOGLE_APPLICATION_CREDENTIALS.");
-}
-
-static string? NormalizeGoogleCredentialSource(string? source)
-{
-    if (string.IsNullOrWhiteSpace(source))
-    {
-        return null;
-    }
-
-    var value = source.Trim();
-
-    if (File.Exists(value))
-    {
-        value = File.ReadAllText(value);
-    }
-
-    string FinalizeJson(string candidate) => candidate.Trim();
-
-    bool TryParseJsonObject(string candidate, out string normalized)
-    {
         try
         {
-            using var document = JsonDocument.Parse(candidate);
-            if (document.RootElement.ValueKind == JsonValueKind.Object)
+            using var doc = JsonDocument.Parse(value);
+            if (doc.RootElement.ValueKind == JsonValueKind.Object)
             {
-                normalized = document.RootElement.GetRawText();
-                return true;
+                return doc.RootElement.GetRawText();
             }
         }
-        catch (JsonException)
-        {
-        }
-
-        normalized = string.Empty;
-        return false;
-    }
-
-    var candidates = new List<string>
-    {
-        value,
-        value.Replace("\\\"", "\""),
-        value.Replace("\\\"", "\"").Replace("\\r\\n", "\n").Replace("\\n", "\n")
-    };
-
-    if (value.StartsWith("\"") && value.EndsWith("\""))
-    {
-        try
-        {
-            var deserialized = JsonSerializer.Deserialize<string>(value);
-            if (!string.IsNullOrWhiteSpace(deserialized))
-            {
-                candidates.Add(deserialized);
-                candidates.Add(deserialized.Replace("\\\"", "\""));
-            }
-        }
-        catch (JsonException)
+        catch
         {
         }
     }
 
-    if (value.StartsWith("\\"))
-    {
-        candidates.Add(value.TrimStart('\\'));
-    }
-
-    try
-    {
-        var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(value));
-        candidates.Add(decoded);
-    }
-    catch (FormatException)
-    {
-    }
-
-    foreach (var candidate in candidates)
-    {
-        var finalized = FinalizeJson(candidate);
-        if (TryParseJsonObject(finalized, out var normalized))
-        {
-            return normalized;
-        }
-    }
-
-    throw new InvalidOperationException(
-        $"Firebase credential value is not valid JSON. Prefix='{value[..Math.Min(value.Length, 12)]}', Length={value.Length}.");
+    throw new Exception("Missing or invalid Firebase credential configuration.");
 }
 
 
