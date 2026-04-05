@@ -25,7 +25,7 @@ export const API={
         "SendMail":"/api/Mail/send",
     }
 }
-const rawBaseUrl = getEnvironmentData("RAIDEXI_API_BASE_URL").toString() || "";
+const rawBaseUrl = process.env.RAIDEXI_API_BASE_URL || "http://localhost:5000";
 
 export const BASE_URL = rawBaseUrl.replace(/\/+$/, "");
 
