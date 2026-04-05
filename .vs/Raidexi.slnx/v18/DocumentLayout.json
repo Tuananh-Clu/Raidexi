@@ -29,7 +29,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -40,6 +40,10 @@
               "Name": "ST:0:0:{a80febb4-e7e0-4147-b476-21aaf2453969}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Program.cs",
@@ -47,7 +51,7 @@
               "RelativeDocumentMoniker": "Backend\\Raidexi\\Program.cs",
               "ToolTip": "K:\\Project\\Raidexi\\Backend\\Raidexi\\Program.cs",
               "RelativeToolTip": "Backend\\Raidexi\\Program.cs",
-              "ViewState": "AgIAAOoAAAAAAAAAAAAAAKMAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAGUAAAAAAAAAAAAqwHUAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-11T09:07:38.38Z",
               "EditorCaption": ""
@@ -97,10 +101,6 @@
               "ViewState": "AgIAAKQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-10T01:51:28.494Z"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             }
           ]
         }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "K:\\Project\\Raidexi\\backend\\raidexi\\Raidexi.csproj": {}
+    "K:\\Project\\Raidexi\\Backend\\Raidexi\\Raidexi.csproj": {}
   },
   "projects": {
-    "K:\\Project\\Raidexi\\backend\\raidexi\\Raidexi.csproj": {
+    "K:\\Project\\Raidexi\\Backend\\Raidexi\\Raidexi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "K:\\Project\\Raidexi\\backend\\raidexi\\Raidexi.csproj",
+        "projectUniqueName": "K:\\Project\\Raidexi\\Backend\\Raidexi\\Raidexi.csproj",
         "projectName": "Raidexi",
-        "projectPath": "K:\\Project\\Raidexi\\backend\\raidexi\\Raidexi.csproj",
+        "projectPath": "K:\\Project\\Raidexi\\Backend\\Raidexi\\Raidexi.csproj",
         "packagesPath": "C:\\Users\\Tuan Anh\\.nuget\\packages\\",
-        "outputPath": "K:\\Project\\Raidexi\\backend\\raidexi\\obj\\",
+        "outputPath": "K:\\Project\\Raidexi\\Backend\\Raidexi\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
