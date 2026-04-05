@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getEnvironmentData } from "worker_threads";
 
 export const API={
     "Authentication":{
@@ -24,7 +25,7 @@ export const API={
         "SendMail":"/api/Mail/send",
     }
 }
-const rawBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+const rawBaseUrl = getEnvironmentData("RAIDEXI_API_BASE_URL").toString() || "";
 
 export const BASE_URL = rawBaseUrl.replace(/\/+$/, "");
 
