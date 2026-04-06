@@ -25,7 +25,7 @@ export const API={
         "SendMail":"/api/Mail/send",
     }
 }
-const rawBaseUrl = process.env.RAIDEXI_API_BASE_URL || "http://localhost:5000";
+const rawBaseUrl = process.env.NEXT_PUBLIC_RAIDEXI_API_BASE_URL || "http://localhost:5000";
 
 export const BASE_URL = rawBaseUrl.replace(/\/+$/, "");
 
