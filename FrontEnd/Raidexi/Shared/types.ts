@@ -57,8 +57,19 @@ export interface SendMailRequest {
   body: string;
   attachments: Attachment;
 }
+export interface SendMailApiRequest {
+  to: string;
+  subject: string;
+  html: string;
+  attachment: MailAttachment;
+}
 export interface Attachment {
   filenames: string;
   mineType: string;
+  base64: string;
+}
+export interface MailAttachment {
+  fileName: string;
+  mimeType: string;
   base64: string;
 }

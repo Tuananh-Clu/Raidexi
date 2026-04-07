@@ -59,6 +59,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPassWordHash, PasswordHasher>();
 builder.Services.AddScoped<ITokenServices, TokenGenerate>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IMailServicecs, MailService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<ISizeMapping, MappingSizeRepo>();

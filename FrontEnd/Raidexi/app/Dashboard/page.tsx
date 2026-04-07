@@ -7,9 +7,9 @@ import { useContext, useState } from "react";
 import Sidebar from "@/features/DashboardUser/Components/Sidebar";
 
 export default function Page() {
-  const context=useContext(BodyMeasureEstimateContext);
-  const dataMeasurements=context?.dataMeasured;
-    const [editProfileOpen, setEditProfileOpen] = useState(false);
+  const context = useContext(BodyMeasureEstimateContext);
+  const dataMeasurements = context?.dataMeasured;
+  const [editProfileOpen, setEditProfileOpen] = useState(false);
   return (
     <>
       <NavBar></NavBar>
@@ -28,21 +28,24 @@ export default function Page() {
               Quản lý Hồ sơ & Số đo
             </h2>
           </div>
-          
+
           <div className="hidden text-right md:block">
             <p className="font-mono text-sm tracking-wider text-primary">
               REF: RX-8821-VN
             </p>
             <p className="text-xs italic text-text-muted">
-              Cập nhật lần cuối: {dataMeasurements?.map((data) => new Date(data.lastUpdate).getDay()<10 ? `0${new Date(data.lastUpdate).getDay()}` : new Date(data.lastUpdate).getDay())}/{dataMeasurements?.map((data) => new Date(data.lastUpdate).getMonth()<9 ? `0${new Date(data.lastUpdate).getMonth()+1}` : new Date(data.lastUpdate).getMonth()+1)}/{dataMeasurements?.map((data) => new Date(data.lastUpdate).getFullYear())}
-              
-              
+              Cập nhật lần cuối:{" "}
+              {dataMeasurements?.map((item) =>item.lastUpdate).sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0]}
             </p>
           </div>
         </header>
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           <Sidebar setIsOpenProfile={setEditProfileOpen} />
-          <Dashboard dataMeasurements={dataMeasurements} setEditProfileOpen={setEditProfileOpen} editProfileOpen={editProfileOpen} />
+          <Dashboard
+            dataMeasurements={dataMeasurements}
+            setEditProfileOpen={setEditProfileOpen}
+            editProfileOpen={editProfileOpen}
+          />
         </div>
       </main>
     </>

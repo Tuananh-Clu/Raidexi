@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+using MailKit.Security;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Raidexi.Application.Dtos;
 using Raidexi.Application.Interfaces;
-using Raidexi.Infrastructure.Services;
 
 namespace Raidexi.Presentation.Controller
 {
@@ -10,16 +10,35 @@ namespace Raidexi.Presentation.Controller
     [ApiController]
     public class MailController : ControllerBase
     {
-        private readonly MailService _mailService;
-        public MailController(MailService mailService)
+        private readonly IMailServicecs _mailService;
+
+        public MailController(IMailServicecs mailService)
         {
             _mailService = mailService;
         }
+
         [HttpPost("send")]
         public async Task<IActionResult> SendMail([FromBody] SendMailRequest sendMailRequest)
         {
-            await _mailService.SendMailAsync(sendMailRequest);
-            return Ok(new { Message = "Mail sent successfully" });
+            try
+            {
+                await _mailService.SendMailAsync(sendMailRequest);
+                return Ok(new { Message = "Mail sent successfully" });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+            }
+            catch (AuthenticationException)
+            {
+                return StatusCode(
+                    StatusCodes.Status502BadGateway,
+                    new { Message = "SMTP authentication failed. Check MailAdmin and MailAdminPassword." });
+            }
         }
     }
 }

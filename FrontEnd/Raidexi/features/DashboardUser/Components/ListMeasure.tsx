@@ -173,7 +173,7 @@ export const ListMeasure = ({
                         <td className="px-3.5 py-3.5 text-right">
                           <div className="flex items-center justify-end gap-1.5">
                             {[
-                              { label: "VIEW", icon: <Eye size={9} /> },
+                              { label: "GET", icon: <Eye size={9} /> },
                               { label: "PRINT", icon: <Printer size={9} /> },
                             ].map(({ label, icon }) => (
                               <button

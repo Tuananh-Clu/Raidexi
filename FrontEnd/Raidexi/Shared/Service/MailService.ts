@@ -1,7 +1,7 @@
-import { SendMailRequest } from "../types";
+import { SendMailApiRequest } from "../types";
 import { ToasterUi } from "../Ui/ToasterUi";
 import { API, api_Response } from "./Api";
-export async function SendMailService({data}:{data:SendMailRequest}){ 
+export async function SendMailService({data}:{data:SendMailApiRequest}){ 
     try {
       const response=await api_Response(API.Mail.SendMail,'POST',data);
       ToasterUi("Send mail successfully","success");

@@ -1,31 +1,77 @@
-﻿using MailKit;
-using Raidexi.Application.Dtos;
+using MailKit.Security;
 using MimeKit;
+using Raidexi.Application.Dtos;
 using Raidexi.Application.Interfaces;
+
 namespace Raidexi.Infrastructure.Services
 {
     public class MailService : IMailServicecs
     {
-        public Task SendMailAsync(SendMailRequest sendMailRequest)
+        public async Task SendMailAsync(SendMailRequest sendMailRequest)
         {
-            var message = new MimeKit.MimeMessage();
-            message.From.Add(new MailboxAddress("Raidexi", "noreply@raidexi.com"));
+            ArgumentNullException.ThrowIfNull(sendMailRequest);
+
+            if (string.IsNullOrWhiteSpace(sendMailRequest.To))
+            {
+                throw new ArgumentException("Recipient email is required.", nameof(sendMailRequest));
+            }
+
+            if (string.IsNullOrWhiteSpace(sendMailRequest.Subject))
+            {
+                throw new ArgumentException("Mail subject is required.", nameof(sendMailRequest));
+            }
+
+            if (string.IsNullOrWhiteSpace(sendMailRequest.Html))
+            {
+                throw new ArgumentException("Mail content is required.", nameof(sendMailRequest));
+            }
+
+            var mailAccount = Environment.GetEnvironmentVariable("MailAdmin");
+            var password = Environment.GetEnvironmentVariable("MailAdminPassword");
+
+            if (string.IsNullOrWhiteSpace(mailAccount) || string.IsNullOrWhiteSpace(password))
+            {
+                throw new InvalidOperationException("Mail credentials are not configured.");
+            }
+
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Raidexi", mailAccount));
             message.To.Add(MailboxAddress.Parse(sendMailRequest.To));
             message.Subject = sendMailRequest.Subject;
+
             var bodyBuilder = new BodyBuilder
             {
                 HtmlBody = sendMailRequest.Html
             };
-            var attachment = sendMailRequest.Attachment;
-            var attachmentBytes = Convert.FromBase64String(attachment.Base64);
-            using var kit=new MailKit.Net.Smtp.SmtpClient();
-            var mailconfig=Environment.GetEnvironmentVariable("MailAdmin");
-            var password=Environment.GetEnvironmentVariable("MailAdminPassword");
-            kit.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-            kit.Authenticate(mailconfig, password);
-            kit.Send(message);
-            kit.Disconnect(true);
-            return Task.CompletedTask;
+
+            if (sendMailRequest.Attachment is not null)
+            {
+                if (string.IsNullOrWhiteSpace(sendMailRequest.Attachment.FileName) ||
+                    string.IsNullOrWhiteSpace(sendMailRequest.Attachment.Base64))
+                {
+                    throw new ArgumentException(
+                        "Attachment file name and content are required when sending an attachment.",
+                        nameof(sendMailRequest));
+                }
+
+                var attachmentMimeType = string.IsNullOrWhiteSpace(sendMailRequest.Attachment.MimeType)
+                    ? "application/octet-stream"
+                    : sendMailRequest.Attachment.MimeType;
+
+                var attachmentBytes = Convert.FromBase64String(sendMailRequest.Attachment.Base64);
+                bodyBuilder.Attachments.Add(
+                    sendMailRequest.Attachment.FileName,
+                    attachmentBytes,
+                    ContentType.Parse(attachmentMimeType));
+            }
+
+            message.Body = bodyBuilder.ToMessageBody();
+
+            using var smtpClient = new MailKit.Net.Smtp.SmtpClient();
+            await smtpClient.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+            await smtpClient.AuthenticateAsync(mailAccount, password);
+            await smtpClient.SendAsync(message);
+            await smtpClient.DisconnectAsync(true);
         }
 
         public string EmailTemplate(string name, string link)

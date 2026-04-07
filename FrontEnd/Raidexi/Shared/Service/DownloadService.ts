@@ -82,26 +82,33 @@ export async function HandleSendDataToMail(
   typeFile: 'pdf' | 'png' | 'csv'
 ) {
   let attachment;
+  const defaultFileName = `measurement.${typeFile}`;
 
   switch (typeFile) {
     case 'pdf':
-      attachment = await ExportPdf('export-data-measure', data.attachments.filenames);
+      attachment = await ExportPdf('measurement-sheet', data.attachments.filenames || defaultFileName);
       break;
     case 'png':
-      attachment = await ExportPng('export-data-measure', data.attachments.filenames);
+      attachment = await ExportPng('measurement-sheet', data.attachments.filenames || defaultFileName);
       break;
     case 'csv':
       attachment = ExportCsv(
         JSON.parse(atob(data.attachments.base64)),
-        data.attachments.filenames
+        data.attachments.filenames || defaultFileName
       );
       break;
   }
 
   await SendMailService({
     data: {
-      ...data,
-      attachments: attachment!
+      to: data.to,
+      subject: data.subject,
+      html: data.body,
+      attachment: {
+        fileName: attachment!.filenames,
+        mimeType: attachment!.mineType,
+        base64: attachment!.base64
+      }
     }
   });
 }
