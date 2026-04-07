@@ -15,6 +15,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   onFormatChange,
 }) => {
   const [isEmailFormOpen, setIsEmailFormOpen] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [data,setData]=useState({
     to:'',
     subject:"Raidexi Transmission",
@@ -26,6 +27,18 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
   })
   const toggleEmailForm = () => setIsEmailFormOpen(!isEmailFormOpen);
+  const handleSendEmail = async () => {
+    if (isSendingEmail) {
+      return;
+    }
+
+    try {
+      setIsSendingEmail(true);
+      await HandleSendDataToMail(data, currentFormat);
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
 
   return (
     <aside className="flex flex-col w-full gap-8 p-8 border-r no-print lg:w-80 bg-stone-900/50 border-stone-800 shrink-0">
@@ -89,10 +102,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                 />
               </div>
               <button
-                onClick={() => HandleSendDataToMail(data, currentFormat)}
+                onClick={handleSendEmail}
+                disabled={isSendingEmail}
                 className="w-full bg-stone-800 hover:bg-stone-700 text-primary border border-primary/30 px-4 py-2 text-[10px] font-mono font-bold tracking-widest uppercase transition-all"
               >
-                TRANSMIT DATA
+                {isSendingEmail ? 'SENDING...' : 'TRANSMIT DATA'}
               </button>
             </div>
           </div>

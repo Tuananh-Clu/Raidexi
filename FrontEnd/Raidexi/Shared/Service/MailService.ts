@@ -1,3 +1,4 @@
+import axios from "axios";
 import { SendMailApiRequest } from "../types";
 import { ToasterUi } from "../Ui/ToasterUi";
 import { API, api_Response } from "./Api";
@@ -7,6 +8,10 @@ export async function SendMailService({data}:{data:SendMailApiRequest}){
       ToasterUi("Send mail successfully","success");
       return response;
     } catch (error) {
+      const errorMessage = axios.isAxiosError(error)
+        ? (error.response?.data?.message ?? error.message)
+        : "Send mail failed";
+      ToasterUi(errorMessage,"error");
       throw error;
     }
 }
