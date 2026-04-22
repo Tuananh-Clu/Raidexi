@@ -1,5 +1,4 @@
 import axios from "axios";
-import { getEnvironmentData } from "worker_threads";
 
 export const API={
     "Authentication":{
@@ -20,6 +19,7 @@ export const API={
         "GetSuggestSize":"/api/AnalysisDataMeasure/AISuggest",
         "GetDataFromImage":"/api/AnalysisDataMeasure/GetDataFromImage",
         "AnalyseFromImage":"/api/AnalysisDataMeasure/AnalyseImage",
+        "UploadChart":"/api/AnalysisDataMeasure/UploadChart",
     },
     "Mail":{
         "SendMail":"/api/Mail/send",

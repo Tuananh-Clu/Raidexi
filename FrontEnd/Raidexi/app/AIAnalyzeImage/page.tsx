@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import {
   Shield,
   Image as ImageIcon,
@@ -8,7 +8,7 @@ import {
   Lock,
   Maximize,
   Camera,
-  File,
+  File as FileIcon,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { NavBar } from "@/Shared/Components/components/NavBar";
@@ -35,6 +35,9 @@ export interface FileInfo {
   status: "idle" | "uploading" | "complete" | "error";
 }
 
+const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024;
+const SUPPORTED_FILE_TYPES = ["image/jpeg", "image/png", "application/pdf"];
+
 export default function AIAnalyzeImage() {
   const [progress, setProgress] = useState(0);
   const [diagnostics] = useState<SystemDiagnostics>({
@@ -50,7 +53,6 @@ export default function AIAnalyzeImage() {
   const { sizes } = sizeTransferFromPic();
   const [file, setFile] = useState<FileInfo | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [base64Image, setBase64Image] = useState<string | null>(null);
   const [inputMode, setInputMode] = useState<"upload" | "camera">("upload");
   const refCamera = React.useRef<HTMLVideoElement>(null);
   const [cameraActive, setCameraActive] = useState(false);
@@ -68,31 +70,57 @@ export default function AIAnalyzeImage() {
     setIsDragging(false);
   }, []);
 
-  useEffect(() => {
-    if (!file) return;
+  const validateAndSetFile = useCallback((selectedFile: File) => {
+    if (!SUPPORTED_FILE_TYPES.includes(selectedFile.type)) {
+      alert("Only JPG, PNG, and PDF files are supported right now.");
+      return false;
+    }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      setBase64Image(reader.result as string);
-    };
-    reader.readAsDataURL(file.file);
-  }, [file]);
+    if (selectedFile.size > MAX_FILE_SIZE_BYTES) {
+      alert("Maximum payload is 50MB.");
+      return false;
+    }
+
+    setFile({
+      name: selectedFile.name,
+      size: `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB`,
+      type: selectedFile.type,
+      status: "complete",
+      file: selectedFile,
+    });
+
+    return true;
+  }, []);
 
   const handleClick = async () => {
-    if (!base64Image) {
-      alert("No image selected. Please upload or capture an image first.");
+    if (!file?.file) {
+      alert("No file selected. Please upload or capture a file first.");
       return;
     }
-    setLoadingAnalyze(true);
-    setProgress(0);
-    const sizeData = await OpenAIService().getMeasureWithPicture(base64Image);
-    setProgress(100);
-    SetSizes(sizeData.sizes);
-    setLoadingAnalyze(false);
-    console.log("Received Size Data:", sizeData);
-    setShowResult(true);
-    setFile(null);
-    setBase64Image(null);
+
+    try {
+      setLoadingAnalyze(true);
+      setProgress(0);
+      const sizeData = await OpenAIService().getMeasureWithPicture(file.file);
+
+      if (!sizeData) {
+        return;
+      }
+
+      setProgress(100);
+      SetSizes(sizeData.sizes);
+      console.log("Received Size Data:", sizeData);
+      setShowResult(true);
+      setFile(null);
+    } catch (error: any) {
+      const apiMessage =
+        error?.response?.data ||
+        error?.message ||
+        "The upload failed. Please try again with a JPG, PNG, or PDF file.";
+      alert(typeof apiMessage === "string" ? apiMessage : "The upload failed.");
+    } finally {
+      setLoadingAnalyze(false);
+    }
   };
 
   const handleOpenCamera = () => {
@@ -121,18 +149,11 @@ export default function AIAnalyzeImage() {
     setIsDragging(false);
     const droppedFile = e.dataTransfer.files[0];
     if (droppedFile) {
-      setBase64Image(null);
-      setFile({
-        name: droppedFile.name,
-        size: `${(droppedFile.size / (1024 * 1024)).toFixed(2)} MB`,
-        type: droppedFile.type,
-        status: "complete",
-        file: droppedFile,
-      });
+      validateAndSetFile(droppedFile);
     }
-  }, []);
+  }, [validateAndSetFile]);
 
-  const capturePicture = () => {
+  const capturePicture = useCallback(() => {
     if (!refCamera.current || !canvasRef.current) {
       alert("Camera is not ready yet. Please wait and try again.");
       return;
@@ -149,23 +170,14 @@ export default function AIAnalyzeImage() {
 
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    const dataUrl = canvas.toDataURL("image/png");
-    setBase64Image(dataUrl);
-
     canvas.toBlob((blob) => {
       if (!blob) return;
       const capturedFile = new File([blob], "capture.png", {
         type: "image/png",
       });
-      setFile({
-        name: capturedFile.name,
-        size: `${(capturedFile.size / (1024 * 1024)).toFixed(2)} MB`,
-        type: capturedFile.type,
-        status: "complete",
-        file: capturedFile,
-      });
+      validateAndSetFile(capturedFile);
     }, "image/png");
-  };
+  }, [validateAndSetFile]);
 
   return (
     <div className="min-h-screen font-sans bg-background-dark text-aged-white selection:bg-brass selection:text-background-dark">
@@ -177,7 +189,7 @@ export default function AIAnalyzeImage() {
       {
         openSizeCustomizer && (
           <div className="fixed inset-0 flex items-center justify-center bg-black z-100 backdrop-blur-sm">
-            <SizeCustomizer />
+            <SizeCustomizer type="image" />
           </div>
         )
       }
@@ -303,6 +315,7 @@ export default function AIAnalyzeImage() {
                         <>
                           Ensure chart is clear and legible. <br />
                           Supported formats: JPG, PNG, PDF. <br />
+                          CSV is not supported for AI chart extraction yet. <br />
                           Maximum payload: 50MB.
                         </>
                       )}
@@ -315,20 +328,13 @@ export default function AIAnalyzeImage() {
                     <span>Select File</span>
                     <input
                       type="file"
-                      accept="image/*"
+                      accept="image/png,image/jpeg,application/pdf"
                       className="hidden"
                       id="fileInput"
                       onChange={(e) => {
                         const selectedFile = e.target.files?.[0];
                         if (selectedFile) {
-                          setBase64Image(null);
-                          setFile({
-                            name: selectedFile.name,
-                            size: `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB`,
-                            type: selectedFile.type,
-                            status: "complete",
-                            file: selectedFile,
-                          });
+                          validateAndSetFile(selectedFile);
                         }
                       }}
                     />
@@ -426,7 +432,7 @@ export default function AIAnalyzeImage() {
                 }`}
               >
                 <div className="flex items-center justify-center w-8 h-8 border rounded-full bg-background-dark/70 border-brass/40">
-                  <File className="w-4 h-4 text-brass" />
+                  <FileIcon className="w-4 h-4 text-brass" />
                 </div>
                 <span className="leading-tight text-left">
                   Image
@@ -523,13 +529,13 @@ export default function AIAnalyzeImage() {
               </button>
             )}
 
-            {base64Image && (
+            {file && (
               <button
                 onClick={handleClick}
                 disabled={loadingAnalyze}
                 className="mt-4 border border-brass px-8 py-3 font-mono text-[11px] uppercase tracking-[0.2em] cursor-pointer text-brass transition-all hover:bg-black hover:text-background-dark disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loadingAnalyze ? "Analyzing..." : "Analyze Image"}
+                {loadingAnalyze ? "Analyzing..." : "Analyze File"}
               </button>
             )}
 

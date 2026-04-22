@@ -1,351 +1,133 @@
-# Raidexi
+<div align="center">
+  <h1>✨ Raidexi</h1>
+  <p><b>Hệ thống tư vấn chọn size quần áo thông minh ứng dụng AI & Computer Vision</b></p>
 
-Raidexi là hệ thống full-stack hỗ trợ:
+  <p>
+    <img src="https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js" alt="Next.js" />
+    <img src="https://img.shields.io/badge/.NET-10.0-512BD4?style=for-the-badge&logo=dotnet" alt=".NET" />
+    <img src="https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+    <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
+    <img src="https://img.shields.io/badge/Gemini_AI-8E75B2?style=for-the-badge&logo=google&logoColor=white" alt="Gemini AI" />
+  </p>
+</div>
 
-- đo thông số cơ thể từ camera bằng MediaPipe
-- lưu lịch sử đo cho người dùng
-- phân tích bảng size từ ảnh bằng Gemini
-- ánh xạ size theo thương hiệu
-- gợi ý size và mô tả độ fit bằng AI
+<br />
 
-Repo hiện được chia làm 2 phần chính:
+**Raidexi** giải quyết bài toán chọn size quần áo dựa trên số đo cơ thể thực tế thay vì ước lượng cảm tính. Bằng cách kết hợp **MediaPipe Pose** để đo kích thước từ camera và **Google Gemini AI** để trích xuất dữ liệu bảng size từ hình ảnh, Raidexi mang đến giải pháp tư vấn size chính xác, tiện lợi và được cá nhân hóa cho từng người dùng.
 
-- `FrontEnd/Raidexi`: ứng dụng web Next.js
-- `Backend/Raidexi`: API ASP.NET Core
+## 📋 Mục lục
 
-README này được viết lại dựa trên code đang có trong repo, ưu tiên phục vụ onboarding dev mới, chạy local, hiểu kiến trúc, nắm dependency thật sự đang được dùng, và nhận diện những điểm dễ lỗi khi cấu hình.
+- [✨ Tính năng nổi bật](#-tính-năng-nổi-bật)
+- [🛠 Công nghệ sử dụng](#-công-nghệ-sử-dụng)
+- [🏗 Kiến trúc hệ thống](#-kiến-trúc-hệ-thống)
+- [🚀 Hướng dẫn cài đặt & Chạy Local](#-hướng-dẫn-cài-đặt--chạy-local)
+- [🐳 Chạy bằng Docker](#-chạy-bằng-docker)
+- [⚙️ Cấu hình biến môi trường](#️-cấu-hình-biến-môi-trường)
+- [💡 Luồng nghiệp vụ chính](#-luồng-nghiệp-vụ-chính)
+- [📂 Cấu trúc thư mục](#-cấu-trúc-thư-mục)
+- [📝 Bản quyền](#-bản-quyền)
 
-## 1. Mục tiêu dự án
+---
 
-Raidexi giải quyết bài toán chọn size quần áo dựa trên số đo cơ thể thay vì ước lượng cảm tính. Luồng chính của hệ thống:
+## ✨ Tính năng nổi bật
 
-1. Người dùng đăng ký hoặc đăng nhập.
-2. Người dùng đo cơ thể bằng camera hoặc nhập luồng phân tích từ ảnh bảng size.
-3. Hệ thống lưu dữ liệu đo và lịch sử phân tích.
-4. Backend áp dụng rule size, mapping size và Gemini để sinh kết quả tư vấn.
-5. Frontend hiển thị kết quả theo thương hiệu, dashboard cá nhân và dữ liệu đã lưu.
+- 📷 **Đo thông số cơ thể từ Camera**: Tự động nhận diện và trích xuất các số đo cơ thể (ngực, eo, mông, chiều cao, vai...) ngay trên trình duyệt bằng MediaPipe.
+- 🖼️ **Phân tích bảng size từ Ảnh**: Dễ dàng trích xuất dữ liệu từ hình ảnh bảng size quần áo thông qua sức mạnh của Google Gemini AI.
+- 🤖 **Tư vấn size bằng AI**: Gợi ý size quần áo phù hợp dựa trên sự kết hợp giữa số đo người dùng, dữ liệu thương hiệu và phân tích chuyên sâu về độ fit từ AI.
+- 📊 **Quản lý lịch sử và Hồ sơ cá nhân**: Lưu trữ lịch sử đo lường, theo dõi sự thay đổi của chỉ số cơ thể.
+- 🔐 **Xác thực linh hoạt**: Hỗ trợ đăng nhập truyền thống (Email/Password) và đăng nhập nhanh qua Google (Firebase Authentication).
 
-## 2. Kiến trúc tổng quan
+## 🛠 Công nghệ sử dụng
 
-### 2.1 Frontend
+### 🎨 Frontend (Next.js App Router)
+- **Framework**: Next.js 16, React 19
+- **Ngôn ngữ**: TypeScript
+- **Styling & Animation**: Tailwind CSS 4, Framer Motion
+- **State Management**: Zustand
+- **Computer Vision**: `@mediapipe/pose`, `@mediapipe/camera_utils`
+- **Khác**: Firebase Web SDK, Axios, jsPDF
 
-Frontend nằm tại `FrontEnd/Raidexi`, dùng:
+### ⚙️ Backend (ASP.NET Core)
+- **Framework**: ASP.NET Core (.NET 10)
+- **Ngôn ngữ**: C#
+- **ORM**: Entity Framework Core 10
+- **Database**:
+  - **PostgreSQL**: Quản lý thông tin User & Authentication.
+  - **MongoDB**: Quản lý Rule thương hiệu, Mapping size, và Lịch sử đo của người dùng.
+- **AI Integration**: Google GenAI SDK (Sử dụng model `gemini-3-flash-preview`)
+- **Khác**: Firebase Admin SDK, MailKit, JWT Authentication, ASP.NET Rate Limiter
 
-- Next.js 16 App Router
-- React 19
-- TypeScript
-- Tailwind CSS 4
-- Axios
-- Firebase Web SDK
-- Framer Motion
-- Zustand
-- MediaPipe Pose
+---
 
-Vai trò chính:
+## 🏗 Kiến trúc hệ thống
 
-- render landing page, login, signup, dashboard, brand pages
-- kết nối camera và xử lý số đo phía client
-- gọi backend để đăng nhập, lưu measurement, lấy brand profile
-- gửi ảnh bảng size sang backend để Gemini trích xuất dữ liệu
-- hiển thị kết quả phân tích, gợi ý size và lịch sử người dùng
+Hệ thống được chia làm hai phần chính hoạt động độc lập và giao tiếp với nhau qua REST API:
 
-### 2.2 Backend
+1. **Frontend (`FrontEnd/Raidexi`)**: Đảm nhận render giao diện UI/UX. Truy cập luồng camera, tính toán số đo trực tiếp tại client (giảm tải cho server). Gọi backend API để lưu trữ, xác thực và lấy dữ liệu phân tích.
+2. **Backend (`Backend/Raidexi`)**: Cung cấp API mạnh mẽ, thiết kế theo chuẩn **Clean Architecture** gồm các layer: Application, Domain, Infrastructure, Presentation. Đảm nhận logic nghiệp vụ phức tạp, phân quyền JWT, tương tác với Google Gemini và quản lý CSDL kép (PostgreSQL + MongoDB).
 
-Backend nằm tại `Backend/Raidexi`, dùng:
+---
 
-- ASP.NET Core trên .NET 10
-- Entity Framework Core 10
-- PostgreSQL
-- MongoDB
-- Firebase Admin SDK
-- Google GenAI SDK
-- MailKit
-- Swagger / OpenAPI
-- ASP.NET Rate Limiter
+## 🚀 Hướng dẫn cài đặt & Chạy Local
 
-Vai trò chính:
+### 📌 Yêu cầu môi trường
+- [Node.js](https://nodejs.org/) (Phiên bản v20 trở lên)
+- [.NET 10 SDK](https://dotnet.microsoft.com/)
+- [PostgreSQL](https://www.postgresql.org/) & [MongoDB](https://www.mongodb.com/) đang hoạt động
+- Tài khoản Firebase (Đã bật tính năng Google Sign-In)
+- Google Gemini API Key
 
-- xác thực người dùng bằng email/password hoặc Firebase
-- tạo JWT và lưu qua cookie
-- quản lý user bằng PostgreSQL
-- quản lý brand rule, universal size, mapping size, lịch sử đo và lịch sử phân tích bằng MongoDB
-- gọi Gemini để:
-  - trích xuất bảng size từ ảnh
-  - sinh nhận xét fit và insight số đo
-- cung cấp REST API cho frontend
-
-## 3. Cấu trúc thư mục
-
-```text
-Raidexi/
-|-- Backend/
-|   |-- Dockerfile
-|   `-- Raidexi/
-|       |-- Application/
-|       |-- Domain/
-|       |-- Infrastructure/
-|       |-- Migrations/
-|       |-- Presentation/
-|       |-- Properties/
-|       |-- Program.cs
-|       |-- appsettings.json
-|       |-- appsettings.Development.json
-|       `-- Raidexi.csproj
-|-- FrontEnd/
-|   |-- .env
-|   `-- Raidexi/
-|       |-- app/
-|       |-- features/
-|       |-- provider/
-|       |-- Shared/
-|       |-- public/
-|       |-- next.config.ts
-|       `-- package.json
-|-- compose.yml
-|-- License
-`-- README.md
+### 1. Clone Repository
+```bash
+git clone https://github.com/your-username/raidexi.git
+cd raidexi
 ```
 
-## 4. Các route và module chính
-
-### 4.1 Frontend routes đang có
-
-Trong `FrontEnd/Raidexi/app` hiện có các route:
-
-- `/`
-- `/AIAnalyzeImage`
-- `/Architecture`
-- `/Brand`
-- `/Brand/result`
-- `/Contact`
-- `/Dashboard`
-- `/Login`
-- `/Measurements`
-- `/PreviewMeasurement`
-- `/SignUp`
-- `/WorkFlow`
-
-### 4.2 Frontend feature modules
-
-Các feature chính trong `FrontEnd/Raidexi/features`:
-
-- `Auth`: login, register, Google login bằng Firebase
-- `Camera`: đo cơ thể từ camera, dựng viewport, tính số đo
-- `Brand`: danh sách thương hiệu, bộ lọc, profile, tư vấn theo brand
-- `AnalyzeFromPic`: hiển thị kết quả phân tích bảng size từ ảnh
-- `DashboardUser`: dashboard hồ sơ và dữ liệu người dùng
-- `Home`: landing page
-- `Contact`: liên hệ
-- `ArchitectureC`: thành phần giới thiệu kiến trúc
-- `WorkFlow`: mô tả quy trình sản phẩm
-
-### 4.3 Backend layers
-
-Backend được tách theo layer:
-
-- `Application`: DTO và interface service
-- `Domain`: entity và domain contract
-- `Infrastructure`: persistence, repository, security, AI, mail
-- `Presentation`: controller HTTP
-
-## 5. Công nghệ và dependency quan trọng
-
-### 5.1 Frontend package đáng chú ý
-
-Từ `FrontEnd/Raidexi/package.json`:
-
-- `next`
-- `react`, `react-dom`
-- `firebase`
-- `axios`
-- `zustand`
-- `framer-motion`
-- `@mediapipe/pose`
-- `@mediapipe/camera_utils`
-- `jspdf`
-- `@emailjs/browser`
-
-### 5.2 Backend package đáng chú ý
-
-Từ `Backend/Raidexi/Raidexi.csproj`:
-
-- `Microsoft.EntityFrameworkCore`
-- `Npgsql.EntityFrameworkCore.PostgreSQL`
-- `MongoDB.Driver`
-- `FirebaseAdmin`
-- `Google.GenAI`
-- `MailKit`
-- `BCrypt.Net-Next`
-- `DotNetEnv`
-- `Swashbuckle.AspNetCore`
-
-Lưu ý: trong `Backend/Raidexi/package.json` còn có dependency Node (`openai`, `chatgpt-api`), nhưng backend .NET hiện không dùng package.json đó để chạy ứng dụng chính.
-
-## 6. Database và lưu trữ
-
-### 6.1 PostgreSQL
-
-Thông qua `AppDBContext`, PostgreSQL hiện giữ bảng:
-
-- `Users`
-
-Chức năng chính:
-
-- lưu tài khoản người dùng
-- phục vụ login/register/update user
-
-### 6.2 MongoDB
-
-Thông qua `MongoDbContext`, MongoDB đang dùng các collection:
-
-- `UniversalSize`
-- `BrandRUle`
-- `CategoryRule`
-- `SizeMapping`
-- `BrandProfile`
-- `MeasureDataUser`
-- `DataBrandAnalysis`
-
-Chức năng chính:
-
-- định nghĩa size chuẩn
-- mapping hệ size giữa các vùng
-- rule theo category
-- rule theo brand
-- brand profile để hiển thị frontend
-- lịch sử đo của user
-- lịch sử kết quả phân tích theo thương hiệu
-
-## 7. Xác thực và session
-
-Hệ thống đang dùng JWT lưu qua cookie tên `access_token_client`.
-
-Luồng hoạt động:
-
-1. Người dùng login hoặc register.
-2. Backend tạo JWT.
-3. Backend set cookie `access_token_client`.
-4. Những API tiếp theo đọc cookie để xác định user hiện tại.
-
-Thiết lập cookie trong code hiện tại:
-
-- `HttpOnly = true`
-- `Secure = true`
-- `SameSite = None`
-- hạn dùng 7 ngày
-
-Ý nghĩa thực tế:
-
-- nếu chạy frontend/backend thuần HTTP ở local, cookie có thể không lưu hoặc không được browser gửi lại
-- để login ổn định, cần đồng bộ CORS, domain, giao thức và `withCredentials`
-
-## 8. AI và logic phân tích
-
-### 8.1 Phân tích ảnh bảng size
-
-API `POST /api/AnalysisDataMeasure/GetDataFromImage` nhận ảnh base64, sau đó backend gọi Gemini để trả về JSON cấu trúc bảng size.
-
-Model hiện dùng:
-
-- `gemini-3-flash-preview`
-
-Output kỳ vọng:
-
-- danh sách size
-- range ngực, eo, mông, chiều cao, cân nặng
-- các trường theo schema cố định để parse bằng `System.Text.Json`
-
-### 8.2 Gợi ý size từ số đo cơ thể
-
-API `POST /api/AnalysisDataMeasure/AISuggest`:
-
-- đọc measurement từ user
-- áp dụng `BrandRule`
-- điều chỉnh nhẹ theo giới tính
-- so khớp với `UniversalSize` + `CategoryRule`
-- map sang hệ size mong muốn qua `SizeMapping`
-- gọi Gemini để sinh:
-  - `measurementInsight`
-  - `productFitNote`
-  - `expectedFit`
-
-### 8.3 Gợi ý size từ ảnh bảng size + measurement
-
-API `POST /api/AnalysisDataMeasure/AnalyseImage`:
-
-- nhận bảng size đã được trích xuất từ ảnh
-- nhận measurement người dùng
-- chấm điểm fit theo từng dòng size
-- chọn size tốt nhất
-- tiếp tục gọi Gemini để sinh nhận xét AI
-
-### 8.4 Rate limit
-
-Endpoint `AISuggest` đang gắn policy `anon05`:
-
-- tối đa 5 request / IP / 24 giờ
-
-Nếu vượt ngưỡng, backend trả `429 Too Many Requests`.
-
-## 9. API hiện có
-
-### 9.1 User API
-
-- `POST /api/User/Login`
-- `POST /api/User/Register`
-- `GET /api/User/GetUserData`
-- `POST /api/User/Logout`
-- `POST /api/User/LoginWithFirebase?token=...`
-- `POST /api/User/SaveMeasure`
-- `POST /api/User/SaveMeasureBrandSize`
-- `GET /api/User/GetBrandSizeMeasure`
-- `PUT /api/User/UpdateUser`
-
-### 9.2 Mapping size API
-
-- `GET /api/MappingSize/brand-profiles`
-- `POST /api/MappingSize/AddBrandProfile`
-- `POST /api/MappingSize/AddSizeMapping`
-- `POST /api/MappingSize/AddUniversalSize`
-- `POST /api/MappingSize/AddCategoryRule`
-- `POST /api/MappingSize/AddBrandRule`
-
-### 9.3 Analysis API
-
-- `POST /api/AnalysisDataMeasure/AISuggest`
-- `POST /api/AnalysisDataMeasure/GetDataFromImage`
-- `POST /api/AnalysisDataMeasure/AnalyseImage`
-
-### 9.4 Mail API
-
-- `POST /api/Mail/send`
-
-## 10. Biến môi trường và cấu hình
-
-## 10.1 Frontend
-
-Code frontend đang đọc các biến:
-
-```env
-NEXT_PUBLIC_RAIDEXI_API_BASE_URL=
-NEXT_PUBLIC_FIREBASE_API_KEY=
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
-NEXT_PUBLIC_FIREBASE_APP_ID=
-NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=
+### 2. Thiết lập Backend
+```bash
+cd Backend/Raidexi
+dotnet restore
+dotnet run
 ```
+*Backend sẽ chạy mặc định tại `http://localhost:5000` và `https://localhost:7133`.*
+*Bạn có thể xem toàn bộ API Docs thông qua Swagger tại: `http://localhost:5000/swagger`.*
 
-Khuyến nghị đặt file tại:
+> **Lưu ý**: PostgreSQL cần được khởi chạy và cấu hình kết nối chuẩn xác. Entity Framework sẽ tự động chạy migration khi ứng dụng khởi động.
 
-- `FrontEnd/Raidexi/.env.local`
+### 3. Thiết lập Frontend
+```bash
+cd ../../FrontEnd/Raidexi
+npm install
+npm run dev
+```
+*Frontend sẽ chạy tại `http://localhost:3000`.*
 
-Ví dụ:
+---
+
+## 🐳 Chạy bằng Docker
+
+Dự án đã tích hợp sẵn Docker Compose để bạn có thể khởi chạy nhanh toàn bộ môi trường và dịch vụ chỉ với một lệnh.
+
+```bash
+docker compose up --build
+```
+- **Backend API**: Truy cập tại `http://localhost:5000`
+- **Frontend App**: Truy cập tại `http://localhost:3000`
+
+*(Hãy đảm bảo bạn đã cung cấp đầy đủ các biến môi trường trong file `compose.yml` trước khi build).*
+
+---
+
+## ⚙️ Cấu hình biến môi trường
+
+Hệ thống yêu cầu các biến môi trường để kết nối database và các dịch vụ bên ngoài.
+
+<details>
+<summary><b>🛠 Frontend <code>.env.local</code> (Tạo tại <code>FrontEnd/Raidexi/.env.local</code>)</b></summary>
 
 ```env
 NEXT_PUBLIC_RAIDEXI_API_BASE_URL=http://localhost:5000
-NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
@@ -353,49 +135,10 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
 ```
+</details>
 
-Lưu ý rất quan trọng:
-
-- repo hiện có file `FrontEnd/.env`, nhưng Next app thực tế nằm trong `FrontEnd/Raidexi`
-- Dockerfile frontend đang dùng `NEXT_PUBLIC_API_URL`, nhưng code thật trong `Shared/Service/Api.ts` lại đọc `NEXT_PUBLIC_RAIDEXI_API_BASE_URL`
-- nếu chỉ sửa `compose.yml` theo trạng thái hiện tại, frontend có thể vẫn fallback về `http://localhost:5000`
-
-### 10.2 Backend
-
-Backend load `.env` theo:
-
-- `Backend/Raidexi/.env`
-
-Các biến backend đang được code đọc:
-
-```env
-MongoUrl=
-Databasename=
-GEMINI_API_KEY=
-MailAdmin=
-MailAdminPassword=
-CORS_ORIGINS=http://localhost:3000,https://localhost:3000
-ENABLE_HTTPS_REDIRECTION=false
-
-FIREBASE_PROJECT_ID=
-FIREBASE_PRIVATE_KEY_ID=
-FIREBASE_PRIVATE_KEY=
-FIREBASE_CLIENT_EMAIL=
-FIREBASE_CLIENT_ID=
-```
-
-Giải thích:
-
-- `MongoUrl`: connection string MongoDB
-- `Databasename`: tên database MongoDB
-- `GEMINI_API_KEY`: key Gemini
-- `MailAdmin`: tài khoản SMTP
-- `MailAdminPassword`: app password / mật khẩu SMTP
-- `CORS_ORIGINS`: danh sách origin frontend, phân tách bởi dấu phẩy
-- `ENABLE_HTTPS_REDIRECTION`: bật tắt `UseHttpsRedirection()`
-- nhóm `FIREBASE_*`: service account tối thiểu để backend verify Firebase token
-
-Ví dụ:
+<details>
+<summary><b>🛠 Backend <code>.env</code> (Tạo tại <code>Backend/Raidexi/.env</code>)</b></summary>
 
 ```env
 MongoUrl=mongodb://localhost:27017
@@ -412,235 +155,73 @@ FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY----
 FIREBASE_CLIENT_EMAIL=firebase-adminsdk@your_project.iam.gserviceaccount.com
 FIREBASE_CLIENT_ID=your_client_id
 ```
+</details>
 
-### 10.3 appsettings.json
+> **Bảo mật**: Các chuỗi kết nối (`ConnectionStrings`) và `Jwt:Key` hiện được cấu hình trong `appsettings.json`. Đối với môi trường Production, vui lòng sử dụng Secret Manager hoặc các cơ chế quản lý biến môi trường bảo mật hơn.
 
-Backend còn dùng:
+---
 
-- `ConnectionStrings:DefaultConnection`
-- `Jwt:Key`
+## 💡 Luồng nghiệp vụ chính
 
-Khuyến nghị:
+<details>
+<summary><b>1. Đo cơ thể bằng Camera</b></summary>
 
-- không giữ secret production trong repo
-- đưa connection string và JWT key về secret manager hoặc user secrets
-- rotate toàn bộ secret thật nếu repo từng bị chia sẻ công khai
+- 🖥️ Client kích hoạt **MediaPipe Pose** nhận diện các điểm mốc (landmarks) trên cơ thể.
+- ⏱️ Qua xử lý buffer của nhiều frame ảnh liên tiếp, thuật toán tính toán ra số đo chuẩn xác: Vai, Ngực, Eo, Mông, Chiều cao.
+- 💾 Dữ liệu được lưu trữ trên giao diện và sẵn sàng gửi lên Backend để cập nhật vào hồ sơ người dùng.
+</details>
 
-## 11. Yêu cầu môi trường
+<details>
+<summary><b>2. Phân tích bảng size (Hình ảnh -> JSON)</b></summary>
 
-Để chạy local đầy đủ, cần có:
+- 📤 Người dùng tải lên ảnh chứa bảng size của một thương hiệu bất kỳ.
+- 🔄 Frontend chuyển đổi ảnh thành định dạng Base64 và gửi yêu cầu API.
+- 🧠 Backend sử dụng **Gemini AI** để trích xuất toàn bộ thông tin trong bảng size, tự động chuẩn hóa và trả về định dạng JSON cấu trúc sẵn cho UI hiển thị.
+</details>
 
-- Node.js 20 hoặc mới hơn
-- npm
-- .NET SDK 10
-- PostgreSQL
-- MongoDB
-- tài khoản Firebase cấu hình Google Sign-In nếu muốn test login Google
-- Gemini API key
+<details>
+<summary><b>3. AI Tư vấn Size & Gợi ý độ Fit</b></summary>
 
-Kiểm tra nhanh:
+- ⚙️ Khi có yêu cầu tư vấn, Backend kết hợp các nguồn dữ liệu: Số đo cá nhân + Bảng size thương hiệu + Các bộ quy tắc quy đổi size.
+- 💬 Dữ liệu được gửi qua Gemini AI để phân tích sự phù hợp.
+- ✅ Kết quả trả về gồm: Size gợi ý chuẩn nhất kèm theo lời khuyên chi tiết về cảm giác mặc (ví dụ: "Size M sẽ hơi chật eo nhưng vừa vặn phần ngực").
+</details>
 
-```powershell
-node -v
-npm -v
-dotnet --version
+---
+
+## 📂 Cấu trúc thư mục
+
+```text
+Raidexi/
+├── Backend/
+│   ├── Dockerfile
+│   └── Raidexi/
+│       ├── Application/    # Data Transfer Objects, Interface Services
+│       ├── Domain/         # Entities, Các quy tắc nghiệp vụ Core
+│       ├── Infrastructure/ # Database Contexts (EF, Mongo), Firebase, AI Services
+│       ├── Presentation/   # REST API Controllers
+│       ├── Program.cs      # Entry point
+│       └── appsettings.json
+├── FrontEnd/
+│   ├── .env
+│   └── Raidexi/
+│       ├── app/            # Next.js 16 App Router (Pages, Layouts)
+│       ├── features/       # Phân tách logic theo chức năng: Auth, Camera, Brand...
+│       ├── provider/       # React Context Providers
+│       ├── Shared/         # Core API Service, Utilities dùng chung
+│       └── next.config.ts
+├── compose.yml             # Cấu hình Docker Compose
+├── License                 # Giấy phép phần mềm
+└── README.md               # Tài liệu dự án
 ```
 
-## 12. Chạy local
+---
 
-### 12.1 Clone repo
+## 📝 Bản quyền
 
-```powershell
-git clone <repo-url>
-Set-Location K:\Project\Raidexi
-```
+Dự án được phân phối dưới giấy phép đi kèm. Vui lòng xem file `License` ở thư mục gốc để biết thêm chi tiết.
 
-### 12.2 Chạy backend
-
-```powershell
-Set-Location K:\Project\Raidexi\Backend\Raidexi
-dotnet restore
-dotnet run
-```
-
-Backend theo `launchSettings.json` chạy mặc định ở:
-
-- `http://localhost:5000`
-- `https://localhost:7133`
-
-Swagger trong môi trường development:
-
-- `http://localhost:5000/swagger`
-- hoặc `https://localhost:7133/swagger`
-
-Lưu ý:
-
-- startup sẽ gọi `db.Database.Migrate()`
-- PostgreSQL phải sẵn sàng trước khi app khởi động
-- nếu thiếu `GEMINI_API_KEY` hoặc `FIREBASE_*`, backend có thể fail ngay khi start
-
-### 12.3 Chạy frontend
-
-```powershell
-Set-Location K:\Project\Raidexi\FrontEnd\Raidexi
-npm install
-npm run dev
-```
-
-Frontend mặc định:
-
-- `http://localhost:3000`
-
-### 12.4 Cấu hình local được khuyến nghị
-
-Để ít lỗi nhất khi chạy local:
-
-- frontend: `NEXT_PUBLIC_RAIDEXI_API_BASE_URL=http://localhost:5000`
-- backend: `CORS_ORIGINS=http://localhost:3000`
-- backend: `ENABLE_HTTPS_REDIRECTION=false`
-
-Nếu cần test cookie cross-site ổn định trên browser:
-
-- cân nhắc chạy cả frontend và backend cùng HTTPS
-- hoặc chỉnh lại chính sách cookie cho dev local
-
-## 13. Chạy bằng Docker Compose
-
-Repo có `compose.yml` tại root.
-
-Chạy:
-
-```powershell
-Set-Location K:\Project\Raidexi
-docker compose up --build
-```
-
-Compose hiện khai báo:
-
-- backend publish cổng `5000`
-- frontend publish cổng `3000`
-
-Nhưng cần biết rõ:
-
-- compose frontend đang truyền `NEXT_PUBLIC_API_URL`
-- code frontend lại dùng `NEXT_PUBLIC_RAIDEXI_API_BASE_URL`
-- nếu muốn Docker chạy đúng với code hiện tại, nên sửa compose và Dockerfile frontend để dùng cùng một tên biến môi trường
-
-## 14. Luồng nghiệp vụ chính
-
-### 14.1 Login / Register
-
-1. Frontend gọi `POST /api/User/Login` hoặc `POST /api/User/Register`.
-2. Backend kiểm tra user trong PostgreSQL.
-3. Backend hash mật khẩu bằng BCrypt và tạo JWT.
-4. JWT được lưu vào cookie `access_token_client`.
-5. Frontend gọi `GET /api/User/GetUserData` để lấy hồ sơ và measurement.
-
-### 14.2 Login bằng Google
-
-1. Frontend mở popup Firebase Google Sign-In.
-2. Frontend lấy Firebase ID token.
-3. Frontend gọi `POST /api/User/LoginWithFirebase?token=...`.
-4. Backend verify token qua Firebase Admin SDK.
-5. Nếu user chưa có trong PostgreSQL thì tạo mới.
-6. Backend tiếp tục phát JWT nội bộ qua cookie.
-
-### 14.3 Đo cơ thể bằng camera
-
-1. Frontend dùng MediaPipe Pose để lấy landmark.
-2. Dữ liệu landmark được buffer nhiều frame.
-3. Client tính ra:
-   - shoulderWidth
-   - chest
-   - waist
-   - hip
-   - height
-4. Frontend lưu measurement vào local state/localStorage.
-5. Người dùng có thể gửi measurement lên backend qua `SaveMeasure`.
-
-### 14.4 Phân tích bảng size từ ảnh
-
-1. Người dùng upload ảnh hoặc chụp từ camera.
-2. Frontend convert ảnh sang base64.
-3. Gọi `POST /api/AnalysisDataMeasure/GetDataFromImage`.
-4. Backend dùng Gemini để trích xuất bảng size dạng JSON.
-5. Frontend hiển thị bảng size và cho user tiếp tục bước ước lượng size.
-
-### 14.5 Gợi ý size theo thương hiệu
-
-1. Người dùng chọn brand, giới tính, loại sản phẩm, hệ size đầu ra.
-2. Frontend gửi measurement + custom data sang `AISuggest`.
-3. Backend áp dụng:
-   - `BrandRule`
-   - `CategoryRule`
-   - `UniversalSize`
-   - `SizeMapping`
-4. Backend gọi Gemini để sinh mô tả fit.
-5. Frontend hiển thị kết quả tại `/Brand/result`.
-
-## 15. Những file nên đọc đầu tiên
-
-Nếu mới vào dự án, nên đọc theo thứ tự:
-
-1. `FrontEnd/Raidexi/package.json`
-2. `FrontEnd/Raidexi/app/layout.tsx`
-3. `FrontEnd/Raidexi/Shared/Service/Api.ts`
-4. `FrontEnd/Raidexi/provider/AuthProvider.tsx`
-5. `FrontEnd/Raidexi/provider/BrandProvider.tsx`
-6. `FrontEnd/Raidexi/features/Camera/hooks/HandleMeasureEstimate.tsx`
-7. `Backend/Raidexi/Program.cs`
-8. `Backend/Raidexi/Presentation/Controller/UserController.cs`
-9. `Backend/Raidexi/Presentation/Controller/AnalysisDataMeasureController.cs`
-10. `Backend/Raidexi/Infrastructure/Services/AuthService.cs`
-11. `Backend/Raidexi/Infrastructure/Services/AnalyisService.cs`
-12. `Backend/Raidexi/Infrastructure/Services/GeminiService.cs`
-
-## 16. Các điểm cần lưu ý khi làm việc với code hiện tại
-
-Đây là các điểm quan trọng mình xác nhận từ code hiện có:
-
-- frontend đọc API base URL từ `NEXT_PUBLIC_RAIDEXI_API_BASE_URL`
-- Dockerfile và `compose.yml` frontend lại đang dùng `NEXT_PUBLIC_API_URL`
-- backend load `.env` ở `Backend/Raidexi/.env`
-- cookie auth đang `Secure=true` + `SameSite=None`
-- backend chỉ gọi `UseAuthorization()`, chưa cấu hình middleware xác thực JWT theo kiểu `AddAuthentication()`
-- backend dựa vào việc tự đọc cookie trong service thay vì dùng `[Authorize]`
-- startup backend tự chạy EF migration
-- endpoint `AISuggest` bị rate limit 5 lần/ngày/IP
-- Firebase Admin đang được tạo từ các biến `FIREBASE_*`, không còn dùng `FIREBASE_CREDENTIALS_JSON`
-- frontend đang có default Firebase config hard-code trong `firebaseService.ts`
-- mail service đang dùng Gmail SMTP `smtp.gmail.com:587`
-- repo hiện có dấu hiệu chứa cấu hình thật trong một số file môi trường/cấu hình; nên rà soát và rotate secret
-
-## 17. Hạn chế và rủi ro hiện tại
-
-Đây không phải lỗi README mà là các rủi ro kỹ thuật nên biết khi onboard:
-
-- chưa có test tự động trong repo
-- chưa có seed script rõ ràng cho MongoDB
-- chưa có `.env.example` chuẩn cho frontend và backend
-- Docker env naming chưa đồng bộ với code
-- auth flow phụ thuộc mạnh vào cookie cross-site, dễ lỗi khi local sai giao thức
-- backend parse output AI khá chặt, nên prompt hoặc schema thay đổi dễ phát sinh lỗi runtime
-- trong repo có nhiều file build/cache (`bin`, `obj`, `.next`, `node_modules`) làm cây thư mục rất lớn và dễ nhiễu khi tìm source
-
-## 18. Khuyến nghị cải thiện tiếp theo
-
-Nếu tiếp tục phát triển dự án, nên ưu tiên:
-
-1. thêm `.env.example` cho cả frontend và backend
-2. thống nhất tên biến môi trường API base URL giữa code, Dockerfile và compose
-3. loại bỏ secret thật khỏi repo và rotate toàn bộ credential
-4. bổ sung script seed MongoDB cho:
-   - `UniversalSize`
-   - `BrandRule`
-   - `CategoryRule`
-   - `SizeMapping`
-   - `BrandProfile`
-5. thêm test cho auth service, analysis service và API chính
-6. làm rõ chiến lược auth local/dev/prod
-7. dọn file build artefact khỏi version control nếu không cần
-
-## 19. Bản quyền
-
-Dự án đi kèm file `License` ở thư mục gốc.
+<div align="center">
+  <br />
+  <i>Được phát triển với ❤️ bởi đội ngũ Raidexi.</i>
+</div>

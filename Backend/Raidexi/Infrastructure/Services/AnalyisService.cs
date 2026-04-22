@@ -4,6 +4,7 @@ using Raidexi.Application.Interfaces;
 using Raidexi.Presentation.Services.CacheServices;
 using System.Text.RegularExpressions;
 using Raidexi.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace Raidexi.Infrastructure.Services
 {
@@ -318,6 +319,38 @@ namespace Raidexi.Infrastructure.Services
             var response = await geminiServices.GetMeasureFromImage(base64String);
             return response;
         }
+
+        public async Task<string> ConvertUploadedFileToAnalysis(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                throw new ArgumentException("A file is required.", nameof(file));
+
+            const long maxFileSize = 50 * 1024 * 1024;
+            if (file.Length > maxFileSize)
+                throw new ArgumentException("Maximum payload is 50MB.", nameof(file));
+
+            var mimeType = string.IsNullOrWhiteSpace(file.ContentType)
+                ? "application/octet-stream"
+                : file.ContentType.ToLowerInvariant();
+
+            var allowedMimeTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "image/jpeg",
+                "image/png",
+                "application/pdf"
+            };
+
+            if (mimeType is "text/csv" or "application/csv" or "text/plain")
+                throw new NotSupportedException("CSV files are not supported for AI size-chart analysis yet.");
+
+            if (!allowedMimeTypes.Contains(mimeType))
+                throw new NotSupportedException("Only JPG, PNG, and PDF files are supported.");
+
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            return await geminiServices.GetMeasureFromFile(memoryStream.ToArray(), mimeType);
+        }
+
         private double Score(double value, double min, double max)
         {
             if (value >= min && value <= max)

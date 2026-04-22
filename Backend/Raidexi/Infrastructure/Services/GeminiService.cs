@@ -231,12 +231,10 @@ KHÔNG TRẢ BẤT KỲ TEXT NÀO KHÁC.
                 throw;
             }
         }
-        public async Task<string> GetMeasureFromImage(string base64Image)
+        public async Task<string> GetMeasureFromFile(byte[] fileBytes, string mimeType)
         {
             try
             {
-
-                var bytes = Convert.FromBase64String(base64Image);
                 var content = new Content
                 {
                     Parts = new List<Part>
@@ -245,8 +243,8 @@ KHÔNG TRẢ BẤT KỲ TEXT NÀO KHÁC.
                 {
                     InlineData = new Blob
                     {
-                        MimeType = "image/jpeg",
-                        Data = bytes
+                        MimeType = mimeType,
+                        Data = fileBytes
 
                     }
 
@@ -280,6 +278,12 @@ KHÔNG TRẢ BẤT KỲ TEXT NÀO KHÁC.
                 _logger?.LogError(ex, "Error processing image with Gemini API");
                 throw;
             }
+        }
+
+        public async Task<string> GetMeasureFromImage(string base64Image)
+        {
+            var bytes = Convert.FromBase64String(base64Image);
+            return await GetMeasureFromFile(bytes, "image/jpeg");
         }
 
         

@@ -45,6 +45,36 @@ namespace Raidexi.Presentation.Controller
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpPost("UploadChart")]
+        [RequestSizeLimit(50 * 1024 * 1024)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 50 * 1024 * 1024)]
+        public async Task<IActionResult> UploadChart([FromForm] IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("A file is required.");
+            }
+
+            try
+            {
+                var data = await analyisService.ConvertUploadedFileToAnalysis(file);
+                return Ok(data);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NotSupportedException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpPost("AnalyseImage")]
         public async Task<IActionResult> AnalyseImage([FromBody] UploadAnalyisForImage uploadAnalyisForImage)
         {
