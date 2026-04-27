@@ -32,11 +32,20 @@ builder.Services.AddRateLimiter(options =>
         var http = context.HttpContext;
         var ip   = http.Connection.RemoteIpAddress?.ToString() ?? "unknown";
         var path = http.Request.Path;
-        Console.WriteLine($"[RATE-LIMIT] IP={ip} | PATH={path}");
         return ValueTask.CompletedTask;
     };
     options.AddPolicy("anon05", ctx =>
     {
+        var userid= ctx.User.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
+        if (!string.IsNullOrEmpty(userid))
+        {
+            return RateLimitPartition.GetFixedWindowLimiter(userid,
+                _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 5,
+                    Window      = TimeSpan.FromHours(24)
+                });
+        }   
         var ip = ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown";
         return RateLimitPartition.GetFixedWindowLimiter(ip,
             _ => new FixedWindowRateLimiterOptions
@@ -52,7 +61,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AppDBContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(Environment.GetEnvironmentVariable("DEFAULT_CONNECTION")));
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
