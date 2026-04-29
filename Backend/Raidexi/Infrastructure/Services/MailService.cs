@@ -21,13 +21,9 @@ namespace Raidexi.Infrastructure.Services
                 throw new ArgumentException("Mail subject is required.", nameof(sendMailRequest));
             }
 
-            if (string.IsNullOrWhiteSpace(sendMailRequest.Html))
-            {
-                throw new ArgumentException("Mail content is required.", nameof(sendMailRequest));
-            }
 
-            var mailAccount = Environment.GetEnvironmentVariable("MailAdmin");
-            var password = Environment.GetEnvironmentVariable("MailAdminPassword");
+            var mailAccount =Environment.GetEnvironmentVariable("MailAdmin");
+            var password =Environment.GetEnvironmentVariable("MailPassword");
 
             if (string.IsNullOrWhiteSpace(mailAccount) || string.IsNullOrWhiteSpace(password))
             {

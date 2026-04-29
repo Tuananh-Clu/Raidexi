@@ -33,11 +33,11 @@ namespace Raidexi.Presentation.Controller
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
             }
-            catch (AuthenticationException)
+            catch (AuthenticationException ex)
             {
                 return StatusCode(
                     StatusCodes.Status502BadGateway,
-                    new { Message = "SMTP authentication failed. Check MailAdmin and MailAdminPassword." });
+                    new { Message = ex.Message, Detail = "Failed to authenticate with the mail server." });
             }
         }
     }
