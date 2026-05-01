@@ -23,7 +23,7 @@ namespace Raidexi.Infrastructure.Services
 
 
             var mailAccount =Environment.GetEnvironmentVariable("MailAdmin");
-            var password =Environment.GetEnvironmentVariable("MailPassword");
+            var password =Environment.GetEnvironmentVariable("MailAdminPassword");
 
             if (string.IsNullOrWhiteSpace(mailAccount) || string.IsNullOrWhiteSpace(password))
             {
