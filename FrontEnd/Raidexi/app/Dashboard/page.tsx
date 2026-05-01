@@ -35,7 +35,7 @@ export default function Page() {
             </p>
             <p className="text-xs italic text-text-muted">
               Cập nhật lần cuối:{" "}
-              {dataMeasurements?.map((item) =>item.lastUpdate).sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0]}
+              {new Date(dataMeasurements?.map((item) => item.lastUpdate).sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0]).toLocaleDateString("vi-VN")}
             </p>
           </div>
         </header>

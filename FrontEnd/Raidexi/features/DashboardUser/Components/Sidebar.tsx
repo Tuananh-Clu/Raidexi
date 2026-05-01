@@ -64,7 +64,7 @@ const Sidebar = ({setIsOpenProfile}: { setIsOpenProfile: React.Dispatch<React.Se
             </div>
             <div className="flex items-baseline justify-between">
               <span className="text-text-muted text-[10px] uppercase tracking-widest font-mono">Ngày tham gia</span>
-              <span className="ml-4 font-mono text-xs text-white truncate">{profile.createdAt}</span>
+              <span className="ml-4 font-mono text-xs text-white truncate">{new Date(profile.createdAt).toLocaleDateString("vi-VN")}</span>
             </div>
           </div>
           <button onClick={()=>setIsOpenProfile(true)} className="mt-6 w-full h-12 flex items-center justify-center bg-primary hover:bg-primary-dark text-background-dark text-sm font-bold uppercase tracking-[0.15em] transition-all shadow-lg hover:shadow-primary/20">

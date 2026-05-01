@@ -50,9 +50,6 @@ const Dashboard = ({
         {
           editProfileOpen==true && <EditProfile isOpen={editProfileOpen} setIsOpen={() => setEditProfileOpen(false)} data={context?.userData} />
         }
-        <div>
-          
-        </div>
       <div className="relative flex flex-col flex-1 border border-border-color bg-background-card">
         <div className="absolute -top-[1px] -left-[1px] w-4 h-4 border-l border-t border-primary z-10"></div>
         <div className="absolute -top-[1px] -right-[1px] w-4 h-4 border-r border-t border-primary z-10"></div>
