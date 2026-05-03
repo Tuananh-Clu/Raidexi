@@ -106,12 +106,47 @@ export const HandleMeasureEstimate = ({
     const height = Math.abs(nose.y - (kneeLeft.y + kneeRight.y) / 2);
     const heightCm = height * 100 * 2.25;
 
+    const ankleLeft  = averageLandmark(buffer, 27);
+    const ankleRight = averageLandmark(buffer, 28);
+    const elbowLeft  = averageLandmark(buffer, 13);
+    const elbowRight = averageLandmark(buffer, 14);
+    const wristLeft  = averageLandmark(buffer, 15);
+    const wristRight = averageLandmark(buffer, 16);
+
+    const upperArmLength = calculate3DDistance(shoulderLeft, elbowLeft);
+    const upperArmCm = upperArmLength * 100 * 0.58;
+
+    const sleeveLengthRaw =
+      (calculate3DDistance(shoulderLeft, elbowLeft) +
+       calculate3DDistance(elbowLeft, wristLeft)) * 100 * 0.95;
+
+    const neckCm = shoulderWidth * 100 * 0.38;
+    const armHoleCm = shoulderDepth * 100 * Math.PI * 0.55;
+
+    const hipMidY  = (leftHip.y  + rightHip.y)  / 2;
+    const ankleY   = (ankleLeft.y + ankleRight.y) / 2;
+    const inseamCm = Math.abs(hipMidY - ankleY) * 100 * 2.0;
+
+    const thighCm = hip * 0.28;
+
+    const waistMidY     = (leftWaist.y + rightWaist.y) / 2;
+    const outseamCm     = Math.abs(waistMidY - ankleY)  * 100 * 2.0;
+    const crotchDepthCm = Math.abs(waistMidY - hipMidY) * 100 * 2.2;
+
     const measurements = {
       shoulderWidth: Math.round(shoulderWidth * 100),
-      chest: Math.round(chest),
-      waist: Math.round(waist),
-      hip: Math.round(hip),
-      height: Math.round(heightCm),
+      chest:         Math.round(chest),
+      waist:         Math.round(waist),
+      hip:           Math.round(hip),
+      height:        Math.round(heightCm),
+      neck:          Math.round(neckCm),
+      sleeveLength:  Math.round(sleeveLengthRaw),
+      armHole:       Math.round(armHoleCm),
+      upperArm:      Math.round(upperArmCm),
+      inseam:        Math.round(inseamCm),
+      crotchDepth:   Math.round(crotchDepthCm),
+      thigh:         Math.round(thighCm),
+      outseamLength: Math.round(outseamCm),
     };
     context.setDataMeasured!(measurements);
   }

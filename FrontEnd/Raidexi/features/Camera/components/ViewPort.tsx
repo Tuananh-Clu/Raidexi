@@ -228,10 +228,18 @@ const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
       context.setCountdown!(20);
       context.setDataMeasured!({
         height: 0,
-        chest: 0,     
+        chest: 0,
         waist: 0,
         hip: 0,
         shoulderWidth: 0,
+        neck: 0,
+        sleeveLength: 0,
+        armHole: 0,
+        upperArm: 0,
+        inseam: 0,
+        crotchDepth: 0,
+        thigh: 0,
+        outseamLength: 0,
       });
       context.setCapturedFallback!(false);
       const ctx = canvasRef.current?.getContext("2d");
@@ -253,14 +261,13 @@ const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
     <div className="relative bg-gradient-to-br from-[#0a0908] via-[#0d0c0a] to-[#121110] flex items-center justify-center p-4 lg:p-8 border-r border-grid-line overflow-hidden group h-full">
       {context.measuring && countDowns > 0 && (
         <div className="absolute flex items-center justify-center w-full h-full font-mono text-center bg-gradient-to-b from-black/90 via-black/80 to-black/90 pointer-events-none z-[54] backdrop-blur-sm">
-          <div className="relative">
-            <div className="absolute inset-0 rounded-full bg-brass-light/20 blur-3xl animate-pulse"></div>
-            <h1 className="relative text-8xl font-bold text-brass-light drop-shadow-[0_0_30px_rgba(212,175,55,0.5)] animate-pulse">
+          <div className="relative flex flex-col items-center gap-4">
+            <div className="absolute inset-0 rounded-full bg-brass-light/20 blur-3xl animate-pulse" />
+            <p className="relative z-10 text-[11px] tracking-[0.3em] text-brass-light/70 uppercase">Chuẩn bị tư thế</p>
+            <h1 className="relative z-10 text-[96px] leading-none font-bold text-brass-light drop-shadow-[0_0_30px_rgba(212,175,55,0.5)] animate-pulse tabular-nums">
               {countDowns}
             </h1>
-            <div className="absolute text-sm tracking-widest -translate-x-1/2 -bottom-8 left-1/2 text-brass-light/70">
-              GET READY
-            </div>
+            <p className="relative z-10 text-sm text-white/60">Đứng thẳng · Dang tay 45° · Nhìn thẳng</p>
           </div>
         </div>
       )}
@@ -324,12 +331,79 @@ const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
           </div>
         </div>
 
-        <div className="absolute z-30 px-6 py-3 -translate-x-1/2 border-2 rounded-sm shadow-2xl bottom-12 left-1/2 bg-black/90 border-brass-light/60 backdrop-blur-md">
-          <div className="absolute inset-0 rounded-sm bg-gradient-to-r from-brass-light/10 via-transparent to-brass-light/10"></div>
-          <p className="relative text-brass-light font-mono text-xs tracking-[0.25em] flex items-center gap-2">
-            <span className="w-1.5 h-1.5 bg-brass-light rounded-full animate-pulse"></span>
-            ALIGN SUBJECT WITHIN FRAME
-          </p>
+        {/* Posture guide overlay - shown when camera is on, not measuring */}
+        {context.openCamera && !context.measuring && (
+          <div className="absolute inset-0 z-40 flex flex-col items-center justify-center pointer-events-none">
+            {/* Silhouette diagram */}
+            <div className="relative flex flex-col items-center gap-3 p-5 border border-brass-light/30 bg-black/70 backdrop-blur-sm rounded-sm shadow-2xl max-w-[240px]">
+              <div className="absolute inset-0 rounded-sm bg-gradient-to-b from-brass-light/5 to-transparent" />
+              <p className="relative z-10 font-mono text-[10px] tracking-[0.3em] text-brass-light uppercase">
+                ● Hướng Dẫn Tư Thế
+              </p>
+
+              {/* Human stick figure SVG */}
+              <svg
+                viewBox="0 0 100 160"
+                className="relative z-10 w-20 h-32 opacity-90"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                {/* Head */}
+                <circle cx="50" cy="14" r="11" stroke="#D4AF37" strokeWidth="2.5" />
+                {/* Spine */}
+                <line x1="50" y1="25" x2="50" y2="90" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round" />
+                {/* Left arm - angled 45° */}
+                <line x1="50" y1="45" x2="18" y2="72" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round" />
+                {/* Right arm - angled 45° */}
+                <line x1="50" y1="45" x2="82" y2="72" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round" />
+                {/* Left leg */}
+                <line x1="50" y1="90" x2="32" y2="150" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round" />
+                {/* Right leg */}
+                <line x1="50" y1="90" x2="68" y2="150" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round" />
+                {/* Angle arc hint for arms */}
+                <path d="M 30 48 A 22 22 0 0 1 70 48" stroke="#D4AF37" strokeWidth="1" strokeDasharray="3 2" opacity="0.5" />
+              </svg>
+
+              {/* Tips list */}
+              <ul className="relative z-10 space-y-1.5 w-full">
+                {[
+                  { icon: "straighten", text: "Đứng thẳng, nhìn về phía trước" },
+                  { icon: "open_with", text: "Dang tay ra ~45° so với thân" },
+                  { icon: "person", text: "Toàn thân trong khung hình" },
+                  { icon: "light_mode", text: "Ánh sáng đủ, nền đơn giản" },
+                ].map(({ icon, text }) => (
+                  <li key={icon} className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[13px] text-primary shrink-0">{icon}</span>
+                    <span className="font-mono text-[9px] text-brass-light/80 leading-tight">{text}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <p className="relative z-10 font-mono text-[9px] text-[#8a806d] text-center">
+                Nhấn <span className="text-primary font-bold">START ESTIMATE</span> khi sẵn sàng
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Bottom status bar */}
+        <div className="absolute z-30 -translate-x-1/2 bottom-6 left-1/2">
+          {context.measuring ? (
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 border border-primary/60 backdrop-blur-md shadow-[0_0_16px_rgba(242,166,13,0.3)]">
+              <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+              <p className="font-mono text-xs font-bold text-primary tracking-wider">Đang ghi nhận số đo — giữ nguyên!</p>
+            </div>
+          ) : context.openCamera ? (
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/30 backdrop-blur-md">
+              <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
+              <p className="font-mono text-xs text-white/90 tracking-wider">Sẵn sàng · Nhấn <span className="text-primary font-bold">Bắt đầu đo ngay</span></p>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-black/60 border border-brass-light/30 backdrop-blur-md">
+              <span className="w-1.5 h-1.5 bg-brass-light/60 rounded-full" />
+              <p className="font-mono text-[10px] text-brass-light/70 tracking-[0.2em] uppercase">Đưa toàn thân vào khung hình</p>
+            </div>
+          )}
         </div>
 
         <div className="absolute top-4 left-4 z-30 font-mono text-[10px] text-brass-light/60 tracking-wider space-y-1">

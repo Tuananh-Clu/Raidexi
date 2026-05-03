@@ -4,14 +4,49 @@ import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 import { useRouterService } from "@/Shared/Service/routerService";
 import { useDataMeasure } from "../hooks/useDataMeasure";
 
-
-
 interface ControlPanelProps {
   status: SystemStatus;
   data: MeasurementData;
   onToggleGrid: (enabled: boolean) => void;
   onToggleFlash: (enabled: boolean) => void;
 }
+
+// Determine the current step (1-4) based on context state
+function getCurrentStep(context: any): number {
+  const hasMeasured =
+    !!context.dataMeasured && Object.keys(context.dataMeasured).length > 0;
+  if (hasMeasured) return 4;
+  if (context.measuring) return 3;
+  if (context.openCamera) return 2;
+  return 1;
+}
+
+const STEPS = [
+  {
+    step: 1,
+    icon: "videocam",
+    title: "Bật Camera",
+    desc: "Nhấn nút bên dưới để khởi động camera của bạn",
+  },
+  {
+    step: 2,
+    icon: "accessibility_new",
+    title: "Chuẩn bị tư thế",
+    desc: "Đứng thẳng, dang tay 45°, đảm bảo toàn thân trong khung hình",
+  },
+  {
+    step: 3,
+    icon: "self_improvement",
+    title: "Đứng im — Đang đo",
+    desc: "Giữ nguyên tư thế trong 15 giây để hệ thống ghi nhận số đo",
+  },
+  {
+    step: 4,
+    icon: "check_circle",
+    title: "Hoàn thành!",
+    desc: "Số đo đã sẵn sàng. Lưu lại và xem gợi ý thời trang phù hợp",
+  },
+];
 
 const ControlPanel: React.FC<ControlPanelProps> = ({
   status,
@@ -24,7 +59,12 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   const [currentTime, setCurrentTime] = useState(new Date());
   const context = useContext(BodyMeasureEstimateContext);
   const { handleSaveMeasure } = useDataMeasure();
-  const {navigate}=useRouterService();
+  const { navigate } = useRouterService();
+
+  const currentStep = getCurrentStep(context);
+  const hasMeasured =
+    !!context.dataMeasured && Object.keys(context.dataMeasured).length > 0;
+
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
@@ -42,253 +82,329 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
     onToggleFlash(newState);
   };
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString("en-US", {
+  const formatTime = (date: Date) =>
+    date.toLocaleTimeString("en-US", {
       hour12: false,
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
     });
-  };
 
   return (
-    <div className="bg-panel-dark flex flex-col h-full border-l border-grid-line relative z-10 w-full lg:w-[360px] shrink-0 overflow-y-scroll">
-      <div className="p-6 border-b border-grid-line">
-        <div className="flex flex-row items-start justify-between mb-3">
-          <h2 className="text-xl font-bold tracking-wide text-white font-display">
-            SESSION DATA
-          </h2>
-        </div>
-        <div className="flex items-center justify-between text-[#8a806d] font-mono text-xs">
-          <span>ID: {status.id}</span>
-          <span>T: {formatTime(currentTime)}</span>
+    <div className="bg-panel-dark flex flex-col h-full border-l border-grid-line relative z-10 w-full lg:w-[360px] shrink-0 overflow-hidden">
+      {/* ── Header ── */}
+      <div className="px-5 py-4 border-b border-grid-line shrink-0">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-base font-bold tracking-wide text-white font-display">
+              Đo số đo cơ thể
+            </h2>
+            <p className="text-[10px] font-mono text-[#8a806d] mt-0.5">
+              ID: {status.id} · {formatTime(currentTime)}
+            </p>
+          </div>
+          {/* Camera live indicator */}
+          <div
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider border transition-all duration-500 ${
+              context.openCamera
+                ? "border-green-500/50 text-green-400 bg-green-900/20"
+                : "border-[#8a806d]/30 text-[#8a806d] bg-transparent"
+            }`}
+          >
+            <span
+              className={`w-1.5 h-1.5 rounded-full ${
+                context.openCamera
+                  ? "bg-green-400 animate-pulse"
+                  : "bg-[#8a806d]"
+              }`}
+            />
+            {context.openCamera ? "LIVE" : "OFF"}
+          </div>
         </div>
       </div>
 
-      <div className="flex-1 p-6 space-y-8 overflow-y-auto custom-scrollbar">
-        {/* Status Block */}
-        <div className="space-y-3">
-          <p className="text-xs font-mono text-[#8a806d] tracking-widest uppercase">
-            Input Status
+      {/* ── Scrollable body ── */}
+      <div className="flex-1 overflow-y-auto custom-scrollbar">
+        {/* ─ Step guide ─ */}
+        <div className="px-5 py-4 space-y-2 border-b border-grid-line">
+          <p className="text-[10px] font-mono text-[#8a806d] tracking-[0.2em] uppercase mb-3">
+            Các bước thực hiện
           </p>
-          <div className="flex items-center gap-3 p-3 border shadow-inner border-grid-line bg-background-dark">
-            <span
-              className={`material-symbols-outlined text-xl ${
-                context.openCamera
-                  ? "animate-pulse text-green-500"
-                  : "text-red-500"
-              }`}
-            >
-              sensors
-            </span>
-            <span
-              className={`font-mono text-sm font-bold tracking-widest ${
-                context.openCamera ? "text-brass-light" : "text-[#8a806d]"
-              }`}
-            >
-              {context.openCamera ? "LIVE FEED ACTIVE" : "OFFLINE"}
-            </span>
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          <div className="flex items-end justify-between">
-            <p className="text-xs font-mono text-[#8a806d] tracking-widest uppercase">
-              Time to Measure
-            </p>
-            <p className="font-mono text-sm font-bold text-brass-light">
-              {context.countdown?.toFixed(0)}s
-            </p>
-          </div>
-          <div className="flex w-full h-4 gap-1">
-            {Array.from({ length: 15 }).map((_, i) => (
+          {STEPS.map(({ step, icon, title, desc }) => {
+            const isDone = step < currentStep;
+            const isActive = step === currentStep;
+            return (
               <div
-                key={i}
-                className={`flex-1 transition-all duration-300 shadow-[0_0_8px_rgba(242,166,13,0.4)] ${
-                  i >= context.countdown!
-                    ? "bg-white opacity-100 "
-                    : "bg-primary opacity-50"
+                key={step}
+                className={`relative flex items-start gap-3 p-3 rounded-sm border transition-all duration-300 ${
+                  isDone
+                    ? "border-green-700/40 bg-green-950/20"
+                    : isActive
+                    ? "border-primary/60 bg-primary/8 shadow-[0_0_16px_rgba(242,166,13,0.1)]"
+                    : "border-grid-line/50 bg-transparent opacity-35"
                 }`}
-              />
-            ))}
-          </div>
+              >
+                {/* Left accent bar */}
+                {isActive && (
+                  <div className="absolute left-0 inset-y-0 w-[3px] rounded-l-sm bg-primary" />
+                )}
+
+                {/* Step badge */}
+                <div
+                  className={`shrink-0 w-7 h-7 rounded-sm flex items-center justify-center text-[11px] font-mono font-bold border transition-all ${
+                    isDone
+                      ? "border-green-500/60 bg-green-900/30 text-green-400"
+                      : isActive
+                      ? "border-primary bg-primary/20 text-primary"
+                      : "border-[#8a806d]/40 text-[#8a806d]"
+                  }`}
+                >
+                  {isDone ? (
+                    <span className="material-symbols-outlined text-[15px]">
+                      check
+                    </span>
+                  ) : (
+                    step
+                  )}
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <span
+                      className={`material-symbols-outlined text-[15px] ${
+                        isDone
+                          ? "text-green-400"
+                          : isActive
+                          ? "text-primary"
+                          : "text-[#8a806d]"
+                      }`}
+                    >
+                      {icon}
+                    </span>
+                    <span
+                      className={`text-xs font-bold tracking-wide ${
+                        isDone
+                          ? "text-green-400"
+                          : isActive
+                          ? "text-white"
+                          : "text-[#8a806d]"
+                      }`}
+                    >
+                      {title}
+                    </span>
+                  </div>
+                  <p
+                    className={`text-[10px] leading-relaxed ${
+                      isDone
+                        ? "text-green-600/70"
+                        : isActive
+                        ? "text-brass-light/70"
+                        : "text-[#8a806d]/50"
+                    }`}
+                  >
+                    {desc}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
-        <div className="pt-4 space-y-4 border-t border-grid-line">
-          <p className="text-xs font-mono text-[#8a806d] tracking-widest uppercase mb-4">
-            Realtime Metrics
+        {/* ─ Countdown / Measuring progress ─ */}
+        {context.measuring && (
+          <div className="px-5 py-4 border-b border-grid-line space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] font-mono text-[#8a806d] tracking-[0.2em] uppercase">
+                Thời gian đo còn lại
+              </p>
+              <span className="font-mono text-lg font-bold text-primary tabular-nums">
+                {context.countdown?.toFixed(0)}s
+              </span>
+            </div>
+            {/* Bar */}
+            <div className="flex w-full h-2 gap-[3px] rounded-full overflow-hidden">
+              {Array.from({ length: 15 }).map((_, i) => (
+                <div
+                  key={i}
+                  className={`flex-1 rounded-full transition-all duration-300 ${
+                    i >= (context.countdown ?? 0)
+                      ? "bg-white/90"
+                      : "bg-primary/40"
+                  }`}
+                />
+              ))}
+            </div>
+            <p className="text-[10px] text-center font-mono text-brass-light/60 animate-pulse">
+              Giữ nguyên tư thế — đừng di chuyển!
+            </p>
+          </div>
+        )}
+
+        {/* ─ Realtime metrics ─ */}
+        <div className="px-5 py-4 border-b border-grid-line">
+          <p className="text-[10px] font-mono text-[#8a806d] tracking-[0.2em] uppercase mb-3">
+            Số đo {hasMeasured ? "đã ghi nhận" : "thời gian thực"}
           </p>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-2.5">
             {data.metrics.map((metric: any) => (
               <div
                 key={metric.id}
-                className="relative p-3 transition-colors border cursor-default bg-background-dark border-grid-line group hover:border-brass"
+                className={`relative p-3 border rounded-sm transition-all duration-300 ${
+                  hasMeasured
+                    ? "border-primary/40 bg-primary/5"
+                    : "border-grid-line bg-background-dark"
+                }`}
               >
-                <p className="text-[10px] font-mono text-[#8a806d] uppercase mb-1">
+                <p className="text-[9px] font-mono text-[#8a806d] uppercase mb-1 tracking-wider">
                   {metric.label}
                 </p>
                 <div className="flex items-baseline gap-1">
-                  <span className="font-mono text-xl font-medium text-white">
+                  <span
+                    className={`font-mono text-xl font-semibold ${
+                      hasMeasured ? "text-primary" : "text-white/50"
+                    }`}
+                  >
                     {metric?.value?.toFixed(1)}
                   </span>
-                  <span className="text-[10px] font-mono text-brass-light">
+                  <span className="text-[9px] font-mono text-brass-light/60">
                     {metric.unit}
                   </span>
                 </div>
-                <div className="absolute top-0 right-0 transition-opacity opacity-0 size-2 bg-brass-light group-hover:opacity-100" />
+                {hasMeasured && (
+                  <div className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-green-400 rounded-full" />
+                )}
               </div>
             ))}
           </div>
         </div>
-      </div>
 
-      {/* Brand Fit CTA - Fixed position, chỉ hiện khi đo xong */}
-      {context.dataMeasured && Object.keys(context.dataMeasured).length > 0 && (
-        <div className="px-6 py-3 border-t border-grid-line bg-gradient-to-b from-background-dark to-panel-dark">
-          <div className="relative p-3 overflow-hidden transition-all duration-300 border-2 rounded bg-gradient-to-br from-primary/20 to-brass-light/10 border-primary group hover:border-brass-light">
-            {/* Decorative element */}
-            <div className="absolute top-0 right-0 w-12 h-12 transform rotate-45 translate-x-6 -translate-y-6 bg-primary/30" />
-            
-            <div className="relative z-10 flex items-center justify-between gap-3">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-base material-symbols-outlined text-brass-light">
-                    checkroom
-                  </span>
-                  <p className="text-[10px] font-mono text-brass-light tracking-widest uppercase">
-                    Ready for Next Step
-                  </p>
-                </div>
-                <h3 className="text-sm font-bold text-white font-display">
-                  Find Your Perfect Fit
-                </h3>
-              </div>
-              
-              <button
-                onClick={() => navigate("/Brand")}
-                className="px-4 h-10 bg-primary text-background-dark font-bold font-mono text-sm tracking-wider border-2 border-transparent hover:bg-white hover:border-brass-light hover:shadow-[0_0_20px_rgba(242,166,13,0.6)] transition-all flex items-center justify-center gap-2 group-hover:scale-[1.05] active:scale-[0.95] whitespace-nowrap"
-              >
-                <span>ANALYZE</span>
-                <span className="text-base material-symbols-outlined">
-                  arrow_forward
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Save Measurements Button */}
-      {context.dataMeasured && (
-        <div className="px-6 pt-3 pb-2 border-t border-grid-line">
-          <button
-            onClick={handleSaveMeasure}
-            className="h-12 w-full cursor-pointer bg-background-dark text-brass-light text-sm font-bold font-mono tracking-widest border-2 border-grid-line hover:border-primary hover:bg-primary hover:text-background-dark hover:shadow-[0_0_15px_rgba(242,166,13,0.3)] transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
-          >
-            <span className="text-lg material-symbols-outlined">save</span>
-            <span>SAVE DATA</span>
-          </button>
-        </div>
-      )}
-
-      {/* Controls Section - Always visible */}
-      <div className="p-6 space-y-2 border-t border-grid-line bg-background-dark">
-        <div className="flex gap-4 mb-2">
-          <label
-            className="flex items-center gap-2 cursor-pointer select-none group"
-            onClick={handleGridToggle}
-          >
-            <div
-              className={`w-10 h-5 border border-[#8a806d] bg-transparent relative flex items-center px-1 transition-colors group-hover:border-brass ${
-                gridEnabled ? "justify-end border-brass" : "justify-start"
-              }`}
-            >
-              <div
-                className={`size-3 transition-colors ${
-                  gridEnabled ? "bg-brass-light" : "bg-[#3a342a]"
-                }`}
-              />
-            </div>
-            <span
-              className={`text-[10px] font-mono uppercase transition-colors ${
+        {/* ─ View toggles ─ */}
+        <div className="px-5 py-3 border-b border-grid-line">
+          <div className="flex items-center gap-5">
+            <button
+              onClick={handleGridToggle}
+              className={`flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider transition-colors ${
                 gridEnabled ? "text-white" : "text-[#8a806d]"
               }`}
             >
-              Grid
-            </span>
-          </label>
-
-          <label
-            className="flex items-center gap-2 cursor-pointer select-none group"
-            onClick={handleFlashToggle}
-          >
-            <div
-              className={`w-10 h-5 border border-[#8a806d] bg-transparent relative flex items-center px-1 transition-colors group-hover:border-brass ${
-                flashEnabled ? "justify-end border-brass" : "justify-start"
-              }`}
-            >
               <div
-                className={`size-3 transition-colors ${
-                  flashEnabled ? "bg-brass-light" : "bg-[#3a342a]"
+                className={`w-8 h-4 border rounded-full relative transition-all ${
+                  gridEnabled ? "border-primary bg-primary/20" : "border-[#8a806d]/40"
                 }`}
-              />
-            </div>
-            <span
-              className={`text-[10px] font-mono uppercase transition-colors ${
+              >
+                <div
+                  className={`absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200 ${
+                    gridEnabled
+                      ? "left-[calc(100%-14px)] bg-primary"
+                      : "left-0.5 bg-[#8a806d]/50"
+                  }`}
+                />
+              </div>
+              Lưới
+            </button>
+            <button
+              onClick={handleFlashToggle}
+              className={`flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider transition-colors ${
                 flashEnabled ? "text-white" : "text-[#8a806d]"
               }`}
             >
+              <div
+                className={`w-8 h-4 border rounded-full relative transition-all ${
+                  flashEnabled ? "border-primary bg-primary/20" : "border-[#8a806d]/40"
+                }`}
+              >
+                <div
+                  className={`absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200 ${
+                    flashEnabled
+                      ? "left-[calc(100%-14px)] bg-primary"
+                      : "left-0.5 bg-[#8a806d]/50"
+                  }`}
+                />
+              </div>
               Flash
-            </span>
-          </label>
+            </button>
+          </div>
         </div>
+      </div>
 
-        <div className="space-y-3">
+      {/* ── Fixed bottom action area ── */}
+      <div className="shrink-0 border-t border-grid-line bg-background-dark px-5 py-4 space-y-2.5">
+        {/* After measurement: CTA to Brand page */}
+        {hasMeasured && (
+          <button
+            onClick={() => navigate("/Brand")}
+            className="w-full h-12 bg-gradient-to-r from-primary to-brass-light text-background-dark font-bold text-sm tracking-wider flex items-center justify-center gap-2 rounded-sm hover:opacity-90 hover:shadow-[0_0_24px_rgba(242,166,13,0.5)] transition-all active:scale-[0.98]"
+          >
+            <span className="material-symbols-outlined text-lg">checkroom</span>
+            <span>Xem gợi ý thời trang</span>
+            <span className="material-symbols-outlined text-base">
+              arrow_forward
+            </span>
+          </button>
+        )}
+
+        {/* Save button */}
+        {hasMeasured && (
+          <button
+            onClick={handleSaveMeasure}
+            className="w-full h-10 cursor-pointer bg-transparent text-brass-light text-sm font-mono tracking-wider border border-grid-line hover:border-primary hover:text-white transition-all flex items-center justify-center gap-2 rounded-sm active:scale-[0.98]"
+          >
+            <span className="material-symbols-outlined text-base">save</span>
+            <span>Lưu số đo</span>
+          </button>
+        )}
+
+        {/* Main action button */}
+        {!context.measuring && (
           <button
             onClick={() => {
-              if (context.openCamera === false) {
+              if (!context.openCamera) {
                 context?.setOpenCamera?.(true);
-                return;
+              } else {
+                context?.setMeasuring?.(true);
               }
-              context?.setMeasuring?.(true);
             }}
-            className="w-full h-14 cursor-pointer bg-primary text-background-dark text-lg font-bold font-mono tracking-widest border border-transparent hover:bg-white hover:border-brass-light hover:shadow-[0_0_20px_rgba(242,166,13,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+            className="w-full h-14 cursor-pointer bg-primary text-background-dark text-base font-bold tracking-wider rounded-sm border-2 border-transparent hover:bg-white hover:border-primary hover:shadow-[0_0_24px_rgba(242,166,13,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
           >
-            <span className="material-symbols-outlined">camera_alt</span>
-            {context.openCamera ? "START ESTIMATE" : "CAPTURE IMAGE"}
+            <span className="material-symbols-outlined text-xl">
+              {context.openCamera ? "play_circle" : "videocam"}
+            </span>
+            {context.openCamera ? "Bắt đầu đo ngay" : "Bật camera"}
           </button>
+        )}
 
-          {context.openCamera && (
-            <div className="space-y-3">
+        {/* Secondary: Off + Restart */}
+        {context.openCamera && !context.measuring && (
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                context?.setOpenCamera?.(false);
+                context?.setMeasuring?.(false);
+              }}
+              className="flex-1 h-10 cursor-pointer bg-transparent text-red-400 text-xs font-mono tracking-wider border border-red-800/50 hover:bg-red-900/20 hover:border-red-500 transition-all flex items-center justify-center gap-1.5 rounded-sm active:scale-[0.98]"
+            >
+              <span className="material-symbols-outlined text-base">
+                power_settings_new
+              </span>
+              Tắt camera
+            </button>
+            {hasMeasured && (
               <button
-                onClick={() => {
-                  context?.setOpenCamera?.(false);
-                  context?.setMeasuring?.(false);
-                }}
-                className="w-full h-12 cursor-pointer bg-red-600 text-white text-base font-bold font-mono tracking-widest border border-transparent hover:bg-red-700 hover:shadow-[0_0_20px_rgba(255,0,0,0.5)] transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
+                onClick={() => context?.setCapturedFallback?.(true)}
+                className="flex-1 h-10 cursor-pointer bg-transparent text-[#8a806d] text-xs font-mono tracking-wider border border-grid-line hover:border-primary hover:text-white transition-all flex items-center justify-center gap-1.5 rounded-sm active:scale-[0.98]"
               >
-                <span className="text-lg material-symbols-outlined">power_settings_new</span>
-                <span>OFF</span>
+                <span className="material-symbols-outlined text-base">
+                  restart_alt
+                </span>
+                Đo lại
               </button>
-              {context.dataMeasured &&
-                Object.keys(context.dataMeasured).length > 0 && (
-                  <button
-                    className="w-full h-12 cursor-pointer bg-gray-800 text-white text-base font-bold font-mono tracking-widest border border-transparent hover:bg-primary hover:text-background-dark hover:shadow-[0_0_20px_rgba(242,166,13,0.5)] transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
-                    onClick={() => {
-                      context?.setCapturedFallback?.(true);
-                    }}
-                  >
-                    <span className="text-lg material-symbols-outlined">restart_alt</span>
-                    <span>RESTART</span>
-                  </button>
-                )}
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 export default ControlPanel;
-

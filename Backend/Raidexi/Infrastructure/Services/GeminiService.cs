@@ -1,14 +1,17 @@
-﻿using Google.GenAI;
+using Google.GenAI;
 using Raidexi.Application.Dtos;
 using Raidexi.Application.Interfaces;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Google.GenAI.Types;
+
 namespace Raidexi.Infrastructure.Services
 {
     public class GeminiService : IGeminiService
     {
         private static readonly string Model = "gemini-3-flash-preview";
+
+        // Prompt template for image-based size chart extraction
         private string promptTemplate =
         @"
 You are an AI that extracts structured data from clothing size chart images.
@@ -47,7 +50,6 @@ Field rules:
 - size_eu: Number (e.g., 34, 36, 38)
 - chest_min_cm, chest_max_cm, height_min_cm, height_max_cm, weight_min_kg, weight_max_kg, waist_min_cm, waist_max_cm, hip_min_cm, hip_max_cm: Number (in cm or kg)
 
-
 IMPORTANT:
 - Field names are CASE SENSITIVE. Use EXACTLY as shown above (PascalCase with underscores).
 - Do NOT rename, add, or remove any field.
@@ -68,6 +70,20 @@ IMPORTANT:
 
         public string CreatePrompt(uploadDataToAnalysisMeasure data)
         {
+            var m = data.dataMeasure;
+
+            // Build supplementary block only when camera captured extra fields
+            var supplementary = new System.Text.StringBuilder();
+            if (m.Neck > 0)          supplementary.AppendLine($"- Vòng cổ: {m.Neck} cm");
+            if (m.SleeveLength > 0)  supplementary.AppendLine($"- Dài tay: {m.SleeveLength} cm");
+            if (m.Inseam > 0)        supplementary.AppendLine($"- Dài trong (inseam): {m.Inseam} cm");
+            if (m.Thigh > 0)         supplementary.AppendLine($"- Vòng đùi: {m.Thigh} cm");
+            if (m.OutseamLength > 0) supplementary.AppendLine($"- Dài ngoài: {m.OutseamLength} cm");
+
+            var extraBlock = supplementary.Length > 0
+                ? $"\n\nSỐ ĐO BỔ SUNG (tham khảo thêm, không bắt buộc dùng):\n{supplementary}"
+                : string.Empty;
+
             var prompt = $$"""
 SYSTEM ROLE:
 Bạn là một API sinh dữ liệu JSON cho hệ thống backend.
@@ -103,10 +119,11 @@ LƯU Ý:
 DỮ LIỆU ĐẦU VÀO:
 - Thương hiệu: {{data.brand}}
 - Loại sản phẩm: {{data.userCustom.typeProduct}}
-- Chiều cao: {{data.dataMeasure.Height}} cm
-- Vòng ngực: {{data.dataMeasure.Chest}} cm
-- Vai: {{data.dataMeasure.ShoulderWidth}} cm
-- Vòng eo: {{data.dataMeasure.Waist}} cm
+- Chiều cao: {{m.Height}} cm
+- Vòng ngực: {{m.Chest}} cm
+- Vai: {{m.ShoulderWidth}} cm
+- Vòng eo: {{m.Waist}} cm
+- Vòng hông: {{m.Hip}} cm{{extraBlock}}
 
 --------------------------------------------------
 
@@ -171,7 +188,6 @@ KHÔNG TRẢ BẤT KỲ TEXT NÀO KHÁC.
             return prompt;
         }
 
-
         public async Task<GeminiResponse> GetAIMeasure(string prompt)
         {
             try
@@ -231,6 +247,7 @@ KHÔNG TRẢ BẤT KỲ TEXT NÀO KHÁC.
                 throw;
             }
         }
+
         public async Task<string> GetMeasureFromFile(byte[] fileBytes, string mimeType)
         {
             try
@@ -238,22 +255,20 @@ KHÔNG TRẢ BẤT KỲ TEXT NÀO KHÁC.
                 var content = new Content
                 {
                     Parts = new List<Part>
-            {
-                new Part
-                {
-                    InlineData = new Blob
                     {
-                        MimeType = mimeType,
-                        Data = fileBytes
-
+                        new Part
+                        {
+                            InlineData = new Blob
+                            {
+                                MimeType = mimeType,
+                                Data = fileBytes
+                            }
+                        },
+                        new Part
+                        {
+                            Text = promptTemplate
+                        }
                     }
-
-                },
-                new Part
-                {
-                    Text = promptTemplate
-                }
-            }
                 };
 
                 _logger?.LogInformation("Processing image with Gemini API");
@@ -286,14 +301,11 @@ KHÔNG TRẢ BẤT KỲ TEXT NÀO KHÁC.
             return await GetMeasureFromFile(bytes, "image/jpeg");
         }
 
-        
-
         private static string CleanJsonResponse(string text)
         {
             text = Regex.Replace(text, @"^```json\s*", "", RegexOptions.Multiline);
             text = Regex.Replace(text, @"\s*```$", "", RegexOptions.Multiline);
             text = text.Trim();
-
             return text;
         }
     }

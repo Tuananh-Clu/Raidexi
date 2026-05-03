@@ -19,13 +19,25 @@ export interface MeasurementData {
   estimatedSize: string;
   sizeIndex: number;
 }
+
 export type MeasurementDataResponse = {
-  height: number;
+  // core — used by analysis engine
+  shoulderWidth: number;
   chest: number;
   waist: number;
   hip: number;
-  shoulderWidth: number;
+  height: number;
+  // supplementary — display & print only
+  neck?: number;
+  sleeveLength?: number;
+  armHole?: number;
+  upperArm?: number;
+  inseam?: number;
+  crotchDepth?: number;
+  thigh?: number;
+  outseamLength?: number;
 }
+
 export interface data {
   dataMeasure: MeasurementDataResponse;
   lastUpdate: string;

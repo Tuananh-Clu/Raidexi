@@ -15,32 +15,36 @@ const Dashboard = ({
   editProfileOpen: boolean;
 }) => {
   console.log("Received dataMeasurements in Dashboard component:", dataMeasurements);
-  const data = [
+  const measureGroups = [
     {
-      label: "Vòng ngực (Chest)",
-      value: dataMeasurements?.[0]?.dataMeasure?.chest,
-      unit: "CM",
-      icons: "accessibility_new",
+      group: "Cơ bản",
+      items: [
+        { label: "Vòng ngực (Chest)",         value: dataMeasurements?.[0]?.dataMeasure?.chest,         unit: "CM", icon: "accessibility_new" },
+        { label: "Vòng eo (Waist)",           value: dataMeasurements?.[0]?.dataMeasure?.waist,         unit: "CM", icon: "straighten" },
+        { label: "Vòng hông (Hip)",           value: dataMeasurements?.[0]?.dataMeasure?.hip,           unit: "CM", icon: "boy" },
+        { label: "Chiều rộng vai (Shoulder)", value: dataMeasurements?.[0]?.dataMeasure?.shoulderWidth, unit: "CM", icon: "pan_tool" },
+      ],
     },
     {
-      label: "Vòng eo (Waist)",
-      value: dataMeasurements?.[0]?.dataMeasure?.waist,
-      unit: "CM",
-      icons: "straighten",
+      group: "Thân trên",
+      items: [
+        { label: "Vòng cổ (Neck)",       value: dataMeasurements?.[0]?.dataMeasure?.neck,        unit: "CM", icon: "sentiment_satisfied" },
+        { label: "Dài tay (Sleeve)",      value: dataMeasurements?.[0]?.dataMeasure?.sleeveLength, unit: "CM", icon: "front_hand" },
+        { label: "Nách vòng (Armhole)",   value: dataMeasurements?.[0]?.dataMeasure?.armHole,      unit: "CM", icon: "social_distance" },
+        { label: "Bắp tay (Upper Arm)",  value: dataMeasurements?.[0]?.dataMeasure?.upperArm,     unit: "CM", icon: "fitness_center" },
+      ],
     },
     {
-      label: "Vòng hông (Hip)",
-      value: dataMeasurements?.[0]?.dataMeasure?.hip,
-      unit: "CM",
-      icons: "boy",
-    },
-    {
-      label: "Chiều rộng vai (Shoulder Width)",
-      value: dataMeasurements?.[0]?.dataMeasure?.shoulderWidth,
-      unit: "CM",
-      icons: "pan_tool",
+      group: "Thân dưới",
+      items: [
+        { label: "Dài trong (Inseam)",   value: dataMeasurements?.[0]?.dataMeasure?.inseam,        unit: "CM", icon: "height" },
+        { label: "Độ sâu đáy (Crotch)", value: dataMeasurements?.[0]?.dataMeasure?.crotchDepth,   unit: "CM", icon: "airline_seat_recline_extra" },
+        { label: "Vòng đùi (Thigh)",     value: dataMeasurements?.[0]?.dataMeasure?.thigh,         unit: "CM", icon: "directions_walk" },
+        { label: "Dài ngoài (Outseam)",  value: dataMeasurements?.[0]?.dataMeasure?.outseamLength, unit: "CM", icon: "swap_vert" },
+      ],
     },
   ];
+
   const {navigate}=useRouterService();
   const [isOpen, setIsOpen] = useState(false);
   const context=useContext(AuthContext);
@@ -102,25 +106,36 @@ const Dashboard = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-px md:col-span-8 sm:grid-cols-2 bg-border-color">
-            {data.map((dataMeasurements) => (
-              
-              <div className="bg-background-card p-6 flex flex-col justify-between h-full hover:bg-[#2a251e] transition-colors group">
-                <div className="flex items-start justify-between">
-                  <span className="font-mono text-xs tracking-widest uppercase transition-colors text-text-muted group-hover:text-primary">
-                    {dataMeasurements.label}- {dataMeasurements.unit}
-                  </span>
-                  <span className="text-xl material-symbols-outlined text-text-muted/30">
-                    {dataMeasurements.icons}
+          <div className="md:col-span-8 flex flex-col gap-px bg-border-color">
+            {measureGroups.map((group) => (
+              <div key={group.group}>
+                <div className="px-4 py-1.5 bg-[#1a1410] border-b border-border-color">
+                  <span className="font-mono text-[9px] tracking-[0.25em] uppercase text-text-muted">
+                    {group.group}
                   </span>
                 </div>
-                <div className="flex items-baseline gap-2 mt-4">
-                  <span className="font-mono text-4xl font-light text-white">
-                    {dataMeasurements.value}
-                  </span>
-                  <span className="font-mono text-sm text-text-muted">
-                    {dataMeasurements.unit}
-                  </span>
+                <div className="grid grid-cols-2 gap-px sm:grid-cols-4 bg-border-color">
+                  {group.items.map((item) => (
+                    <div
+                      key={item.label}
+                      className="bg-background-card p-4 flex flex-col justify-between hover:bg-[#2a251e] transition-colors group"
+                    >
+                      <div className="flex items-start justify-between">
+                        <span className="font-mono text-[10px] tracking-widest uppercase transition-colors text-text-muted group-hover:text-primary leading-tight">
+                          {item.label}
+                        </span>
+                        <span className="text-lg material-symbols-outlined text-text-muted/30">
+                          {item.icon}
+                        </span>
+                      </div>
+                      <div className="flex items-baseline gap-1 mt-2">
+                        <span className="font-mono text-2xl font-light text-white">
+                          {item.value ?? "—"}
+                        </span>
+                        <span className="font-mono text-xs text-text-muted">{item.unit}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}

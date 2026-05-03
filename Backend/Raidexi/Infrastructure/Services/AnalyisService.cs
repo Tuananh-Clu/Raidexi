@@ -25,25 +25,43 @@ namespace Raidexi.Infrastructure.Services
             {
                 "male" => new MeasureData
                 {
-                    Chest = (int)(raw.Chest * 1.02),
-                    ShoulderWidth = (int)(raw.ShoulderWidth * 1.03),
-                    Waist = (int)(raw.Waist * 1.01),
-                    Hip = raw.Hip,
-                    Height = raw.Height
+                    Chest         = raw.Chest         * 1.02f,
+                    ShoulderWidth = raw.ShoulderWidth  * 1.03f,
+                    Waist         = raw.Waist          * 1.01f,
+                    Hip           = raw.Hip,
+                    Height        = raw.Height,
+                    // supplementary — pass through unchanged
+                    Neck          = raw.Neck,
+                    SleeveLength  = raw.SleeveLength,
+                    ArmHole       = raw.ArmHole,
+                    UpperArm      = raw.UpperArm,
+                    Inseam        = raw.Inseam,
+                    CrotchDepth   = raw.CrotchDepth,
+                    Thigh         = raw.Thigh,
+                    OutseamLength = raw.OutseamLength,
                 },
                 "female" => new MeasureData
                 {
-                    Chest = (int)(raw.Chest * 0.99),
-                    ShoulderWidth = (int)(raw.ShoulderWidth * 0.97),
-                    Waist = (int)(raw.Waist * 0.97),
-                    Hip = (int)(raw.Hip * 1.02),
-                    Height = raw.Height
+                    Chest         = raw.Chest          * 0.99f,
+                    ShoulderWidth = raw.ShoulderWidth   * 0.97f,
+                    Waist         = raw.Waist           * 0.97f,
+                    Hip           = raw.Hip             * 1.02f,
+                    Height        = raw.Height,
+                    // supplementary — pass through unchanged
+                    Neck          = raw.Neck,
+                    SleeveLength  = raw.SleeveLength,
+                    ArmHole       = raw.ArmHole,
+                    UpperArm      = raw.UpperArm,
+                    Inseam        = raw.Inseam,
+                    CrotchDepth   = raw.CrotchDepth,
+                    Thigh         = raw.Thigh,
+                    OutseamLength = raw.OutseamLength,
                 },
                 _ => raw
             };
         }
 
-        private double CalculateRangeFit(int user, int min, int max)
+        private double CalculateRangeFit(float user, int min, int max)
         {
             var range = max - min;
             if (range <= 0) return user == min ? 100 : 0;
@@ -65,7 +83,6 @@ namespace Raidexi.Infrastructure.Services
 
             if (distanceOutside <= tolerance)
             {
-
                 var penaltyRatio = distanceOutside / tolerance;
                 return 80 * (1 - penaltyRatio * 0.5);
             }
@@ -84,30 +101,30 @@ namespace Raidexi.Infrastructure.Services
             {
                 "top" => new()
                 {
-                    ["Chest"] = 0.45,
+                    ["Chest"]         = 0.45,
                     ["ShoulderWidth"] = 0.30,
-                    ["Waist"] = 0.15,
-                    ["Height"] = 0.10
+                    ["Waist"]         = 0.15,
+                    ["Height"]        = 0.10
                 },
                 "bottom" => new()
                 {
-                    ["Waist"] = 0.45,
-                    ["Hip"] = 0.40,
+                    ["Waist"]  = 0.45,
+                    ["Hip"]    = 0.40,
                     ["Height"] = 0.15
                 },
                 "dress" => new()
                 {
-                    ["Chest"] = 0.25,
-                    ["Waist"] = 0.25,
-                    ["Hip"] = 0.30,
+                    ["Chest"]         = 0.25,
+                    ["Waist"]         = 0.25,
+                    ["Hip"]           = 0.30,
                     ["ShoulderWidth"] = 0.10,
-                    ["Height"] = 0.10
+                    ["Height"]        = 0.10
                 },
                 _ => new()
                 {
-                    ["Chest"] = 0.35,
-                    ["Waist"] = 0.30,
-                    ["Hip"] = 0.25,
+                    ["Chest"]  = 0.35,
+                    ["Waist"]  = 0.30,
+                    ["Hip"]    = 0.25,
                     ["Height"] = 0.10
                 }
             };
@@ -133,21 +150,20 @@ namespace Raidexi.Infrastructure.Services
 
             var weight = GetWeightByCategory(category);
 
+            // Build field map from float properties (MeasureData now uses float)
             var fieldMap = typeof(MeasureData)
                 .GetProperties()
-                .Where(p => p.PropertyType == typeof(int))
+                .Where(p => p.PropertyType == typeof(float))
                 .Select(p => new
                 {
-                    Name = p.Name,
-                    Value = (int)p.GetValue(measureData)!
+                    Name  = p.Name,
+                    Value = (float)p.GetValue(measureData)!
                 })
                 .Where(x => x.Value > 0)
-                .ToDictionary(x => x.Name, x => x.Value);
+                .ToDictionary(x => x.Name, x => (int)Math.Round(x.Value));
 
             var results = new List<SizeResult>();
             var filteredSizes = sizes.Where(s => s.Gender == gender).ToList();
-
-
 
             foreach (var size in filteredSizes)
             {
@@ -243,14 +259,23 @@ namespace Raidexi.Infrastructure.Services
 
             var dataMeasureAdjusted = new MeasureData
             {
-                Chest = measureData.Chest + brandRule.Chest,
-                Waist = measureData.Waist + brandRule.Waist,
-                Hip = measureData.Hip + brandRule.Hip,
+                // Core — apply brand ease allowance
+                Chest         = measureData.Chest         + brandRule.Chest,
+                Waist         = measureData.Waist         + brandRule.Waist,
+                Hip           = measureData.Hip           + brandRule.Hip,
                 ShoulderWidth = measureData.ShoulderWidth,
-                Height = measureData.Height
+                Height        = measureData.Height,
+                // Upper body — pass through unchanged
+                Neck          = measureData.Neck,
+                SleeveLength  = measureData.SleeveLength,
+                ArmHole       = measureData.ArmHole,
+                UpperArm      = measureData.UpperArm,
+                // Lower body — pass through unchanged
+                Inseam        = measureData.Inseam,
+                CrotchDepth   = measureData.CrotchDepth,
+                Thigh         = measureData.Thigh,
+                OutseamLength = measureData.OutseamLength,
             };
-
-
 
             dataMeasureAdjusted = AdjustByGenderSlight(
                 dataMeasureAdjusted,
@@ -273,7 +298,7 @@ namespace Raidexi.Infrastructure.Services
                 >= 70 => "Tạm ổn",
                 >= 60 => "Hơi lệch",
                 >= 50 => "Không khuyến nghị",
-                _ => "Không phù hợp"
+                _     => "Không phù hợp"
             };
 
             var outputSize = sizeMap?.GetType()
@@ -292,9 +317,9 @@ namespace Raidexi.Infrastructure.Services
                 reliableRate = dataSize.FitPercent,
                 fitSuggestFromAI = new GeminiResponse
                 {
-                    expectedFit = new GeminiContent { content = GeminiResponse.expectedFit.content },
+                    expectedFit        = new GeminiContent { content = GeminiResponse.expectedFit.content },
                     measurementInsight = new GeminiContent { content = GeminiResponse.measurementInsight.content },
-                    productFitNote = new GeminiContent { content = GeminiResponse.productFitNote.content }
+                    productFitNote     = new GeminiContent { content = GeminiResponse.productFitNote.content }
                 }
             };
 
@@ -361,6 +386,7 @@ namespace Raidexi.Infrastructure.Services
 
             return Math.Max(0, 100 - distance * 5);
         }
+
         public async Task<ResultAnalysis> AnalysisPictureToSize(
          SizeAnalysisResponse uploadData,
          MeasureData measureData, CustomizeDataAiSuggest customizeDataAiSuggest)
@@ -370,40 +396,38 @@ namespace Raidexi.Infrastructure.Services
 
             foreach (var s in uploadData.Sizes)
             {
-                double chestScore = Score(measureData.Chest, s.Chest_Min_Cm, s.Chest_Max_Cm);
-                double waistScore = Score(measureData.Waist, s.Waist_Min_Cm, s.Waist_Max_Cm);
-                double hipScore = Score(measureData.Hip, s.Hip_Min_Cm, s.Hip_Max_Cm);
-                var data1= AdjustByGenderSlight(measureData, customizeDataAiSuggest.gender);
-                 chestScore = Score(data1.Chest, s.Chest_Min_Cm, s.Chest_Max_Cm);
-                 waistScore = Score(data1.Waist, s.Waist_Min_Cm, s.Waist_Max_Cm);
-                 hipScore = Score(data1.Hip, s.Hip_Min_Cm, s.Hip_Max_Cm);
+                var data1 = AdjustByGenderSlight(measureData, customizeDataAiSuggest.gender);
+                double chestScore = Score(data1.Chest, s.Chest_Min_Cm, s.Chest_Max_Cm);
+                double waistScore = Score(data1.Waist, s.Waist_Min_Cm, s.Waist_Max_Cm);
+                double hipScore   = Score(data1.Hip,   s.Hip_Min_Cm,   s.Hip_Max_Cm);
+
                 if (customizeDataAiSuggest.typeProduct.ToLower() == "dress")
                 {
                     chestScore *= 0.25;
                     waistScore *= 0.25;
-                    hipScore *= 0.30;
+                    hipScore   *= 0.30;
                 }
                 else if (customizeDataAiSuggest.typeProduct.ToLower() == "top")
                 {
                     chestScore *= 0.45;
                     waistScore *= 0.15;
-                    hipScore *= 0.10;
+                    hipScore   *= 0.10;
                 }
                 else if (customizeDataAiSuggest.typeProduct.ToLower() == "bottom")
                 {
                     waistScore *= 0.45;
-                    hipScore *= 0.40;
+                    hipScore   *= 0.40;
                 }
-               
+
                 double totalScore =
                     chestScore * 0.5 +
                     waistScore * 0.3 +
-                    hipScore * 0.2;
+                    hipScore   * 0.2;
 
                 if (totalScore > bestScore)
                 {
                     bestScore = totalScore;
-                    bestSize = s.Size_Us;
+                    bestSize  = s.Size_Us;
                 }
             }
             var data = new uploadDataToAnalysisMeasure
@@ -411,9 +435,9 @@ namespace Raidexi.Infrastructure.Services
                 brand = "Generic",
                 userCustom = new CustomizeDataAiSuggest
                 {
-                    gender = customizeDataAiSuggest.gender,
+                    gender      = customizeDataAiSuggest.gender,
                     typeProduct = customizeDataAiSuggest.typeProduct,
-                    sizeOutput = customizeDataAiSuggest.sizeOutput
+                    sizeOutput  = customizeDataAiSuggest.sizeOutput
                 },
                 dataMeasure = measureData,
             };
@@ -423,22 +447,22 @@ namespace Raidexi.Infrastructure.Services
             {
                 analysisCode = Guid.NewGuid().ToString(),
                 analysisDate = DateTime.UtcNow,
-                typeCustom = customizeDataAiSuggest,
-                fitSuggest = bestScore switch
+                typeCustom   = customizeDataAiSuggest,
+                fitSuggest   = bestScore switch
                 {
                     >= 90 => "Rất vừa vặn",
                     >= 80 => "Vừa vặn",
                     >= 70 => "Tạm ổn",
                     >= 60 => "Hơi lệch",
-                    _ => "Không phù hợp"
+                    _     => "Không phù hợp"
                 },
-                sizeSuggest = bestSize,
+                sizeSuggest  = bestSize,
                 reliableRate = (int)Math.Round(bestScore),
                 fitSuggestFromAI = new GeminiResponse
                 {
-                    expectedFit = new GeminiContent { content = GeminiResponse.expectedFit.content },
+                    expectedFit        = new GeminiContent { content = GeminiResponse.expectedFit.content },
                     measurementInsight = new GeminiContent { content = GeminiResponse.measurementInsight.content },
-                    productFitNote = new GeminiContent { content = GeminiResponse.productFitNote.content }
+                    productFitNote     = new GeminiContent { content = GeminiResponse.productFitNote.content }
                 }
             };
             return result;

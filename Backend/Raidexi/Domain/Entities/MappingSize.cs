@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
@@ -18,11 +18,22 @@ namespace Raidexi.Domain.Entities
             public string id { get; set; }
             public string Gender { get; set; }
             public string Code { get; set; }
+            // Core
             public ValueSize Chest { get; set; }
             public ValueSize Waist { get; set; }
             public ValueSize Hip { get; set; }
             public ValueSize ShoulderWidth { get; set; }
             public ValueSize Height { get; set; }
+            // Upper body
+            public ValueSize Neck { get; set; }
+            public ValueSize SleeveLength { get; set; }
+            public ValueSize ArmHole { get; set; }
+            public ValueSize UpperArm { get; set; }
+            // Lower body
+            public ValueSize Inseam { get; set; }
+            public ValueSize CrotchDepth { get; set; }
+            public ValueSize Thigh { get; set; }
+            public ValueSize OutseamLength { get; set; }
         }
 
         public class SizeMapping
