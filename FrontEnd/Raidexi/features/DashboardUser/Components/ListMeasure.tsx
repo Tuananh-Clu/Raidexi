@@ -16,9 +16,6 @@ export const ListMeasure = ({
   const COLS = [
     "Thời gian",
     "Vai", "Ngực", "Eo", "Hông", "Cao",
-    "Cổ", "Dài tay", "Nách", "Bắp tay",
-    "Dài trong", "Đáy", "Đùi", "Dài ngoài",
-    "",
   ];
   const context=useContext(BodyMeasureEstimateContext);
   
@@ -159,14 +156,6 @@ export const ListMeasure = ({
                               record.dataMeasure.waist,
                               record.dataMeasure.hip,
                               record.dataMeasure.height,
-                              record.dataMeasure.neck,
-                              record.dataMeasure.sleeveLength,
-                              record.dataMeasure.armHole,
-                              record.dataMeasure.upperArm,
-                              record.dataMeasure.inseam,
-                              record.dataMeasure.crotchDepth,
-                              record.dataMeasure.thigh,
-                              record.dataMeasure.outseamLength,
                             ] as (number | undefined)[]).map((val, vi) => (
                               <td key={vi} className="px-3.5 py-3.5">
                                 <span className="font-mono text-[13px] font-semibold text-[#f0e0c8] tracking-[0.04em]">

@@ -21,7 +21,7 @@ export const EditProfile = ({
   const stopLoading=useLoadingStore((state)=>state.stopLoading)
   const [formData, setFormData] = useState({
     id: data.id,
-    fullName: data.name,
+    fullName: data.fullName,
     email: data.email,
     phone: data.phone,
     address: data.address,
@@ -34,31 +34,35 @@ export const EditProfile = ({
   } as any);
   const handleSave = async () => {
     try {
+      console.log(formData);
       await context?.updateAccount(formData, setIsOpen);
     } catch {}
   };
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    try {
-      const file = e.target.files?.[0];
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", "Raidexi");
-      loading();
-      const res = axios.post(
-        "https://api.cloudinary.com/v1_1/dnxjlsyp4/image/upload",
-        formData,
-      );
-      res.then((response) => {
-        setFormData({ ...formData, imageUrl: response.data.secure_url });
-        localStorage.setItem("userData", JSON.stringify({ ...data, imageUrl: response.data.secure_url }));
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const uploadData = new FormData();
+    uploadData.append("file", file);
+    uploadData.append("upload_preset", "Raidexi");
+    loading();
+
+    axios
+      .post("https://api.cloudinary.com/v1_1/dnxjlsyp4/image/upload", uploadData)
+      .then((response) => {
+        const newImageUrl = response.data.secure_url;
+        setFormData((prev: any) => ({ ...prev, imageUrl: newImageUrl }));
+        localStorage.setItem(
+          "userData",
+          JSON.stringify({ ...data, imageUrl: newImageUrl }),
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        stopLoading();
       });
-      stopLoading();  
-      
-    } catch (err) {
-      console.log(err);
-    }
-    {
-    }
   };
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -166,7 +170,7 @@ export const EditProfile = ({
                             name="fullName"
                             value={formData.fullName}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-3 text-sm tracking-wider uppercase border-b rounded-none outline-none bg-surface-container-high border-outline-variant focus:border-primary focus:ring-0 font-label text-on-surface placeholder:text-outline-variant/30"
+                            className="w-full px-4 py-3 text-sm tracking-wider text-black uppercase border-b rounded-none outline-none bg-surface-container-high border-outline-variant focus:border-primary focus:ring-0 font-label text-on-surface placeholder:text-outline-variant/30"
                             type="text"
                           />
                         </div>
@@ -178,7 +182,7 @@ export const EditProfile = ({
                             name="email"
                             value={formData.email}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-3 text-sm tracking-wider uppercase border-b rounded-none outline-none bg-surface-container-high border-outline-variant focus:border-primary focus:ring-0 font-label text-on-surface"
+                            className="w-full px-4 py-3 text-sm tracking-wider text-black uppercase border-b rounded-none outline-none bg-surface-container-high border-outline-variant focus:border-primary focus:ring-0 font-label text-on-surface placeholder:text-outline-variant/30"
                             type="text"
                           />
                         </div>
@@ -190,7 +194,7 @@ export const EditProfile = ({
                             name="address"
                             value={formData.address}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-3 text-sm tracking-wider uppercase border-b rounded-none outline-none bg-surface-container-high border-outline-variant focus:border-primary focus:ring-0 font-label text-on-surface"
+                            className="w-full px-4 py-3 text-sm tracking-wider text-black uppercase border-b rounded-none outline-none bg-surface-container-high border-outline-variant focus:border-primary focus:ring-0 font-label text-on-surface placeholder:text-outline-variant/30"
                             type="text"
                           />
                         </div>
@@ -222,7 +226,7 @@ export const EditProfile = ({
                             name="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-3 text-sm tracking-wider border-b rounded-none outline-none bg-surface-container-high border-outline-variant focus:border-primary focus:ring-0 font-label text-on-surface"
+                            className="w-full px-4 py-3 text-sm tracking-wider border-b rounded-none outline-none bg-surface-container-high border-outline-variant focus:border-primary focus:ring-0 font-label text-on-surface text-black placeholder:text-outline-variant/30"
                             type="text"
                           />
                         </div>

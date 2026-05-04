@@ -35,7 +35,15 @@ export default function Page() {
             </p>
             <p className="text-xs italic text-text-muted">
               Cập nhật lần cuối:{" "}
-              {new Date(dataMeasurements?.map((item) => item.lastUpdate).sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0]).toLocaleDateString("vi-VN")}
+              {dataMeasurements && dataMeasurements.length > 0
+                ? new Date(
+                    dataMeasurements.sort(
+                      (a, b) =>
+                        new Date(b.lastUpdate).getTime() -
+                        new Date(a.lastUpdate).getTime()
+                    )[0].lastUpdate
+                  ).toLocaleDateString("vi-VN", {})
+                : "2024-01-01"}
             </p>
           </div>
         </header>

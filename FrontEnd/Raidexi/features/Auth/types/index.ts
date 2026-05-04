@@ -19,7 +19,7 @@ export interface InputGroupProps {
 
 export interface UserData {
     id: string;
-    name: string;
+    fullName: string;
     email: string;
     hashPassword: string;
     imageUrl: string;
