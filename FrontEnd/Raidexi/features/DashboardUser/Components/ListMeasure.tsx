@@ -3,6 +3,7 @@ import { X, Shield, Clock, Eye, Printer, ChevronRight } from "lucide-react";
 import { data } from "@/features/Camera/types";
 import { useContext } from "react";
 import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
+import { AnalysisMeasure } from "./AnalysisMeasure";
 
 export const ListMeasure = ({
   isOpen,
@@ -196,7 +197,10 @@ export const ListMeasure = ({
                 </table>
               </div>
 
-              {/* ── Footer ── */}
+              <div className="overflow-y-auto max-h-[420px] border-t border-[#1e140c] [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-track]:bg-[#0a0705] [&::-webkit-scrollbar-thumb]:bg-[#2e1f14]">
+                <AnalysisMeasure dataMeasurements={dataMeasured} variant="modal" />
+              </div>
+
               <footer className="px-7 py-3 border-t border-[#1a100a] bg-[#0a0705] flex items-center justify-between flex-shrink-0">
                 <div className="flex gap-7">
                   {[
