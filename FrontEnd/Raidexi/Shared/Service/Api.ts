@@ -11,6 +11,9 @@ export const API={
         "SaveMeasureBrandSize":"/api/User/SaveMeasureBrandSize",
         "GetBrandMeasurements":"/api/User/GetBrandSizeMeasure",
         "UpdateUserData":"/api/User/UpdateUser",
+        "SaveCustomProfile":"/api/User/SaveCustomProfile",
+        "GetCustomProfileForUser":"/api/User/GetCustomProfileForUser",
+        "UpdateCustomProfile":"/api/User/UpdateCustomProfile",
     },
     "Brand":{
         "GetBrandProfile":"/api/MappingSize/brand-profiles",

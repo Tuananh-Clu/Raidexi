@@ -63,23 +63,35 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           setIsLoggedIn(true);
           setUserData(data.user);
           localStorage.setItem("userData", JSON.stringify(data.user));
-          console.log("Fetched user data:", data);
-          context?.setDataMeasured?.(data.measureData.dataMeasure);
-          console.log("Fetched measurement data:", data.measureData.dataMeasure);
-          localStorage.setItem("userMeaurements", JSON.stringify({
-            height: data.user.measureData?.height || null,
-            waist: data.user.measureData?.waist || null,
-            hip: data.user.measureData?.hip || null,
-            chest: data.user.measureData?.chest || null,
-            shoulderWidth: data.user.measureData?.shoulderWidth || null,
-          }));
+          const measurementHistory = Array.isArray(data.measureData?.dataMeasure)
+            ? data.measureData.dataMeasure
+            : [];
+          context?.setDataMeasured?.(measurementHistory);
+
+          const latestMeasurement =
+            measurementHistory[measurementHistory.length - 1]?.dataMeasure;
+          if (latestMeasurement) {
+            localStorage.setItem("userMeaurements", JSON.stringify({
+              height: latestMeasurement.height ?? null,
+              waist: latestMeasurement.waist ?? null,
+              hip: latestMeasurement.hip ?? null,
+              chest: latestMeasurement.chest ?? null,
+              shoulderWidth: latestMeasurement.shoulderWidth ?? null,
+            }));
+          } else {
+            localStorage.removeItem("userMeaurements");
+          }
 
         }
       } catch (error) {
         console.error("Auth init error:", error);
-        localStorage.removeItem("userData");
-        setUserData(null);
-        setIsLoggedIn(false);
+        const status = (error as any)?.response?.status;
+        if (status === 401 || status === 403) {
+          localStorage.removeItem("userData");
+          localStorage.removeItem("userMeaurements");
+          setUserData(null);
+          setIsLoggedIn(false);
+        }
 
       } finally {
       }

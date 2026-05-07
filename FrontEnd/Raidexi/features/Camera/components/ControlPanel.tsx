@@ -3,6 +3,10 @@ import { MeasurementData, SystemStatus } from "../types";
 import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 import { useRouterService } from "@/Shared/Service/routerService";
 import { useDataMeasure } from "../hooks/useDataMeasure";
+import ProfileTagSelector from "./ProfileTagSelector";
+import { ProfileTag } from "../types";
+import { useProfileTagApi } from "../hooks/useProfileTagApi";
+import { cameraApi } from "../api/cameraApi";
 
 interface ControlPanelProps {
   status: SystemStatus;
@@ -11,7 +15,6 @@ interface ControlPanelProps {
   onToggleFlash: (enabled: boolean) => void;
 }
 
-// Determine the current step (1-4) based on context state
 function getCurrentStep(context: any): number {
   const hasMeasured =
     !!context.dataMeasured && Object.keys(context.dataMeasured).length > 0;
@@ -60,7 +63,9 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   const context = useContext(BodyMeasureEstimateContext);
   const { handleSaveMeasure } = useDataMeasure();
   const { navigate } = useRouterService();
-
+  const [selectedProfile, setSelectedProfile] = useState<ProfileTag | null>(
+    null,
+  );
   const currentStep = getCurrentStep(context);
   const hasMeasured =
     !!context.dataMeasured && Object.keys(context.dataMeasured).length > 0;
@@ -89,7 +94,28 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
       minute: "2-digit",
       second: "2-digit",
     });
-
+  // const fetchProfiles = async () => {
+  //   try {
+  //     await cameraApi.saveDataMeasurement({
+  //       shoulderWidth: 48,
+  //       chest: 102,
+  //       waist: 84,
+  //       hip: 98,
+  //       height: 178,
+  //       neck: 39,
+  //       sleeveLength: 63,
+  //       armHole: 46,
+  //       upperArm: 33,
+  //       inseam: 80,
+  //       crotchDepth: 29,
+  //       thigh: 58,
+  //       outseamLength: 104,
+  //     });
+  //   } catch (error) {
+  //     console.error("Error fetching profiles:", error);
+  //   }
+  // };
+  // useEffect( () => {fetchProfiles()}, []);
   return (
     <div className="bg-panel-dark flex flex-col h-full border-l border-grid-line relative z-10 w-full lg:w-[360px] shrink-0 overflow-hidden">
       {/* ── Header ── */}
@@ -125,6 +151,18 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
 
       {/* ── Scrollable body ── */}
       <div className="flex-1 overflow-y-auto custom-scrollbar">
+        {/* ─ Profile Tag Selector ─ */}
+        <div className="px-5 py-3 border-b border-grid-line">
+          <p className="text-[10px] font-mono text-[#8a806d] tracking-[0.2em] uppercase mb-2">
+            Đang đo cho
+          </p>
+          <ProfileTagSelector
+            selectedProfile={selectedProfile}
+            onSelectProfile={setSelectedProfile}
+            data={data}
+          />
+        </div>
+
         {/* ─ Step guide ─ */}
         <div className="px-5 py-4 space-y-2 border-b border-grid-line">
           <p className="text-[10px] font-mono text-[#8a806d] tracking-[0.2em] uppercase mb-3">
@@ -140,8 +178,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                   isDone
                     ? "border-green-700/40 bg-green-950/20"
                     : isActive
-                    ? "border-primary/60 bg-primary/8 shadow-[0_0_16px_rgba(242,166,13,0.1)]"
-                    : "border-grid-line/50 bg-transparent opacity-35"
+                      ? "border-primary/60 bg-primary/8 shadow-[0_0_16px_rgba(242,166,13,0.1)]"
+                      : "border-grid-line/50 bg-transparent opacity-35"
                 }`}
               >
                 {/* Left accent bar */}
@@ -155,8 +193,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                     isDone
                       ? "border-green-500/60 bg-green-900/30 text-green-400"
                       : isActive
-                      ? "border-primary bg-primary/20 text-primary"
-                      : "border-[#8a806d]/40 text-[#8a806d]"
+                        ? "border-primary bg-primary/20 text-primary"
+                        : "border-[#8a806d]/40 text-[#8a806d]"
                   }`}
                 >
                   {isDone ? (
@@ -176,8 +214,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                         isDone
                           ? "text-green-400"
                           : isActive
-                          ? "text-primary"
-                          : "text-[#8a806d]"
+                            ? "text-primary"
+                            : "text-[#8a806d]"
                       }`}
                     >
                       {icon}
@@ -187,8 +225,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                         isDone
                           ? "text-green-400"
                           : isActive
-                          ? "text-white"
-                          : "text-[#8a806d]"
+                            ? "text-white"
+                            : "text-[#8a806d]"
                       }`}
                     >
                       {title}
@@ -199,8 +237,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                       isDone
                         ? "text-green-600/70"
                         : isActive
-                        ? "text-brass-light/70"
-                        : "text-[#8a806d]/50"
+                          ? "text-brass-light/70"
+                          : "text-[#8a806d]/50"
                     }`}
                   >
                     {desc}
@@ -290,7 +328,9 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             >
               <div
                 className={`w-8 h-4 border rounded-full relative transition-all ${
-                  gridEnabled ? "border-primary bg-primary/20" : "border-[#8a806d]/40"
+                  gridEnabled
+                    ? "border-primary bg-primary/20"
+                    : "border-[#8a806d]/40"
                 }`}
               >
                 <div
@@ -311,7 +351,9 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             >
               <div
                 className={`w-8 h-4 border rounded-full relative transition-all ${
-                  flashEnabled ? "border-primary bg-primary/20" : "border-[#8a806d]/40"
+                  flashEnabled
+                    ? "border-primary bg-primary/20"
+                    : "border-[#8a806d]/40"
                 }`}
               >
                 <div
@@ -330,7 +372,6 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
 
       {/* ── Fixed bottom action area ── */}
       <div className="shrink-0 border-t border-grid-line bg-background-dark px-5 py-4 space-y-2.5">
-        {/* After measurement: CTA to Brand page */}
         {hasMeasured && (
           <button
             onClick={() => navigate("/Brand")}
@@ -347,7 +388,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         {/* Save button */}
         {hasMeasured && (
           <button
-            onClick={handleSaveMeasure}
+            onClick={() => handleSaveMeasure(selectedProfile)}
             className="w-full h-10 cursor-pointer bg-transparent text-brass-light text-sm font-mono tracking-wider border border-grid-line hover:border-primary hover:text-white transition-all flex items-center justify-center gap-2 rounded-sm active:scale-[0.98]"
           >
             <span className="material-symbols-outlined text-base">save</span>

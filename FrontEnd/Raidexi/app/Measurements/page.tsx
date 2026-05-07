@@ -10,18 +10,15 @@ import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 
 const INITIAL_DATA: MeasurementData = {
   metrics: [
-    // Core
     { id: "shoulder",     label: "Vai",          value: 0, unit: "CM" },
     { id: "chest",        label: "Ngực",          value: 0, unit: "CM" },
     { id: "waist",        label: "Eo",            value: 0, unit: "CM" },
     { id: "hip",          label: "Hông",          value: 0, unit: "CM" },
     { id: "height",       label: "Chiều cao",     value: 0, unit: "CM" },
-    // Upper body
     { id: "neck",         label: "Cổ",            value: 0, unit: "CM" },
     { id: "sleeveLength", label: "Dài tay",       value: 0, unit: "CM" },
     { id: "armHole",      label: "Nách (vòng)",  value: 0, unit: "CM" },
     { id: "upperArm",     label: "Bắp tay",       value: 0, unit: "CM" },
-    // Lower body
     { id: "inseam",       label: "Dài trong",     value: 0, unit: "CM" },
     { id: "crotchDepth",  label: "Độ sâu đáy",   value: 0, unit: "CM" },
     { id: "thigh",        label: "Đùi",           value: 0, unit: "CM" },

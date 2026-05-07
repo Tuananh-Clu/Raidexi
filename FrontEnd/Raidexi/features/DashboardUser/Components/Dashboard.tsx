@@ -4,7 +4,6 @@ import { useContext, useState } from "react";
 import { ListMeasure } from "./ListMeasure";
 import { EditProfile } from "./EditProfile";
 import { AuthContext } from "@/provider/AuthProvider";
-import { AnalysisMeasure } from "./AnalysisMeasure";
 
 const Dashboard = ({
   dataMeasurements,

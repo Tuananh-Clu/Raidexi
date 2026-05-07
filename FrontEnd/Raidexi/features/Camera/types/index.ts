@@ -1,4 +1,9 @@
-
+export interface ProfileTag {
+  id: string;
+  name: string;
+  color: string;
+  dataMeasure: MeasurementDataResponse | null;
+}
 export interface Metric {
   id: string;
   label: string;
@@ -21,13 +26,11 @@ export interface MeasurementData {
 }
 
 export type MeasurementDataResponse = {
-  // core — used by analysis engine
   shoulderWidth: number;
   chest: number;
   waist: number;
   hip: number;
-  height: number;
-  // supplementary — display & print only
+  height: number
   neck?: number;
   sleeveLength?: number;
   armHole?: number;

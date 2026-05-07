@@ -1,9 +1,10 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { X, Shield, Clock, Eye, Printer, ChevronRight } from "lucide-react";
-import { data } from "@/features/Camera/types";
-import { useContext } from "react";
+import { data, ProfileTag } from "@/features/Camera/types";
+import { useContext, useEffect, useState } from "react";
 import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 import { AnalysisMeasure } from "./AnalysisMeasure";
+import { useProfileTagApi } from "@/features/Camera/hooks/useProfileTagApi";
 
 export const ListMeasure = ({
   isOpen,
@@ -18,7 +19,52 @@ export const ListMeasure = ({
     "Thời gian",
     "Vai", "Ngực", "Eo", "Hông", "Cao",
   ];
+  const FAMILY_COLS = ["Nguoi than", "Vai", "Nguc", "Eo", "Hong", "Cao"];
   const context=useContext(BodyMeasureEstimateContext);
+  const { getCustomProfiles } = useProfileTagApi();
+  const [activeTab, setActiveTab] = useState<"self" | "family">("self");
+  const [familyProfiles, setFamilyProfiles] = useState<ProfileTag[]>([]);
+  const [isFamilyLoading, setIsFamilyLoading] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen || activeTab !== "family") return;
+
+    let isMounted = true;
+
+    const loadFamilyProfiles = async () => {
+      setIsFamilyLoading(true);
+      try {
+        const profiles = await getCustomProfiles();
+        if (isMounted) {
+          setFamilyProfiles(profiles);
+        }
+      } finally {
+        if (isMounted) {
+          setIsFamilyLoading(false);
+        }
+      }
+    };
+
+    loadFamilyProfiles();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [activeTab, getCustomProfiles, isOpen]);
+
+  const activeRecordCount =
+    activeTab === "family" ? familyProfiles.length : dataMeasured.length;
+
+  const handleUseFamilyMeasure = (profile: ProfileTag) => {
+    if (!profile.dataMeasure) return;
+
+    context.setDataMeasured?.([
+      {
+        dataMeasure: profile.dataMeasure,
+        lastUpdate: new Date().toISOString(),
+      },
+    ]);
+  };
   
 
   return (
@@ -83,7 +129,7 @@ export const ListMeasure = ({
                   {/* Right: stats */}
                   <div className="flex items-center gap-6">
                     {[
-                      { label: "RECORDS", value: dataMeasured.length },
+                      { label: "RECORDS", value: activeRecordCount },
                       { label: "INTEGRITY", value: "100%" },
                     ].map(({ label, value }) => (
                       <div key={label} className="text-right">
@@ -100,10 +146,28 @@ export const ListMeasure = ({
 
                 {/* Gradient divider */}
                 <div className="mt-4 h-px bg-gradient-to-r from-[#c87832] via-[#2e1f14] to-transparent" />
+                <div className="flex gap-2 mt-4">
+                  {[
+                    { key: "self", label: "Ban than" },
+                    { key: "family", label: "Nguoi than" },
+                  ].map((tab) => (
+                    <button
+                      key={tab.key}
+                      onClick={() => setActiveTab(tab.key as "self" | "family")}
+                      className={`px-4 py-2 font-mono text-[9px] font-bold tracking-[0.18em] uppercase border transition-colors ${
+                        activeTab === tab.key
+                          ? "border-[#c87832] bg-[#c87832] text-[#0d0a08]"
+                          : "border-[#1e140c] text-[#7a5440] hover:border-[#c87832] hover:text-[#c87832]"
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
               </header>
 
               {/* ── Table ── */}
-              <div className="overflow-x-auto overflow-y-auto max-h-80 flex-1 [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-track]:bg-[#0a0705] [&::-webkit-scrollbar-thumb]:bg-[#2e1f14]">
+              <div className={`overflow-x-auto overflow-y-auto max-h-80 flex-1 [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-track]:bg-[#0a0705] [&::-webkit-scrollbar-thumb]:bg-[#2e1f14] ${activeTab === "self" ? "" : "hidden"}`}>
                 <table className="w-full border-collapse table-fixed">
                   <colgroup>
                     <col className="w-[23%]" />
@@ -181,7 +245,7 @@ export const ListMeasure = ({
                               { label: "PRINT", icon: <Printer size={9} /> },
                             ].map(({ label, icon }) => (
                               <button
-                              onClick={() => context.setDataMeasured([record])}
+                              onClick={() => context.setDataMeasured?.([record])}
                                 key={label}
                                 className="inline-flex items-center gap-1 px-2.5 py-1 font-mono text-[8.5px] tracking-[0.14em] font-semibold uppercase border border-[#1e140c] text-[#4a3325] hover:border-[#c87832] hover:bg-[#c87832] hover:text-[#0d0a08] transition-all duration-150 cursor-pointer"
                               >
@@ -197,9 +261,124 @@ export const ListMeasure = ({
                 </table>
               </div>
 
-              <div className="overflow-y-auto max-h-[420px] border-t border-[#1e140c] [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-track]:bg-[#0a0705] [&::-webkit-scrollbar-thumb]:bg-[#2e1f14]">
-                <AnalysisMeasure dataMeasurements={dataMeasured} variant="modal" />
-              </div>
+              {activeTab === "family" && (
+                <div className="overflow-x-auto overflow-y-auto max-h-80 flex-1 [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-track]:bg-[#0a0705] [&::-webkit-scrollbar-thumb]:bg-[#2e1f14]">
+                  <table className="w-full border-collapse table-fixed">
+                    <colgroup>
+                      <col className="w-[23%]" />
+                      <col className="w-[11%]" />
+                      <col className="w-[11%]" />
+                      <col className="w-[11%]" />
+                      <col className="w-[11%]" />
+                      <col className="w-[13%]" />
+                      <col className="w-[20%]" />
+                    </colgroup>
+
+                    <thead>
+                      <tr className="bg-[#0a0705]">
+                        {FAMILY_COLS.map((col, i) => (
+                          <th
+                            key={col + i}
+                            className={`px-3.5 py-2.5 font-mono text-[8.5px] tracking-[0.18em] text-[#4a3325] uppercase border-b border-[#1a100a] font-normal whitespace-nowrap ${
+                              i === FAMILY_COLS.length - 1 ? "text-right" : "text-left"
+                            }`}
+                          >
+                            {col}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {isFamilyLoading ? (
+                        Array.from({ length: 3 }).map((_, idx) => (
+                          <tr key={idx} className="border-b border-[#150e09]">
+                            <td colSpan={7} className="px-3.5 py-4">
+                              <div className="h-4 w-full animate-pulse bg-[#1a100a]" />
+                            </td>
+                          </tr>
+                        ))
+                      ) : familyProfiles.length > 0 ? (
+                        familyProfiles.map((profile, idx) => (
+                          <motion.tr
+                            key={profile.id}
+                            initial={{ opacity: 0, x: -6 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: idx * 0.05, duration: 0.28, ease: "easeOut" }}
+                            className="border-b border-[#150e09] hover:bg-[#1a0e08] transition-colors"
+                          >
+                            <td className="px-3.5 py-3.5">
+                              <div className="flex items-center gap-2">
+                                <span
+                                  className="h-2.5 w-2.5 rounded-full border border-[#1a100a]"
+                                  style={{ backgroundColor: profile.color }}
+                                />
+                                <div className="min-w-0">
+                                  <span className="block font-mono text-[12px] font-semibold text-[#f0e0c8] truncate">
+                                    {profile.name}
+                                  </span>
+                                  <span className="font-mono text-[8px] tracking-[0.14em] uppercase text-[#4a3325]">
+                                    {profile.dataMeasure ? "has_measure" : "no_measure"}
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
+
+                            {profile.dataMeasure ? (
+                              <>
+                                {([
+                                  profile.dataMeasure.shoulderWidth,
+                                  profile.dataMeasure.chest,
+                                  profile.dataMeasure.waist,
+                                  profile.dataMeasure.hip,
+                                  profile.dataMeasure.height,
+                                ] as (number | undefined)[]).map((val, vi) => (
+                                  <td key={vi} className="px-3.5 py-3.5">
+                                    <span className="font-mono text-[13px] font-semibold text-[#f0e0c8] tracking-[0.04em]">
+                                      {val ?? "--"}
+                                    </span>
+                                  </td>
+                                ))}
+                              </>
+                            ) : (
+                              <td colSpan={5} className="px-3.5 py-3.5">
+                                <span className="font-mono text-[9px] text-[#2e1f14] tracking-[0.2em] uppercase">
+                                  -- no_data_available --
+                                </span>
+                              </td>
+                            )}
+
+                            <td className="px-3.5 py-3.5 text-right">
+                              <button
+                                onClick={() => handleUseFamilyMeasure(profile)}
+                                disabled={!profile.dataMeasure}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 font-mono text-[8.5px] tracking-[0.14em] font-semibold uppercase border border-[#1e140c] text-[#4a3325] hover:border-[#c87832] hover:bg-[#c87832] hover:text-[#0d0a08] transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-40"
+                              >
+                                <Eye size={9} />
+                                GET
+                              </button>
+                            </td>
+                          </motion.tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={7} className="px-3.5 py-10 text-center">
+                            <span className="font-mono text-[9px] text-[#4a3325] tracking-[0.2em] uppercase">
+                              -- no_family_profiles --
+                            </span>
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {activeTab === "self" && (
+                <div className="overflow-y-auto max-h-[420px] border-t border-[#1e140c] [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-track]:bg-[#0a0705] [&::-webkit-scrollbar-thumb]:bg-[#2e1f14]">
+                  <AnalysisMeasure dataMeasurements={dataMeasured} />
+                </div>
+              )}
 
               <footer className="px-7 py-3 border-t border-[#1a100a] bg-[#0a0705] flex items-center justify-between flex-shrink-0">
                 <div className="flex gap-7">

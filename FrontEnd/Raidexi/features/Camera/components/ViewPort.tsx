@@ -226,21 +226,7 @@ const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
       setCountDowns(5);
       context?.setMeasuring!(false);
       context.setCountdown!(20);
-      context.setDataMeasured!({
-        height: 0,
-        chest: 0,
-        waist: 0,
-        hip: 0,
-        shoulderWidth: 0,
-        neck: 0,
-        sleeveLength: 0,
-        armHole: 0,
-        upperArm: 0,
-        inseam: 0,
-        crotchDepth: 0,
-        thigh: 0,
-        outseamLength: 0,
-      });
+      context.setDataMeasured!([]);
       context.setCapturedFallback!(false);
       const ctx = canvasRef.current?.getContext("2d");
       ctx?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
