@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext } from "react";
-import { BugOff, MenuIcon, SquareActivity } from "lucide-react";
+import { MenuIcon, SquareActivity } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { AuthContext } from "@/provider/AuthProvider";
 import { useRouterService } from "@/Shared/Service/routerService";
@@ -22,84 +22,92 @@ export const NavBar: React.FC = () => {
     context?.AuthLogout();
     navigate("/");
   };
-  const { isMobileScreen,setOpenMobileMenu } = mobileScreenStore();
+  const { isMobileScreen, setOpenMobileMenu } = mobileScreenStore();
   return (
-    <header className="sticky top-0 z-50 border-b border-border-brass bg-background-dark/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 border-b border-border-subtle bg-[#1a1510]/95 backdrop-blur-md" role="banner">
       <div className="flex items-center justify-between h-16 px-6 mx-auto max-w-7xl">
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-8 h-8 border border-primary bg-primary-dim text-primary">
-            <SquareActivity size={18} strokeWidth={1.5} />
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 text-primary" aria-hidden="true">
+            <SquareActivity size={20} strokeWidth={2.5} />
           </div>
           <button
             onClick={() => {
               window.scrollBy(0, 0);
               navigate("/");
             }}
-            className="font-sans text-xl font-bold tracking-tight text-white uppercase"
+            aria-label="Về trang chủ Raidexi"
+            className="font-sans text-xl font-bold tracking-tight text-white hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary rounded outline-none flex items-center gap-2"
           >
             Raidexi
-            <span className="ml-1 font-mono text-xs font-normal align-top text-primary">
+            <span className="font-mono text-[9px] font-bold text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded-md uppercase tracking-wider">
               SYS.V.1
             </span>
           </button>
         </div>
 
-        <nav className="hidden gap-8 md:flex">
+        <nav className="hidden gap-8 md:flex" aria-label="Điều hướng chính">
           {description.map((item) => (
             <a
               key={item.label}
               href={item.href}
-              className={`relative px-1 py-2 font-mono text-sm font-medium text-white hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full ${
+              aria-current={currentPath === item.href ? "page" : undefined}
+              className={`relative px-1 py-2 text-[13px] font-semibold tracking-wide transition-colors focus-visible:ring-2 focus-visible:ring-primary rounded outline-none ${
                 currentPath === item.href
-                  ? "underline-offset-2 text-amber-300"
-                  : ""
+                  ? "text-primary"
+                  : "text-text-muted hover:text-white"
               }`}
             >
               {item.label}
+              {currentPath === item.href && (
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-full" />
+              )}
             </a>
           ))}
         </nav>
 
         {isLoggedIn ? (
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-sm font-semibold text-gray-200">
-              <div
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2.5 text-sm font-semibold text-text-secondary">
+              <button
                 onClick={() => navigate("/Dashboard")}
-                className="flex items-center justify-center w-6 h-6 text-xs font-bold rounded-full bg-primary text-background-dark"
+                aria-label="Đến trang tổng quan tài khoản"
+                className="flex items-center justify-center w-8 h-8 text-xs font-bold rounded-full bg-primary text-background-dark cursor-pointer hover:bg-primary-dark transition-colors shadow-sm focus-visible:ring-2 focus-visible:ring-primary outline-none"
               >
-                U
-              </div>
-              <div
+                {context?.userData.fullName?.[0]?.toUpperCase() || "U"}
+              </button>
+              <button
                 onClick={() => navigate("/Dashboard")}
-                className="cursor-pointer hover:underline underline-offset-4"
+                aria-label={`Xin chào, ${context?.userData.fullName || "User"}`}
+                className="cursor-pointer hover:text-primary transition-colors text-[13px] focus-visible:ring-2 focus-visible:ring-primary rounded outline-none"
               >
                 {!isMobileScreen &&
                   `Xin chào, ${context?.userData.fullName || "User"}`}
-              </div>
+              </button>
             </div>
-            <div className="w-px h-5 bg-gray-400/50" />
+            <div className="w-px h-5 bg-border-subtle" aria-hidden="true" />
             <a
               href="/Dashboard"
-              className="px-3 py-1.5 text-xs font-mono font-bold uppercase text-primary hover:text-white transition-all duration-300 hover:underline underline-offset-4 hidden md:block"
+              aria-label="Mở hồ sơ"
+              className="px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary/10 rounded-lg transition-colors hidden md:block focus-visible:ring-2 focus-visible:ring-primary outline-none"
             >
               Hồ sơ
             </a>
             {!isMobileScreen && (
-              <>
-                <button
-                  onClick={handleClick}
-                  className="px-4 py-2 font-mono text-xs font-bold text-white uppercase transition-all duration-300 border border-primary/50 hover:bg-primary/20 hover:border-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
-                >
-                  Đăng xuất
-                </button>
-              </>
+              <button
+                onClick={handleClick}
+                aria-label="Đăng xuất khỏi hệ thống"
+                className="px-4 py-2 text-xs font-semibold text-text-muted bg-surface-dark border border-border-subtle rounded-lg hover:bg-surface-hover hover:text-white transition-all focus-visible:ring-2 focus-visible:ring-primary outline-none"
+              >
+                Đăng xuất
+              </button>
             )}
             { isMobileScreen && (
             <button
               onClick={() => setOpenMobileMenu(true)}
-              className="p-2 text-white rounded-md hover:bg-primary/20 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              aria-label="Mở menu điều hướng trên thiết bị di động"
+              className="p-2 text-text-muted rounded-lg hover:text-white hover:bg-surface-hover transition-colors focus-visible:ring-2 focus-visible:ring-primary outline-none"
             >
-              <MenuIcon size={20} />
+              <MenuIcon size={20} aria-hidden="true" />
             </button>
             ) }
           </div>
@@ -108,14 +116,15 @@ export const NavBar: React.FC = () => {
           <div className="flex items-center gap-3">
             <a
               href="/Login"
-              className="px-4 py-2 font-mono text-xs font-bold uppercase transition-all duration-300 border bg-primary text-background-dark hover:bg-white hover:shadow-md hover:shadow-primary/25 border-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none active:scale-95"
+              aria-label="Đăng nhập vào hệ thống"
+              className="px-5 py-2.5 text-[13px] font-semibold text-text-secondary bg-surface-dark border border-border-subtle rounded-xl hover:bg-surface-hover hover:border-border-brass transition-all focus-visible:ring-2 focus-visible:ring-primary outline-none"
             >
               Đăng nhập
             </a>
-            <div className="w-px h-6 bg-gray-400/50" />
             <a
               href="/SignUp"
-              className="px-6 py-2 font-mono text-xs font-bold uppercase text-white border-2 border-primary hover:bg-primary-dim hover:shadow-lg hover:shadow-primary/50 hover:-translate-y-0.5 transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none bg-linear-to-r from-primary to-primary/80 hover:from-primary/90"
+              aria-label="Đăng ký tài khoản mới"
+              className="px-5 py-2.5 text-[13px] font-semibold text-background-dark bg-primary rounded-xl hover:bg-primary-dark shadow-sm hover:shadow transition-all focus-visible:ring-2 focus-visible:ring-primary outline-none"
             >
               Đăng ký
             </a>

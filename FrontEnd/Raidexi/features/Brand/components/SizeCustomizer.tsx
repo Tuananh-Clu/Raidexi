@@ -69,17 +69,17 @@ export const SizeCustomizer = ({type}:{type: string}) => {
         onClick={() => setValue(value)}
         className={`
           cursor-pointer
-          relative flex-1 py-4 px-2 uppercase tracking-wider text-sm font-semibold transition-all duration-300
-          border border-opacity-20
+          relative flex-1 py-4 px-2 uppercase tracking-wider text-sm font-bold transition-all duration-300 rounded-xl
+          border
           ${
             isSelected
-              ? "bg-primary text-black border-gold-accent shadow-[0_0_15px_rgba(230,179,37,0.3)]"
-              : "bg-transparent text-gray-400 border-gray-600 hover:border-gold-accent/50 hover:text-gold-accent"
+              ? "bg-primary/15 text-primary border-primary/50 shadow-sm"
+              : "bg-surface-dark text-text-dim border-border-subtle hover:border-primary/30 hover:text-primary hover:bg-primary/5"
           }
         `}
       >
         {isSelected && (
-          <span className="absolute top-1 right-2 text-[0.55rem] font-bold tracking-widest opacity-60">
+          <span className="absolute top-1 right-2 text-[0.55rem] font-bold tracking-widest text-primary">
             CHỌN
           </span>
         )}
@@ -89,85 +89,85 @@ export const SizeCustomizer = ({type}:{type: string}) => {
   };
 
   return (
-    <div className="relative w-full max-w-2xl p-1 border bg-black/70 backdrop-blur-sm border-primary ">
-      <div className="absolute w-4 h-4 border-t-2 border-l-2 -top-1 -left-1 border-primary" />
-      <div className="absolute w-4 h-4 border-t-2 border-r-2 -top-1 -right-1 border-primary" />
-      <div className="absolute w-4 h-4 border-b-2 border-l-2 -bottom-1 -left-1 border-primary" />
-      <div className="absolute w-4 h-4 border-b-2 border-r-2 -bottom-1 -right-1 border-primary" />
+    <div className="relative w-full max-w-2xl p-1 bg-[#1a1510]/95 backdrop-blur-md rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.4)]">
+      <div className="absolute w-4 h-4 border-t-2 border-l-2 -top-1 -left-1 border-primary rounded-tl-lg" />
+      <div className="absolute w-4 h-4 border-t-2 border-r-2 -top-1 -right-1 border-primary rounded-tr-lg" />
+      <div className="absolute w-4 h-4 border-b-2 border-l-2 -bottom-1 -left-1 border-primary rounded-bl-lg" />
+      <div className="absolute w-4 h-4 border-b-2 border-r-2 -bottom-1 -right-1 border-primary rounded-br-lg" />
 
       <div
-        className="relative p-8 border md:p-10 border-primary"
+        className="relative p-8 border md:p-10 border-border-subtle bg-surface-dark rounded-2xl shadow-sm"
         style={{
           backgroundImage: `
-            linear-gradient(to right, rgba(230, 179, 37, 0.05) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(230, 179, 37, 0.05) 1px, transparent 1px)
+            linear-gradient(to right, rgba(242, 166, 13, 0.03) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(242, 166, 13, 0.03) 1px, transparent 1px)
           `,
           backgroundSize: "20px 20px",
         }}
       >
         <div className="mb-10 space-y-3 text-center">
-          <h2 className="font-mono text-3xl font-bold tracking-wide uppercase md:text-4xl text-gold-accent drop-shadow-md">
+          <h2 className="font-mono text-3xl font-bold tracking-wide uppercase md:text-4xl text-white">
             Tùy chỉnh kết quả định cỡ
           </h2>
-          <p className="text-[10px] md:text-xs text-gray-400 uppercase tracking-[0.2em]">
+          <p className="text-[10px] md:text-xs text-text-dim font-semibold uppercase tracking-[0.2em]">
             Thiết lập thông số để AI đề xuất size chính xác
           </p>
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-8 font-sans">
           {/* Gender Section */}
           <div className="space-y-3">
-            <div className="flex items-center space-x-2 text-gold-accent/80">
-              <div className="w-1 h-3 bg-gold-accent" />
+            <div className="flex items-center space-x-2 text-primary">
+              <div className="w-1.5 h-4 bg-primary rounded-full" />
               <span className="text-xs font-bold tracking-widest uppercase">
                 Giới tính
               </span>
             </div>
             <div className="flex gap-4">
-              {renderOption(Gender.MALE, gender, setGender, "NAM")}
-              {renderOption(Gender.FEMALE, gender, setGender, "NỮ")}
+              {renderOption(Gender.MALE, gender, (v) => setGender(v), "NAM")}
+              {renderOption(Gender.FEMALE, gender, (v) => setGender(v), "NỮ")}
             </div>
           </div>
 
           <div className="space-y-3">
-            <div className="flex items-center space-x-2 text-gold-accent/80">
-              <div className="w-1 h-3 bg-gold-accent" />
+            <div className="flex items-center space-x-2 text-primary">
+              <div className="w-1.5 h-4 bg-primary rounded-full" />
               <span className="text-xs font-bold tracking-widest uppercase">
                 Loại sản phẩm
               </span>
             </div>
             <div className="flex gap-4">
-              {renderOption(ProductType.TOP, productType, setProductType, "ÁO")}
+              {renderOption(ProductType.TOP, productType, (v) => setProductType(v), "ÁO")}
               {renderOption(
                 ProductType.BOTTOM,
                 productType,
-                setProductType,
+                (v) => setProductType(v),
                 "QUẦN",
               )}
               {renderOption(
                 ProductType.DRESS,
                 productType,
-                setProductType,
+                (v) => setProductType(v),
                 "ĐẦM",
               )}
             </div>
           </div>
 
           <div className="space-y-3">
-            <div className="flex items-center space-x-2 text-gold-accent/80">
-              <div className="w-1 h-3 bg-gold-accent" />
+            <div className="flex items-center space-x-2 text-primary">
+              <div className="w-1.5 h-4 bg-primary rounded-full" />
               <span className="text-xs font-bold tracking-widest uppercase">
                 Hệ thống size
               </span>
             </div>
             <div className="grid grid-cols-4 gap-2 md:gap-4">
-              {renderOption(SizeSystem.UK, sizeSystem, setSizeSystem, "ANH")}
-              {renderOption(SizeSystem.US, sizeSystem, setSizeSystem, "MỸ")}
-              {renderOption(SizeSystem.VN, sizeSystem, setSizeSystem, "VN")}
+              {renderOption(SizeSystem.UK, sizeSystem, (v) => setSizeSystem(v), "ANH")}
+              {renderOption(SizeSystem.US, sizeSystem, (v) => setSizeSystem(v), "MỸ")}
+              {renderOption(SizeSystem.VN, sizeSystem, (v) => setSizeSystem(v), "VN")}
               {renderOption(
                 SizeSystem.EU,
                 sizeSystem,
-                setSizeSystem,
+                (v) => setSizeSystem(v),
                 "CHÂU ÂU",
               )}
             </div>
@@ -176,20 +176,20 @@ export const SizeCustomizer = ({type}:{type: string}) => {
           context?.brandMeasuredRefCodesData && (
              <div
              onClick={()=>navigate('/Brand/result/?brand='+context.brandMeasuredRefCodesData?.brand)}
-            className="relative p-4 transition border cursor-pointer border-gold-accent/30 bg-black/50 hover:border-gold-accent group"
+            className="relative p-4 transition-all duration-300 border cursor-pointer rounded-xl border-primary/30 bg-primary/10 hover:bg-primary/15 hover:border-primary/50 group shadow-sm"
           >
-            <div className="absolute top-2 right-2 text-[9px] text-gold-accent/50 uppercase">
+            <div className="absolute top-3 right-4 text-[10px] font-semibold text-primary uppercase">
               Gần đây : {context.brandMeasuredRefCodesData?.dataAnalysis.analysisDate}
             </div>
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold tracking-widest uppercase text-gold-accent">
+                <p className="text-xs font-bold tracking-widest uppercase text-white group-hover:text-primary">
                   Bảng đo gần nhất
                 </p>
               </div>
 
-              <span className="text-[10px] uppercase tracking-widest text-gold-accent/70 group-hover:text-gold-accent">
+              <span className="text-[11px] font-bold uppercase tracking-widest text-primary group-hover:translate-x-1 transition-transform">
                 Xem lại →
               </span>
             </div>
@@ -200,17 +200,17 @@ export const SizeCustomizer = ({type}:{type: string}) => {
           <div className="flex gap-4 pt-6">
             <button
               onClick={onClose}
-              className="flex-1 px-6 py-3 text-sm font-semibold tracking-wider uppercase transition-colors border cursor-pointer border-gold-accent/30 text-gold-accent/70 hover:border-gold-accent hover:text-gold-accent"
+              className="flex-1 px-6 py-3.5 text-sm font-bold tracking-wider uppercase transition-all bg-surface-dark border border-border-subtle rounded-xl text-text-muted hover:bg-surface-hover hover:text-white shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               Hủy bỏ
             </button>
             <button
               disabled={isLoading}
               onClick={handleSubmit}
-              className="flex-1 py-3 cursor-pointer px-6 bg-primary text-black uppercase text-sm font-bold tracking-wider hover:bg-gray-600 transition-colors flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(230,179,37,0.2)]"
+              className="flex-1 py-3.5 cursor-pointer px-6 bg-primary text-background-dark rounded-xl uppercase text-sm font-bold tracking-wider hover:bg-primary-dark transition-all flex items-center justify-center gap-2 shadow-md outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Xem kết quả
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-5 h-5" />
             </button>
           </div>
         </div>

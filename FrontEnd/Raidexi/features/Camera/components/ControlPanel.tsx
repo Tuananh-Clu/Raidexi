@@ -1,12 +1,25 @@
 import React, { useState, useEffect, useContext } from "react";
-import { MeasurementData, SystemStatus } from "../types";
+import { MeasurementData, SystemStatus, ProfileTag } from "../types";
 import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 import { useRouterService } from "@/Shared/Service/routerService";
 import { useDataMeasure } from "../hooks/useDataMeasure";
 import ProfileTagSelector from "./ProfileTagSelector";
-import { ProfileTag } from "../types";
-import { useProfileTagApi } from "../hooks/useProfileTagApi";
-import { cameraApi } from "../api/cameraApi";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Video,
+  User,
+  Scan,
+  CheckCircle2,
+  Check,
+  Shirt,
+  ArrowRight,
+  Save,
+  PlayCircle,
+  Power,
+  RefreshCw,
+  Grid,
+  Zap,
+} from "lucide-react";
 
 interface ControlPanelProps {
   status: SystemStatus;
@@ -27,27 +40,27 @@ function getCurrentStep(context: any): number {
 const STEPS = [
   {
     step: 1,
-    icon: "videocam",
+    icon: Video,
     title: "Bật Camera",
-    desc: "Nhấn nút bên dưới để khởi động camera của bạn",
+    desc: "Khởi động camera của bạn để bắt đầu",
   },
   {
     step: 2,
-    icon: "accessibility_new",
+    icon: User,
     title: "Chuẩn bị tư thế",
-    desc: "Đứng thẳng, dang tay 45°, đảm bảo toàn thân trong khung hình",
+    desc: "Đứng thẳng, dang tay 45° trong khung",
   },
   {
     step: 3,
-    icon: "self_improvement",
-    title: "Đứng im — Đang đo",
-    desc: "Giữ nguyên tư thế trong 15 giây để hệ thống ghi nhận số đo",
+    icon: Scan,
+    title: "Đang đo",
+    desc: "Giữ nguyên tư thế trong 15 giây",
   },
   {
     step: 4,
-    icon: "check_circle",
-    title: "Hoàn thành!",
-    desc: "Số đo đã sẵn sàng. Lưu lại và xem gợi ý thời trang phù hợp",
+    icon: CheckCircle2,
+    title: "Hoàn thành",
+    desc: "Số đo đã sẵn sàng để lưu lại",
   },
 ];
 
@@ -94,68 +107,50 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
       minute: "2-digit",
       second: "2-digit",
     });
-  // const fetchProfiles = async () => {
-  //   try {
-  //     await cameraApi.saveDataMeasurement({
-  //       shoulderWidth: 48,
-  //       chest: 102,
-  //       waist: 84,
-  //       hip: 98,
-  //       height: 178,
-  //       neck: 39,
-  //       sleeveLength: 63,
-  //       armHole: 46,
-  //       upperArm: 33,
-  //       inseam: 80,
-  //       crotchDepth: 29,
-  //       thigh: 58,
-  //       outseamLength: 104,
-  //     });
-  //   } catch (error) {
-  //     console.error("Error fetching profiles:", error);
-  //   }
-  // };
-  // useEffect( () => {fetchProfiles()}, []);
+
   return (
-    <div className="bg-panel-dark flex flex-col h-full border-l border-grid-line relative z-10 w-full lg:w-[360px] shrink-0 overflow-hidden">
+    <aside aria-label="Bảng điều khiển đo lường" className="bg-white flex flex-col h-full border-l border-slate-200 relative z-10 w-full lg:w-[380px] shrink-0 overflow-hidden shadow-xl font-sans">
       {/* ── Header ── */}
-      <div className="px-5 py-4 border-b border-grid-line shrink-0">
+      <header className="px-6 py-5 border-b border-slate-200 shrink-0 bg-white/80 backdrop-blur-md">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-base font-bold tracking-wide text-white font-display">
+            <h2 className="text-lg font-bold tracking-tight text-slate-800 mb-1">
               Đo số đo cơ thể
             </h2>
-            <p className="text-[10px] font-mono text-[#8a806d] mt-0.5">
-              ID: {status.id} · {formatTime(currentTime)}
-            </p>
+            <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
+              <span>ID: {status.id}</span>
+              <span className="w-1 h-1 rounded-full bg-slate-300" aria-hidden="true" />
+              <span>{formatTime(currentTime)}</span>
+            </div>
           </div>
-          {/* Camera live indicator */}
           <div
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider border transition-all duration-500 ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono font-bold tracking-wide border transition-all duration-300 ${
               context.openCamera
-                ? "border-green-500/50 text-green-400 bg-green-900/20"
-                : "border-[#8a806d]/30 text-[#8a806d] bg-transparent"
+                ? "border-emerald-200 text-emerald-600 bg-emerald-50 shadow-sm"
+                : "border-slate-200 text-slate-500 bg-slate-50"
             }`}
+            aria-live="polite"
           >
             <span
-              className={`w-1.5 h-1.5 rounded-full ${
+              className={`w-2 h-2 rounded-full ${
                 context.openCamera
-                  ? "bg-green-400 animate-pulse"
-                  : "bg-[#8a806d]"
+                  ? "bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.4)]"
+                  : "bg-slate-400"
               }`}
+              aria-hidden="true"
             />
             {context.openCamera ? "LIVE" : "OFF"}
           </div>
         </div>
-      </div>
+      </header>
 
       {/* ── Scrollable body ── */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar">
+      <section aria-label="Cài đặt và tiến trình" className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent bg-slate-50/50">
         {/* ─ Profile Tag Selector ─ */}
-        <div className="px-5 py-3 border-b border-grid-line">
-          <p className="text-[10px] font-mono text-[#8a806d] tracking-[0.2em] uppercase mb-2">
-            Đang đo cho
-          </p>
+        <div className="px-6 py-5 border-b border-slate-200 bg-white">
+          <h3 className="text-[10px] font-mono text-slate-500 font-semibold uppercase tracking-[0.1em] block mb-3">
+            Hồ sơ người dùng
+          </h3>
           <ProfileTagSelector
             selectedProfile={selectedProfile}
             onSelectProfile={setSelectedProfile}
@@ -164,239 +159,218 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         </div>
 
         {/* ─ Step guide ─ */}
-        <div className="px-5 py-4 space-y-2 border-b border-grid-line">
-          <p className="text-[10px] font-mono text-[#8a806d] tracking-[0.2em] uppercase mb-3">
-            Các bước thực hiện
-          </p>
-          {STEPS.map(({ step, icon, title, desc }) => {
-            const isDone = step < currentStep;
-            const isActive = step === currentStep;
-            return (
-              <div
-                key={step}
-                className={`relative flex items-start gap-3 p-3 rounded-sm border transition-all duration-300 ${
-                  isDone
-                    ? "border-green-700/40 bg-green-950/20"
-                    : isActive
-                      ? "border-primary/60 bg-primary/8 shadow-[0_0_16px_rgba(242,166,13,0.1)]"
-                      : "border-grid-line/50 bg-transparent opacity-35"
-                }`}
-              >
-                {/* Left accent bar */}
-                {isActive && (
-                  <div className="absolute left-0 inset-y-0 w-[3px] rounded-l-sm bg-primary" />
-                )}
-
-                {/* Step badge */}
-                <div
-                  className={`shrink-0 w-7 h-7 rounded-sm flex items-center justify-center text-[11px] font-mono font-bold border transition-all ${
+        <div className="px-6 py-6 border-b border-slate-200 bg-white">
+          <h3 className="text-[10px] font-mono text-slate-500 font-semibold uppercase tracking-[0.1em] block mb-4">
+            Tiến trình
+          </h3>
+          <div className="space-y-3 relative" role="list">
+            <div className="absolute left-[15px] top-4 bottom-4 w-px bg-slate-200 z-0" aria-hidden="true" />
+            {STEPS.map(({ step, icon: Icon, title, desc }) => {
+              const isDone = step < currentStep;
+              const isActive = step === currentStep;
+              return (
+                <motion.div
+                  initial={false}
+                  animate={{ opacity: isActive || isDone ? 1 : 0.6 }}
+                  key={step}
+                  role="listitem"
+                  aria-current={isActive ? "step" : undefined}
+                  className={`relative z-10 flex items-start gap-4 p-3 rounded-xl border transition-all duration-300 ${
                     isDone
-                      ? "border-green-500/60 bg-green-900/30 text-green-400"
+                      ? "border-emerald-100 bg-emerald-50/50"
                       : isActive
-                        ? "border-primary bg-primary/20 text-primary"
-                        : "border-[#8a806d]/40 text-[#8a806d]"
+                        ? "border-blue-200 bg-blue-50/50 shadow-sm ring-1 ring-blue-100"
+                        : "border-transparent hover:bg-slate-50"
                   }`}
                 >
-                  {isDone ? (
-                    <span className="material-symbols-outlined text-[15px]">
-                      check
-                    </span>
-                  ) : (
-                    step
-                  )}
-                </div>
-
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5 mb-0.5">
-                    <span
-                      className={`material-symbols-outlined text-[15px] ${
+                  <div
+                    className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors duration-300 bg-white ${
+                      isDone
+                        ? "border-emerald-400 text-emerald-500"
+                        : isActive
+                          ? "border-blue-500 text-blue-600 shadow-sm"
+                          : "border-slate-200 text-slate-400"
+                    }`}
+                    aria-hidden="true"
+                  >
+                    {isDone ? <Check size={14} strokeWidth={3} /> : <Icon size={14} />}
+                  </div>
+                  <div className="flex-1 min-w-0 pt-1.5">
+                    <h4
+                      className={`text-sm font-semibold tracking-wide mb-1 ${
                         isDone
-                          ? "text-green-400"
+                          ? "text-emerald-700"
                           : isActive
-                            ? "text-primary"
-                            : "text-[#8a806d]"
-                      }`}
-                    >
-                      {icon}
-                    </span>
-                    <span
-                      className={`text-xs font-bold tracking-wide ${
-                        isDone
-                          ? "text-green-400"
-                          : isActive
-                            ? "text-white"
-                            : "text-[#8a806d]"
+                            ? "text-blue-700"
+                            : "text-slate-600"
                       }`}
                     >
                       {title}
-                    </span>
+                    </h4>
+                    <p className="text-xs text-slate-500 leading-relaxed pr-2">
+                      {desc}
+                    </p>
                   </div>
-                  <p
-                    className={`text-[10px] leading-relaxed ${
-                      isDone
-                        ? "text-green-600/70"
-                        : isActive
-                          ? "text-brass-light/70"
-                          : "text-[#8a806d]/50"
-                    }`}
-                  >
-                    {desc}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
 
         {/* ─ Countdown / Measuring progress ─ */}
-        {context.measuring && (
-          <div className="px-5 py-4 border-b border-grid-line space-y-3">
-            <div className="flex items-center justify-between">
-              <p className="text-[10px] font-mono text-[#8a806d] tracking-[0.2em] uppercase">
-                Thời gian đo còn lại
-              </p>
-              <span className="font-mono text-lg font-bold text-primary tabular-nums">
-                {context.countdown?.toFixed(0)}s
-              </span>
-            </div>
-            {/* Bar */}
-            <div className="flex w-full h-2 gap-[3px] rounded-full overflow-hidden">
-              {Array.from({ length: 15 }).map((_, i) => (
-                <div
-                  key={i}
-                  className={`flex-1 rounded-full transition-all duration-300 ${
-                    i >= (context.countdown ?? 0)
-                      ? "bg-white/90"
-                      : "bg-primary/40"
-                  }`}
-                />
-              ))}
-            </div>
-            <p className="text-[10px] text-center font-mono text-brass-light/60 animate-pulse">
-              Giữ nguyên tư thế — đừng di chuyển!
-            </p>
-          </div>
-        )}
+        <AnimatePresence>
+          {context.measuring && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="border-b border-slate-200 overflow-hidden"
+              aria-live="assertive"
+            >
+              <div className="px-6 py-6 bg-gradient-to-b from-blue-50 to-white">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-[10px] font-mono text-blue-600 font-bold uppercase tracking-[0.1em]">
+                    Đang quét số đo
+                  </h3>
+                  <span className="font-mono text-2xl font-bold text-blue-700 tabular-nums tracking-tighter" aria-label={`Còn lại ${context.countdown?.toFixed(0)} giây`}>
+                    {context.countdown?.toFixed(0)}<span className="text-base text-blue-400">s</span>
+                  </span>
+                </div>
+                <div className="flex w-full h-1.5 gap-1 rounded-full overflow-hidden mb-3" aria-hidden="true">
+                  {Array.from({ length: 15 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className={`flex-1 rounded-full transition-all duration-300 ${
+                        i >= (context.countdown ?? 0)
+                          ? "bg-blue-500"
+                          : "bg-slate-200"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <p className="text-xs text-center font-medium text-blue-600 animate-pulse">
+                  Giữ nguyên tư thế — đang xử lý dữ liệu...
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* ─ Realtime metrics ─ */}
-        <div className="px-5 py-4 border-b border-grid-line">
-          <p className="text-[10px] font-mono text-[#8a806d] tracking-[0.2em] uppercase mb-3">
-            Số đo {hasMeasured ? "đã ghi nhận" : "thời gian thực"}
-          </p>
-          <div className="grid grid-cols-2 gap-2.5">
-            {data.metrics.map((metric: any) => (
-              <div
+        <div className="px-6 py-6 border-b border-slate-200 bg-white">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-[10px] font-mono text-slate-500 font-semibold uppercase tracking-[0.1em]">
+              Kết quả đo lường
+            </h3>
+            {hasMeasured && (
+              <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-emerald-100 text-emerald-700 border border-emerald-200" role="status">
+                HOÀN TẤT
+              </span>
+            )}
+          </div>
+          <div className="grid grid-cols-2 gap-3" role="list" aria-label="Danh sách số đo">
+            {data.metrics.map((metric: any, idx: number) => (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}
                 key={metric.id}
-                className={`relative p-3 border rounded-sm transition-all duration-300 ${
+                role="listitem"
+                className={`group relative p-3.5 rounded-xl border transition-all duration-300 ${
                   hasMeasured
-                    ? "border-primary/40 bg-primary/5"
-                    : "border-grid-line bg-background-dark"
+                    ? "border-blue-200 bg-blue-50/50 hover:border-blue-300 hover:bg-blue-50"
+                    : "border-slate-200 bg-white hover:border-slate-300 shadow-sm"
                 }`}
               >
-                <p className="text-[9px] font-mono text-[#8a806d] uppercase mb-1 tracking-wider">
+                <p className={`text-[10px] font-mono font-medium uppercase tracking-wider mb-1.5 ${hasMeasured ? "text-blue-600" : "text-slate-500"}`}>
                   {metric.label}
                 </p>
-                <div className="flex items-baseline gap-1">
+                <div className="flex items-baseline gap-1.5">
                   <span
-                    className={`font-mono text-xl font-semibold ${
-                      hasMeasured ? "text-primary" : "text-white/50"
+                    className={`font-mono text-2xl font-bold tracking-tight transition-colors ${
+                      hasMeasured ? "text-blue-700" : "text-slate-800"
                     }`}
                   >
-                    {metric?.value?.toFixed(1)}
+                    {metric?.value?.toFixed(1) || "0.0"}
                   </span>
-                  <span className="text-[9px] font-mono text-brass-light/60">
+                  <span className={`text-[10px] font-mono ${hasMeasured ? "text-blue-500" : "text-slate-400"}`}>
                     {metric.unit}
                   </span>
                 </div>
-                {hasMeasured && (
-                  <div className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-green-400 rounded-full" />
-                )}
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
 
         {/* ─ View toggles ─ */}
-        <div className="px-5 py-3 border-b border-grid-line">
-          <div className="flex items-center gap-5">
-            <button
-              onClick={handleGridToggle}
-              className={`flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider transition-colors ${
-                gridEnabled ? "text-white" : "text-[#8a806d]"
-              }`}
-            >
-              <div
-                className={`w-8 h-4 border rounded-full relative transition-all ${
-                  gridEnabled
-                    ? "border-primary bg-primary/20"
-                    : "border-[#8a806d]/40"
-                }`}
+        <div className="px-6 py-5 bg-white">
+          <div className="flex items-center gap-6">
+            {[
+              { label: "Lưới", state: gridEnabled, toggle: handleGridToggle, icon: Grid },
+              { label: "Flash", state: flashEnabled, toggle: handleFlashToggle, icon: Zap },
+            ].map(({ label, state, toggle, icon: Icon }) => (
+              <button
+                key={label}
+                onClick={toggle}
+                aria-pressed={state}
+                aria-label={`Bật tắt ${label}`}
+                className="group flex items-center gap-2.5 text-xs font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded text-slate-600 hover:text-slate-900"
               >
                 <div
-                  className={`absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200 ${
-                    gridEnabled
-                      ? "left-[calc(100%-14px)] bg-primary"
-                      : "left-0.5 bg-[#8a806d]/50"
+                  className={`relative flex items-center w-10 h-5 rounded-full transition-colors duration-300 shadow-inner ${
+                    state ? "bg-blue-500" : "bg-slate-200"
                   }`}
-                />
-              </div>
-              Lưới
-            </button>
-            <button
-              onClick={handleFlashToggle}
-              className={`flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider transition-colors ${
-                flashEnabled ? "text-white" : "text-[#8a806d]"
-              }`}
-            >
-              <div
-                className={`w-8 h-4 border rounded-full relative transition-all ${
-                  flashEnabled
-                    ? "border-primary bg-primary/20"
-                    : "border-[#8a806d]/40"
-                }`}
-              >
-                <div
-                  className={`absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200 ${
-                    flashEnabled
-                      ? "left-[calc(100%-14px)] bg-primary"
-                      : "left-0.5 bg-[#8a806d]/50"
-                  }`}
-                />
-              </div>
-              Flash
-            </button>
+                  aria-hidden="true"
+                >
+                  <motion.div
+                    layout
+                    className={`absolute w-3.5 h-3.5 bg-white rounded-full shadow-sm ${
+                      state ? "right-1" : "left-1"
+                    }`}
+                  />
+                </div>
+                <span
+                  className={`flex items-center gap-1.5 transition-colors`}
+                >
+                  <Icon size={14} className={state ? "text-blue-500" : "text-slate-400"} aria-hidden="true" />
+                  {label}
+                </span>
+              </button>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
 
       {/* ── Fixed bottom action area ── */}
-      <div className="shrink-0 border-t border-grid-line bg-background-dark px-5 py-4 space-y-2.5">
+      <footer className="shrink-0 border-t border-slate-200 bg-white/95 backdrop-blur-md px-6 py-5 space-y-3 z-20">
         {hasMeasured && (
-          <button
+          <motion.button
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
             onClick={() => navigate("/Brand")}
-            className="w-full h-12 bg-gradient-to-r from-primary to-brass-light text-background-dark font-bold text-sm tracking-wider flex items-center justify-center gap-2 rounded-sm hover:opacity-90 hover:shadow-[0_0_24px_rgba(242,166,13,0.5)] transition-all active:scale-[0.98]"
+            aria-label="Xem gợi ý thời trang"
+            className="group w-full h-12 relative overflow-hidden rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-transform active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-blue-500 text-white shadow-md hover:shadow-lg"
           >
-            <span className="material-symbols-outlined text-lg">checkroom</span>
-            <span>Xem gợi ý thời trang</span>
-            <span className="material-symbols-outlined text-base">
-              arrow_forward
-            </span>
-          </button>
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 transition-transform duration-300 group-hover:scale-105" aria-hidden="true" />
+            <Shirt size={18} className="relative z-10" aria-hidden="true" />
+            <span className="relative z-10 tracking-wide">Xem gợi ý thời trang</span>
+            <ArrowRight size={18} className="relative z-10 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+          </motion.button>
         )}
 
-        {/* Save button */}
         {hasMeasured && (
-          <button
+          <motion.button
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
             onClick={() => handleSaveMeasure(selectedProfile)}
-            className="w-full h-10 cursor-pointer bg-transparent text-brass-light text-sm font-mono tracking-wider border border-grid-line hover:border-primary hover:text-white transition-all flex items-center justify-center gap-2 rounded-sm active:scale-[0.98]"
+            aria-label="Lưu số đo cơ thể"
+            className="w-full h-11 rounded-xl border border-blue-200 bg-blue-50 text-blue-700 text-sm font-semibold tracking-wide hover:bg-blue-100 transition-all flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-blue-500 shadow-sm"
           >
-            <span className="material-symbols-outlined text-base">save</span>
-            <span>Lưu số đo</span>
-          </button>
+            <Save size={16} aria-hidden="true" />
+            Lưu số đo
+          </motion.button>
         )}
 
-        {/* Main action button */}
         {!context.measuring && (
           <button
             onClick={() => {
@@ -406,46 +380,48 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                 context?.setMeasuring?.(true);
               }
             }}
-            className="w-full h-14 cursor-pointer bg-primary text-background-dark text-base font-bold tracking-wider rounded-sm border-2 border-transparent hover:bg-white hover:border-primary hover:shadow-[0_0_24px_rgba(242,166,13,0.5)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+            aria-label={context.openCamera ? "Bắt đầu đo ngay" : "Bật camera"}
+            className={`w-full h-14 rounded-xl text-sm font-bold tracking-wide transition-all flex items-center justify-center gap-2.5 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-blue-500 shadow-sm ${
+              context.openCamera
+                ? "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md"
+                : "bg-white border border-slate-300 text-slate-700 hover:border-blue-500 hover:text-blue-600"
+            }`}
           >
-            <span className="material-symbols-outlined text-xl">
-              {context.openCamera ? "play_circle" : "videocam"}
-            </span>
+            {context.openCamera ? <PlayCircle size={20} aria-hidden="true" /> : <Video size={20} aria-hidden="true" />}
             {context.openCamera ? "Bắt đầu đo ngay" : "Bật camera"}
           </button>
         )}
 
         {/* Secondary: Off + Restart */}
         {context.openCamera && !context.measuring && (
-          <div className="flex gap-2">
+          <div className="flex gap-3 pt-1">
             <button
               onClick={() => {
                 context?.setOpenCamera?.(false);
                 context?.setMeasuring?.(false);
               }}
-              className="flex-1 h-10 cursor-pointer bg-transparent text-red-400 text-xs font-mono tracking-wider border border-red-800/50 hover:bg-red-900/20 hover:border-red-500 transition-all flex items-center justify-center gap-1.5 rounded-sm active:scale-[0.98]"
+              aria-label="Tắt camera"
+              className="flex-1 h-11 rounded-xl bg-rose-50 text-rose-600 text-xs font-semibold tracking-wide border border-rose-200 hover:bg-rose-600 hover:text-white hover:border-rose-600 transition-all flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-rose-500"
             >
-              <span className="material-symbols-outlined text-base">
-                power_settings_new
-              </span>
+              <Power size={14} aria-hidden="true" />
               Tắt camera
             </button>
             {hasMeasured && (
               <button
                 onClick={() => context?.setCapturedFallback?.(true)}
-                className="flex-1 h-10 cursor-pointer bg-transparent text-[#8a806d] text-xs font-mono tracking-wider border border-grid-line hover:border-primary hover:text-white transition-all flex items-center justify-center gap-1.5 rounded-sm active:scale-[0.98]"
+                aria-label="Đo lại"
+                className="flex-1 h-11 rounded-xl bg-slate-50 text-slate-600 text-xs font-semibold tracking-wide border border-slate-200 hover:border-slate-400 hover:text-slate-800 transition-all flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-slate-500"
               >
-                <span className="material-symbols-outlined text-base">
-                  restart_alt
-                </span>
+                <RefreshCw size={14} aria-hidden="true" />
                 Đo lại
               </button>
             )}
           </div>
         )}
-      </div>
-    </div>
+      </footer>
+    </aside>
   );
 };
 
 export default ControlPanel;
+

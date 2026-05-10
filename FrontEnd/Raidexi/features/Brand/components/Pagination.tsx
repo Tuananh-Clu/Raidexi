@@ -12,12 +12,12 @@ const Pagination: React.FC<PaginationProps> = ({
   const end = Math.min(currentPage * itemsPerPage, totalItems);
 
   return (
-    <div className="flex items-center justify-between pt-6 font-mono text-xs border-t border-border-sepia text-text-muted">
+    <div className="flex items-center justify-between pt-6 font-mono text-[11px] font-bold border-t border-border-subtle text-text-dim tracking-wider">
       <div className="flex items-center gap-4">
         <span>
           SHOWING {totalItems > 0 ? start : 0}-{end} OF {totalItems} BRANDS
         </span>
-        <span className="hidden md:inline-block">|</span>
+        <span className="hidden md:inline-block text-border-brass">|</span>
         <span className="hidden md:inline-block">
           PAGE {currentPage} OF {totalPages || 1}
         </span>
@@ -26,7 +26,7 @@ const Pagination: React.FC<PaginationProps> = ({
         <button
           disabled={currentPage === 1}
           onClick={() => onPageChange(currentPage - 1)}
-          className="flex items-center justify-center border size-8 border-border-sepia hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-border-sepia disabled:hover:text-text-muted"
+          className="flex items-center justify-center border rounded-md size-8 border-border-subtle bg-surface-dark hover:border-primary/40 hover:text-primary shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-border-subtle disabled:hover:text-text-dim disabled:shadow-none transition-all"
         >
           <span className="material-symbols-outlined !text-[16px]">
             chevron_left
@@ -37,10 +37,10 @@ const Pagination: React.FC<PaginationProps> = ({
           <button
             key={page}
             onClick={() => onPageChange(page)}
-            className={`size-8 flex items-center justify-center border ${
+            className={`size-8 rounded-md flex items-center justify-center border shadow-sm transition-all ${
               currentPage === page
                 ? "border-primary bg-primary text-background-dark font-bold"
-                : "border-border-sepia hover:border-primary hover:text-primary"
+                : "border-border-subtle bg-surface-dark hover:border-primary/40 hover:text-primary"
             }`}
           >
             {page}
@@ -50,7 +50,7 @@ const Pagination: React.FC<PaginationProps> = ({
         <button
           disabled={currentPage === totalPages || totalPages === 0}
           onClick={() => onPageChange(currentPage + 1)}
-          className="flex items-center justify-center border size-8 border-border-sepia hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-border-sepia disabled:hover:text-text-muted"
+          className="flex items-center justify-center border rounded-md size-8 border-border-subtle bg-surface-dark hover:border-primary/40 hover:text-primary shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-border-subtle disabled:hover:text-text-dim disabled:shadow-none transition-all"
         >
           <span className="material-symbols-outlined !text-[16px]">
             chevron_right

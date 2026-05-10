@@ -234,6 +234,55 @@ namespace Raidexi.Infrastructure.Services
                 return;
             }
         }
+
+        public async Task SaveCustomProfile(SaveMeasureCustomDataList data)
+        {
+           var id=_httpContextAccessor.HttpContext.Request.Cookies[$"access_token_client"];
+           var jwt =new JwtSecurityTokenHandler().ReadJwtToken(id);
+           var userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+           var filter=Builders<SaveMeasureDataDto>.Filter.Eq(u=>u.id,userId);
+           var existingData = await dbContext.MeasureUserData.Find(filter).FirstOrDefaultAsync();
+           if(existingData!=null)
+           {
+                var update = Builders<SaveMeasureDataDto>.Update.Push(u => u.dataMeasureCustom, data);
+                await dbContext.MeasureUserData.UpdateOneAsync(filter, update);
+                return;
+           }
+           else
+           {
+                var datas = new SaveMeasureDataDto
+                {
+                    id = userId,
+                    dataMeasureCustom = new SaveMeasureCustomDataList[]
+                    {
+                        data
+                    }
+                };
+                await dbContext.MeasureUserData.InsertOneAsync(datas);
+                return;
+           }
+        }
+
+        public async Task<List<SaveMeasureCustomDataList>> GetCustomProfileForUser()
+        {
+            var jwtToken = _httpContextAccessor.HttpContext?.Request.Cookies[$"access_token_client"];
+            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(jwtToken);
+            var userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            var filter=Builders<SaveMeasureDataDto>.Filter.Eq(u=>u.id,userId);
+            var data = await dbContext.MeasureUserData.Find(filter).FirstOrDefaultAsync();
+            return data?.dataMeasureCustom.ToList() ?? new List<SaveMeasureCustomDataList>();
+        }
+
+        public async Task UpdateCustomProfile(SaveMeasureCustomDataList data)
+        {
+            var jwtToken = _httpContextAccessor.HttpContext?.Request.Cookies[$"access_token_client"];
+            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(jwtToken);
+            var userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            var filter = Builders<SaveMeasureDataDto>.Filter.Eq(u => u.id, userId) & Builders<SaveMeasureDataDto>.Filter.ElemMatch(u => u.dataMeasureCustom, c => c.id == data.id);
+            var update = Builders<SaveMeasureDataDto>.Update.Set(u => u.dataMeasureCustom[-1], data);
+            await dbContext.MeasureUserData.UpdateOneAsync(filter, update);
+        }
+
         async Task IAuthService.SaveMeaure(MeasureData data)
         {
 

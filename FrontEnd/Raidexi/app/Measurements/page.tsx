@@ -44,10 +44,11 @@ export function Page() {
   const [status] = useState<SystemStatus>(INITIAL_STATUS);
 
   return (
-    <div className="flex flex-col w-full h-screen overflow-hidden bg-background-dark text-paper font-display selection:bg-brass-light selection:text-background-dark">
+    <div className="flex flex-col w-full h-screen overflow-hidden bg-[#1a1510] font-sans">
       <NavBar />
+      <h1 className="sr-only">Đo lường cơ thể bằng AI</h1>
 
-      <main className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_360px] h-[calc(100vh-64px)] overflow-hidden">
+      <main className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_380px] h-[calc(100vh-64px)] overflow-hidden">
         <Viewport 
           showGrid={showGrid}
           triggerFlash={triggerFlash}

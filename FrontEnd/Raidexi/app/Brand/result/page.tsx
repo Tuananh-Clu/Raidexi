@@ -18,20 +18,24 @@ function BrandResultPage() {
     const storedBrandData = localStorage.getItem("brandData");
     return storedBrandData ? JSON.parse(storedBrandData) : [];
   });
+
+  // dataMeasured is data[] — measurements live under dataMeasured[0].dataMeasure
+  const latestMeasure = context?.dataMeasured?.[0]?.dataMeasure;
   const measurements = {
-    chest: context?.dataMeasured?.chest,
-    waist: context?.dataMeasured?.waist,
-    height: context?.dataMeasured?.height,
-    shoulderWidth: context?.dataMeasured?.shoulderWidth,
+    chest: latestMeasure?.chest,
+    waist: latestMeasure?.waist,
+    height: latestMeasure?.height,
+    shoulderWidth: latestMeasure?.shoulderWidth,
   };
 
   const searchParams = useSearchParams();
   const brand = searchParams.get("brand");
   const brandResult = brandData.find((b) => b.name === brand);
+
   return (
-    <div>
+    <div className="bg-[#1a1510] min-h-screen font-sans">
       <NavBar />
-      <main className="flex-1 w-full px-4 py-8 mx-auto max-w-7xl sm:px-6">
+      <main className="flex-1 w-full px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           <aside className="lg:col-span-4">
             <div className="sticky top-24">
@@ -46,7 +50,6 @@ function BrandResultPage() {
           </section>
         </div>
       </main>
-
       <Footer />
     </div>
   );
@@ -54,7 +57,7 @@ function BrandResultPage() {
 
 export default function Page() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#1a1510] animate-pulse" />}>
       <BrandResultPage />
     </Suspense>
   );

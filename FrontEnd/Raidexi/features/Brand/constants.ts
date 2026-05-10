@@ -79,7 +79,11 @@ export const BRANDS: Brand[] = [
     lastSync: '12 OCT 2023',
     metricLabel: 'Fit Score',
     metricValue: '98%',
-    icon: 'checkroom'
+    icon: 'checkroom',
+    category: 'International',
+    origin: 'Japan',
+    segment: 'Casual',
+    dataSeason: 'AW2023',
   },
   {
     id: '2',
@@ -89,7 +93,11 @@ export const BRANDS: Brand[] = [
     lastSync: '14 AUG 2023',
     metricLabel: 'Drift',
     metricValue: '+2.5cm',
-    icon: 'styler'
+    icon: 'styler',
+    category: 'International',
+    origin: 'Spain',
+    segment: 'Fast Fashion',
+    dataSeason: 'SS2023',
   },
   {
     id: '3',
@@ -99,7 +107,11 @@ export const BRANDS: Brand[] = [
     lastSync: '--',
     metricLabel: 'Data Points',
     metricValue: '0/12',
-    icon: 'dry_cleaning'
+    icon: 'dry_cleaning',
+    category: 'International',
+    origin: 'Sweden',
+    segment: 'Contemporary',
+    dataSeason: '--',
   },
   {
     id: '4',
@@ -109,7 +121,11 @@ export const BRANDS: Brand[] = [
     lastSync: '01 NOV 2023',
     metricLabel: 'Fit Score',
     metricValue: '95%',
-    icon: 'shopping_bag'
+    icon: 'shopping_bag',
+    category: 'International',
+    origin: 'USA',
+    segment: 'Sportswear',
+    dataSeason: 'AW2023',
   },
   {
     id: '5',
@@ -119,7 +135,11 @@ export const BRANDS: Brand[] = [
     lastSync: '20 OCT 2023',
     metricLabel: 'Fit Score',
     metricValue: '99%',
-    icon: 'checkroom'
+    icon: 'checkroom',
+    category: 'International',
+    origin: 'Canada',
+    segment: 'Outdoor',
+    dataSeason: 'AW2023',
   },
   {
     id: '6',
@@ -129,7 +149,11 @@ export const BRANDS: Brand[] = [
     lastSync: '--',
     metricLabel: 'Data Points',
     metricValue: '2/10',
-    icon: 'apparel'
+    icon: 'apparel',
+    category: 'International',
+    origin: 'USA',
+    segment: 'Denim',
+    dataSeason: '--',
   },
   {
     id: '7',
@@ -139,7 +163,11 @@ export const BRANDS: Brand[] = [
     lastSync: '10 SEP 2023',
     metricLabel: 'Drift',
     metricValue: '+1.2cm',
-    icon: 'styler'
+    icon: 'styler',
+    category: 'International',
+    origin: 'Sweden',
+    segment: 'Fast Fashion',
+    dataSeason: 'SS2023',
   },
   {
     id: '8',
@@ -149,6 +177,10 @@ export const BRANDS: Brand[] = [
     lastSync: '18 NOV 2023',
     metricLabel: 'Fit Score',
     metricValue: '97%',
-    icon: 'checkroom'
+    icon: 'checkroom',
+    category: 'International',
+    origin: 'USA',
+    segment: 'Outdoor',
+    dataSeason: 'AW2023',
   }
 ];

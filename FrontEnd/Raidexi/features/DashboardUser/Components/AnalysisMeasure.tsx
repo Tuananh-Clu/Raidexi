@@ -98,7 +98,7 @@ export const AnalysisMeasure = ({ dataMeasurements }: AnalysisMeasureProps) => {
     ctx.clearRect(0, 0, W, H);
 
     // Background grid
-    ctx.strokeStyle = "rgba(255,255,255,0.05)";
+    ctx.strokeStyle = "rgba(242,166,13,0.08)";
     ctx.lineWidth = 1;
     const gridLines = [0, 20, 40, 60, 80, 100];
     gridLines.forEach((val) => {
@@ -108,8 +108,8 @@ export const AnalysisMeasure = ({ dataMeasurements }: AnalysisMeasureProps) => {
       ctx.lineTo(padL + chartW, y);
       ctx.stroke();
       // label
-      ctx.fillStyle = "rgba(255,255,255,0.3)";
-      ctx.font = "10px monospace";
+      ctx.fillStyle = "rgba(184,177,157,0.6)";
+      ctx.font = "10px sans-serif";
       ctx.textAlign = "right";
       ctx.fillText(`${val}%`, padL - 6, y + 4);
     });
@@ -125,8 +125,8 @@ export const AnalysisMeasure = ({ dataMeasurements }: AnalysisMeasureProps) => {
 
     // Area fill
     const grad = ctx.createLinearGradient(0, padT, 0, padT + chartH);
-    grad.addColorStop(0, "rgba(212,175,55,0.25)");
-    grad.addColorStop(1, "rgba(212,175,55,0.02)");
+    grad.addColorStop(0, "rgba(242,166,13,0.3)");
+    grad.addColorStop(1, "rgba(242,166,13,0.0)");
 
     ctx.beginPath();
     ctx.moveTo(points[0].x, padT + chartH);
@@ -138,8 +138,8 @@ export const AnalysisMeasure = ({ dataMeasurements }: AnalysisMeasureProps) => {
 
     // Line
     ctx.beginPath();
-    ctx.strokeStyle = "#d4af37";
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#f2a60d";
+    ctx.lineWidth = 2.5;
     ctx.lineJoin = "round";
     points.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
     ctx.stroke();
@@ -148,15 +148,15 @@ export const AnalysisMeasure = ({ dataMeasurements }: AnalysisMeasureProps) => {
     points.forEach((p) => {
       ctx.beginPath();
       ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
-      ctx.fillStyle = "#d4af37";
+      ctx.fillStyle = "#1a1510";
       ctx.fill();
-      ctx.strokeStyle = "#1a1410";
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#f2a60d";
+      ctx.lineWidth = 2.5;
       ctx.stroke();
 
       // x-axis label
-      ctx.fillStyle = "rgba(255,255,255,0.4)";
-      ctx.font = "9px monospace";
+      ctx.fillStyle = "rgba(184,177,157,0.7)";
+      ctx.font = "10px sans-serif";
       ctx.textAlign = "center";
       ctx.fillText(p.month, p.x, padT + chartH + 20);
     });
@@ -165,33 +165,31 @@ export const AnalysisMeasure = ({ dataMeasurements }: AnalysisMeasureProps) => {
   if (!dataMeasurements || dataMeasurements.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-0 border border-border-color bg-background-card relative">
-      {/* Corner accents */}
-      <div className="absolute -top-[1px] -left-[1px] w-4 h-4 border-l border-t border-primary z-10" />
-      <div className="absolute -top-[1px] -right-[1px] w-4 h-4 border-r border-t border-primary z-10" />
-
+    <section aria-labelledby="analysis-heading" className="flex flex-col gap-0 bg-surface-dark relative font-sans border border-border-subtle rounded-2xl shadow-sm overflow-hidden mb-6">
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-border-color bg-[#1a1713]">
+      <header className="flex items-center justify-between px-6 py-4 border-b border-border-subtle bg-[#15120e]">
         <div className="flex items-center gap-3">
-          <span className="material-symbols-outlined text-primary text-[20px]">analytics</span>
-          <h3 className="text-sm font-bold tracking-widest uppercase text-primary">
+          <span className="material-symbols-outlined text-primary text-[20px]" aria-hidden="true">analytics</span>
+          <h2 id="analysis-heading" className="text-sm font-bold tracking-wide text-white">
             Phân tích số đo
-          </h3>
+          </h2>
         </div>
-        <span className="font-mono text-[10px] text-text-muted uppercase tracking-widest">
+        <span className="font-medium text-xs text-text-dim">
           {enriched.length} tháng · {new Date().getFullYear()}
         </span>
-      </div>
+      </header>
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm" aria-label="Bảng chi tiết số đo theo tháng">
+          <caption className="sr-only">Lịch sử và tiến độ số đo cơ thể của bạn</caption>
           <thead>
-            <tr className="border-b border-border-color bg-[#15120f]">
+            <tr className="border-b border-border-subtle bg-[#15120e]">
               {["Tháng", "Vai", "Ngực", "Eo", "Hông", "Cao", "Điểm"].map((col) => (
                 <th
+                  scope="col"
                   key={col}
-                  className="px-4 py-2 font-mono text-[10px] tracking-widest uppercase text-text-muted text-left"
+                  className="px-4 py-3 font-semibold text-xs text-text-dim text-left whitespace-nowrap"
                 >
                   {col}
                 </th>
@@ -205,34 +203,35 @@ export const AnalysisMeasure = ({ dataMeasurements }: AnalysisMeasureProps) => {
               return (
                 <tr
                   key={idx}
-                  className="border-b border-border-color hover:bg-[#2a251e] transition-colors group"
+                  className="border-b border-border-subtle hover:bg-surface-hover transition-colors group"
                 >
-                  <td className="px-4 py-3 font-mono text-xs text-text-muted">
-                    {formatMonth(entry.lastUpdate)}
+                  <td className="px-4 py-3 text-sm font-medium text-text-muted">
+                    <time dateTime={entry.lastUpdate}>{formatMonth(entry.lastUpdate)}</time>
                   </td>
-                  <td className="px-4 py-3 font-mono text-sm text-white">
+                  <td className="px-4 py-3 font-mono text-[13px] text-white font-semibold">
                     {entry.dataMeasure.shoulderWidth ?? "—"}
                   </td>
-                  <td className="px-4 py-3 font-mono text-sm text-white">
+                  <td className="px-4 py-3 font-mono text-[13px] text-white font-semibold">
                     {entry.dataMeasure.chest ?? "—"}
                   </td>
-                  <td className="px-4 py-3 font-mono text-sm text-white">
+                  <td className="px-4 py-3 font-mono text-[13px] text-white font-semibold">
                     {entry.dataMeasure.waist ?? "—"}
                   </td>
-                  <td className="px-4 py-3 font-mono text-sm text-white">
+                  <td className="px-4 py-3 font-mono text-[13px] text-white font-semibold">
                     {entry.dataMeasure.hip ?? "—"}
                   </td>
-                  <td className="px-4 py-3 font-mono text-sm text-white">
+                  <td className="px-4 py-3 font-mono text-[13px] text-white font-semibold">
                     {entry.dataMeasure.height ?? "—"}
                   </td>
                   <td className="px-4 py-3">
                     <span
-                      className="inline-block font-mono text-xs font-bold px-2 py-0.5 rounded-full border"
+                      className="inline-flex items-center justify-center font-mono text-xs font-bold px-2 py-0.5 rounded-full border"
                       style={{
                         color,
-                        borderColor: color + "55",
-                        backgroundColor: color + "18",
+                        borderColor: color + "40",
+                        backgroundColor: color + "10",
                       }}
+                      aria-label={`Điểm số: ${score} phần trăm`}
                     >
                       {score}%
                     </span>
@@ -246,7 +245,7 @@ export const AnalysisMeasure = ({ dataMeasurements }: AnalysisMeasureProps) => {
 
       {/* Stats overview */}
       {stats && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-border-color">
+        <section aria-label="Tổng quan thống kê" className="grid grid-cols-2 sm:grid-cols-4 border-t border-border-subtle">
           {[
             {
               label: "Điểm TB toàn kỳ",
@@ -262,58 +261,57 @@ export const AnalysisMeasure = ({ dataMeasurements }: AnalysisMeasureProps) => {
                 stats.vsLast >= 0
                   ? `▲ ${stats.vsLast}% so tháng trước`
                   : `▼ ${Math.abs(stats.vsLast)}% so tháng trước`,
-              subStyle: { color: stats.vsLast >= 0 ? "#22c55e" : "#ef4444" },
+              subStyle: { color: stats.vsLast >= 0 ? "#10b981" : "#ef4444" },
               valueStyle: { color: getScoreColor(stats.latest) },
             },
             {
               label: "Cao nhất đạt được",
               value: `${stats.highest}%`,
-              sub: "",
-              subStyle: {},
-              valueStyle: { color: "#22c55e" },
+              sub: "—",
+              subStyle: { color: "#94a3b8" },
+              valueStyle: { color: "#10b981" },
             },
             {
               label: "Cải thiện tổng",
               value: `${stats.improvement >= 0 ? "+" : ""}${stats.improvement}%`,
-              sub: "",
-              subStyle: {},
+              sub: "—",
+              subStyle: { color: "#94a3b8" },
               valueStyle: {
-                color: stats.improvement >= 0 ? "#22c55e" : "#ef4444",
+                color: stats.improvement >= 0 ? "#10b981" : "#ef4444",
               },
             },
           ].map((s, i) => (
-            <div
+            <article
               key={i}
-              className="p-4 border-r border-border-color last:border-r-0 bg-[#15120f] hover:bg-[#1e1a14] transition-colors"
+              className="p-5 border-r border-border-subtle last:border-r-0 bg-surface-dark hover:bg-surface-hover transition-colors flex flex-col justify-center"
             >
-              <p className="font-mono text-[9px] tracking-widest uppercase text-text-muted mb-1">
+              <h3 className="text-xs font-semibold text-text-dim mb-2">
                 {s.label}
-              </p>
-              <p className="font-mono text-2xl font-bold" style={s.valueStyle}>
+              </h3>
+              <p className="font-mono text-2xl font-bold tracking-tight" style={s.valueStyle}>
                 {s.value}
               </p>
-              {s.sub && (
-                <p className="font-mono text-[10px] mt-1" style={s.subStyle}>
-                  {s.sub}
-                </p>
-              )}
-            </div>
+              <p className="text-[11px] font-medium mt-1" style={s.subStyle} aria-label={s.sub}>
+                {s.sub}
+              </p>
+            </article>
           ))}
-        </div>
+        </section>
       )}
 
       {/* Chart */}
-      <div className="border-t border-border-color p-6">
-        <p className="font-mono text-[10px] tracking-widest uppercase text-text-muted mb-4">
+      <section aria-label="Biểu đồ tiến độ" className="border-t border-border-subtle p-6 bg-surface-dark">
+        <h3 className="text-xs font-semibold text-text-dim mb-4">
           Tiến trình hoàn thiện theo thời gian
-        </p>
-        <div className="w-full h-48">
+        </h3>
+        <div className="w-full h-48 bg-[#15120e] rounded-xl border border-border-subtle p-2">
           <canvas
             ref={canvasRef}
+            aria-label="Biểu đồ đường hiển thị tiến trình điểm số theo thời gian"
             style={{ width: "100%", height: "100%", display: "block" }}
           />
         </div>
-      </div>
-    </div>
+      </section>
+    </section>
   );
 };

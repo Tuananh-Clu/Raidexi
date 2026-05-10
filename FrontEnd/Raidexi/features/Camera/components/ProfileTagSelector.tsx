@@ -1,17 +1,28 @@
 "use client";
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ProfileTag } from "../types";
 import { useProfileTagApi } from "../hooks/useProfileTagApi";
+import {
+  ChevronDown,
+  User,
+  Check,
+  X,
+  UserPlus,
+  Baby,
+  Smile,
+  Users,
+  MoreHorizontal
+} from "lucide-react";
 
 const RELATION_OPTIONS = [
-  { value: "Bố", icon: "man" },
-  { value: "Mẹ", icon: "woman" },
-  { value: "Anh/Chị", icon: "person" },
-  { value: "Em", icon: "child_care" },
-  { value: "Con", icon: "face" },
-  { value: "Bạn bè", icon: "group" },
-  { value: "Khác", icon: "more_horiz" },
+  { value: "Bố", icon: User },
+  { value: "Mẹ", icon: User },
+  { value: "Anh/Chị", icon: User },
+  { value: "Em", icon: Baby },
+  { value: "Con", icon: Smile },
+  { value: "Bạn bè", icon: Users },
+  { value: "Khác", icon: MoreHorizontal },
 ];
 
 const TAG_COLORS = [
@@ -135,80 +146,65 @@ const ProfileTagSelector: React.FC<ProfileTagSelectorProps> = ({
   };
 
   return (
-    <div ref={panelRef} className="relative">
+    <div ref={panelRef} className="relative w-full font-sans">
       {/* ── Compact Tag Display ── */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="flex items-center w-full gap-3 p-3 transition-all border group border-grid-line hover:border-primary/40 bg-background-dark"
+        className="flex items-center w-full gap-3 p-3 transition-all duration-300 border rounded-xl group border-slate-200 hover:border-blue-400 bg-white shadow-sm hover:shadow-md"
       >
         {/* Avatar circle */}
         <div
-          className="relative flex items-center justify-center overflow-hidden border-2 shrink-0 w-9 h-9"
-          style={{ borderColor: selectedProfile?.color || "#f2a60d" }}
+          className="relative flex items-center justify-center shrink-0 w-10 h-10 rounded-full border-2 transition-colors duration-300"
+          style={{ borderColor: selectedProfile?.color || "#3b82f6", backgroundColor: (selectedProfile?.color || "#3b82f6") + "15" }}
         >
-          {selectedProfile?.name ? (
-            <span
-              className="material-symbols-outlined text-[18px]"
-              style={{ color: selectedProfile?.color || "#f2a60d" }}
-            >
-              person
-            </span>
-          ) : (
-            <span
-              className="material-symbols-outlined text-[18px]"
-              style={{ color: selectedProfile?.color || "#f2a60d" }}
-            >
-              person
-            </span>
-          )}
+          <User size={18} style={{ color: selectedProfile?.color || "#3b82f6" }} />
           {/* Online dot */}
           <div
-            className="absolute w-2 h-2 border-2 rounded-full -bottom-0.5 -right-0.5 border-background-dark"
-            style={{
-              backgroundColor: selectedProfile?.color || "#f2a60d",
-            }}
+            className="absolute -bottom-0.5 -right-0.5 w-3 h-3 border-2 border-white rounded-full"
+            style={{ backgroundColor: selectedProfile?.color || "#3b82f6" }}
           />
         </div>
 
         {/* Profile info */}
         <div className="flex-1 min-w-0 text-left">
-          <p className="text-xs font-bold tracking-wide text-white truncate">
+          <p className="text-sm font-bold tracking-wide text-slate-800 truncate group-hover:text-blue-700 transition-colors">
             {selectedProfile?.name || "Chọn hồ sơ"}
           </p>
-          <p className="text-[9px] font-mono text-[#8a806d] tracking-wider uppercase">
+          <p className="text-[10px] font-semibold text-slate-500 tracking-wider uppercase">
             {selectedProfile?.id === "self" ? "Tôi" : "Người thân"}
           </p>
         </div>
 
-        <span
-          className={`material-symbols-outlined text-[16px] text-[#8a806d] group-hover:text-primary transition-all duration-200 ${
+        <ChevronDown
+          size={18}
+          className={`text-slate-400 group-hover:text-blue-500 transition-transform duration-300 ${
             isExpanded ? "rotate-180" : ""
           }`}
-        >
-          expand_more
-        </span>
+        />
       </button>
 
       <AnimatePresence>
         {isExpanded && (
           <motion.div
-            initial={{ opacity: 0, y: -8, height: 0 }}
-            animate={{ opacity: 1, y: 0, height: "auto" }}
-            exit={{ opacity: 0, y: -8, height: 0 }}
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="overflow-hidden border-t-0 border border-grid-line bg-background-dark"
+            className="absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl"
           >
             {/* ─ Profile List ─ */}
-            <div className="p-2 space-y-1 max-h-[200px] overflow-y-auto custom-scrollbar">
+            <div className="p-2 space-y-1 max-h-[220px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
               {profiles.map((profile) => {
                 const isSelected = selectedProfile?.id === profile.id;
+                const IconComp = RELATION_OPTIONS.find((r) => r.value === profile.name)?.icon || User;
+                
                 return (
                   <div
                     key={profile.id}
-                    className={`flex items-center gap-2.5 p-2 transition-all cursor-pointer group/item ${
+                    className={`flex items-center gap-3 p-2.5 rounded-lg transition-all cursor-pointer group/item ${
                       isSelected
-                        ? "bg-primary/10 border border-primary/30"
-                        : "hover:bg-white/5 border border-transparent"
+                        ? "bg-blue-50 border border-blue-200"
+                        : "hover:bg-slate-50 border border-transparent"
                     }`}
                     onClick={() => {
                       onSelectProfile(profile);
@@ -217,31 +213,21 @@ const ProfileTagSelector: React.FC<ProfileTagSelectorProps> = ({
                   >
                     {/* Mini avatar */}
                     <div
-                      className="flex items-center justify-center overflow-hidden border shrink-0 w-7 h-7"
-                      style={{ borderColor: profile.color }}
+                      className="flex items-center justify-center shrink-0 w-8 h-8 rounded-full border-2 transition-colors duration-300"
+                      style={{ borderColor: profile.color, backgroundColor: profile.color + "15" }}
                     >
-                      <span
-                        className="material-symbols-outlined text-[14px]"
-                        style={{ color: profile.color }}
-                      >
-                        {RELATION_OPTIONS.find((r) => r.value === profile.name)
-                          ?.icon || "person"}
-                      </span>
+                      <IconComp size={14} style={{ color: profile.color }} />
                     </div>
 
                     {/* Name & relation */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-[11px] font-bold text-white truncate tracking-wide">
+                      <p className={`text-xs font-bold truncate tracking-wide ${isSelected ? "text-blue-700" : "text-slate-700 group-hover/item:text-blue-600"}`}>
                         {profile.name}
                       </p>
                     </div>
 
                     {/* Selected check */}
-                    {isSelected && (
-                      <span className="material-symbols-outlined text-primary text-[14px]">
-                        check_circle
-                      </span>
-                    )}
+                    {isSelected && <Check size={16} className="text-blue-600" />}
 
                     {/* Delete (not for self) */}
                     {profile.id !== "self" && (
@@ -250,11 +236,9 @@ const ProfileTagSelector: React.FC<ProfileTagSelectorProps> = ({
                           e.stopPropagation();
                           handleDeleteProfile(profile.id);
                         }}
-                        className="opacity-0 group-hover/item:opacity-100 transition-opacity text-red-400/60 hover:text-red-400 p-0.5"
+                        className="opacity-0 group-hover/item:opacity-100 transition-opacity text-rose-500/60 hover:text-rose-500 p-1 rounded-md hover:bg-rose-50"
                       >
-                        <span className="material-symbols-outlined text-[14px]">
-                          close
-                        </span>
+                        <X size={14} />
                       </button>
                     )}
                   </div>
@@ -263,28 +247,26 @@ const ProfileTagSelector: React.FC<ProfileTagSelectorProps> = ({
             </div>
 
             {/* ─ Divider ─ */}
-            <div className="mx-2 border-t border-grid-line" />
+            <div className="mx-3 border-t border-slate-100" />
 
             {/* ─ Add New Button / Form ─ */}
             {!isAdding ? (
-              <button
+               <button
                 onClick={() => setIsAdding(true)}
-                className="flex items-center w-full gap-2 p-3 transition-colors text-[#8a806d] hover:text-primary hover:bg-white/5"
+                className="flex items-center justify-center w-full gap-2 px-4 py-3.5 transition-colors text-blue-600 hover:text-blue-700 hover:bg-blue-50"
               >
-                <span className="material-symbols-outlined text-[16px]">
-                  person_add
-                </span>
-                <span className="text-[10px] font-mono uppercase tracking-widest">
+                <UserPlus size={16} />
+                <span className="text-[11px] font-bold uppercase tracking-widest mt-0.5">
                   Thêm người thân
                 </span>
               </button>
             ) : (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="p-3 space-y-3"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                className="p-4 space-y-4 bg-slate-50 border-t border-slate-200"
               >
-                <p className="text-[9px] font-mono text-primary tracking-[0.2em] uppercase">
+                <p className="text-[10px] text-blue-600 font-bold tracking-widest uppercase">
                   ● Tạo hồ sơ mới
                 </p>
                 <div className="flex items-center gap-3">
@@ -294,49 +276,50 @@ const ProfileTagSelector: React.FC<ProfileTagSelectorProps> = ({
                       value={newName}
                       onChange={(e) => setNewName(e.target.value)}
                       placeholder="Tên người thân..."
-                      className="w-full px-3 py-2 text-xs font-bold tracking-wide text-white border outline-none bg-white/5 border-grid-line focus:border-primary placeholder:text-[#8a806d]/50"
+                      className="w-full px-3.5 py-2.5 text-sm font-semibold tracking-wide text-slate-800 rounded-lg border outline-none bg-white border-slate-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-slate-400 transition-all shadow-sm"
                       maxLength={20}
                     />
                   </div>
                 </div>
                 <div>
-                  <p className="text-[8px] font-mono text-[#8a806d] tracking-widest uppercase mb-1.5">
+                  <p className="text-[10px] font-semibold text-slate-500 tracking-wider uppercase mb-2">
                     Quan hệ
                   </p>
-                  <div className="flex flex-wrap gap-1">
-                    {RELATION_OPTIONS.map((opt) => (
-                      <button
-                        key={opt.value}
-                        onClick={() => setNewRelation(opt.value)}
-                        className={`flex items-center gap-1 px-2 py-1 text-[9px] font-mono tracking-wider border transition-all ${
-                          newRelation === opt.value
-                            ? "border-primary bg-primary/15 text-primary"
-                            : "border-grid-line text-[#8a806d] hover:border-white/20 hover:text-white/70"
-                        }`}
-                      >
-                        <span className="material-symbols-outlined text-[12px]">
-                          {opt.icon}
-                        </span>
-                        {opt.value}
-                      </button>
-                    ))}
+                  <div className="flex flex-wrap gap-1.5">
+                    {RELATION_OPTIONS.map((opt) => {
+                      const OptIcon = opt.icon;
+                      return (
+                        <button
+                          key={opt.value}
+                          onClick={() => setNewRelation(opt.value)}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-medium tracking-wide border transition-all ${
+                            newRelation === opt.value
+                              ? "border-blue-500 bg-blue-50 text-blue-700 shadow-sm"
+                              : "border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-white bg-slate-50"
+                          }`}
+                        >
+                          <OptIcon size={12} />
+                          {opt.value}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
                 {/* Color picker */}
                 <div>
-                  <p className="text-[8px] font-mono text-[#8a806d] tracking-widest uppercase mb-1.5">
+                  <p className="text-[10px] font-semibold text-slate-500 tracking-wider uppercase mb-2">
                     Màu nhận diện
                   </p>
-                  <div className="flex gap-1.5">
+                  <div className="flex gap-2">
                     {TAG_COLORS.map((color) => (
                       <button
                         key={color}
                         onClick={() => setNewColor(color)}
-                        className={`w-5 h-5 transition-all ${
+                        className={`w-6 h-6 rounded-full transition-all duration-300 ${
                           newColor === color
-                            ? "ring-2 ring-white ring-offset-1 ring-offset-background-dark scale-110"
-                            : "opacity-60 hover:opacity-100"
+                            ? "ring-2 ring-white ring-offset-2 ring-offset-slate-100 scale-110 shadow-md"
+                            : "opacity-40 hover:opacity-100 hover:scale-105"
                         }`}
                         style={{ backgroundColor: color }}
                       />
@@ -345,17 +328,17 @@ const ProfileTagSelector: React.FC<ProfileTagSelectorProps> = ({
                 </div>
 
                 {/* Action buttons */}
-                <div className="flex gap-2 pt-1">
+                <div className="flex gap-3 pt-2">
                   <button
                     onClick={resetForm}
-                    className="flex-1 h-8 text-[10px] font-mono uppercase tracking-wider border border-grid-line text-[#8a806d] hover:text-white hover:border-white/30 transition-all"
+                    className="flex-1 h-10 rounded-lg text-xs font-bold uppercase tracking-wider border border-slate-300 text-slate-600 hover:text-slate-800 hover:bg-white transition-all active:scale-[0.98] shadow-sm"
                   >
                     Huỷ
                   </button>
                   <button
                     onClick={handleAddProfile}
                     disabled={!newName.trim()}
-                    className="flex-1 h-8 text-[10px] font-mono uppercase tracking-wider bg-primary text-background-dark font-bold hover:bg-primary/90 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="flex-1 h-10 rounded-lg text-xs font-bold uppercase tracking-wider bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                   >
                     Lưu
                   </button>

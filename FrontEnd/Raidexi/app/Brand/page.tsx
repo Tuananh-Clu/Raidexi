@@ -68,26 +68,26 @@ export default function Page() {
     setCurrentPage(1);
   };
   return (
-    <div>
+    <div className="bg-[#1a1510] min-h-screen font-sans">
       {BrandContexts.popUpSettings.isopened == true && (
-        <div className="fixed flex items-center justify-center w-full h-full pointer-events-none inset-1 z-400 backdrop-blur-2xl">
-          <div className="pointer-events-auto ">
+        <div className="fixed flex items-center justify-center w-full h-full pointer-events-none inset-1 z-[400] backdrop-blur-sm bg-black/40">
+          <div className="pointer-events-auto">
             <SizeCustomizer type="brand" />
           </div>
         </div>
       )}
       <NavBar />
       {isLoggedIn ? (
-        <main className="flex flex-col w-full gap-10 px-6 py-10 mx-auto grow max-w-350">
-          <section className="flex flex-col items-start justify-between gap-6 pb-6 border-b md:flex-row md:items-end border-border-sepia">
+        <main className="flex flex-col w-full gap-8 px-4 sm:px-6 lg:px-8 py-8 mx-auto grow max-w-7xl">
+          <section className="flex flex-col items-start justify-between gap-6 pb-6 border-b md:flex-row md:items-end border-border-subtle">
             <div className="max-w-2xl">
-              <h2 className="mb-2 text-4xl font-medium tracking-tight text-white md:text-5xl font-display">
+              <h2 className="mb-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
                 Brand Estimate
               </h2>
-              <p className="text-lg font-light text-text-muted font-display">
+              <p className="text-base text-text-muted leading-relaxed">
                 Manage your personal sizing profiles across partner
                 infrastructure.
-                <span className="block mt-1 font-mono text-xs tracking-wider uppercase text-primary">
+                <span className="block mt-2 font-mono text-xs font-semibold tracking-wider uppercase text-primary">
                   System Status: Online // V.2.0.4
                 </span>
               </p>
@@ -102,13 +102,13 @@ export default function Page() {
             counts={counts}
           />
 
-          <section className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <section className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {currentBrands.map((brand) => (
               <BrandCard key={brand.id} brand={brand} />
             ))}
             {filteredBrands.length === 0 && (
-              <div className="py-12 font-mono text-center border border-dashed col-span-full border-border-sepia text-text-muted">
-                NO BRANDS FOUND MATCHING CRITERIA
+              <div className="py-16 text-sm font-semibold text-center bg-surface-dark border border-dashed rounded-2xl col-span-full border-border-subtle text-text-muted">
+                Không tìm thấy thương hiệu phù hợp.
               </div>
             )}
           </section>

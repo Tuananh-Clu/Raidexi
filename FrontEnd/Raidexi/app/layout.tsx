@@ -31,7 +31,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <title>Raidexi - Đo lường cơ thể AI</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=JetBrains+Mono:wght@300;400;500;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
           rel="stylesheet"
         />
         <link
@@ -40,13 +40,25 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
 
-      <body>
+      <body className="bg-[#1a1510] text-[#e0dcd5] font-sans antialiased selection:bg-[#e9be49] selection:text-[#1a1510]">
         <Script
           src="https://cdn.tailwindcss.com?plugins=forms,container-queries"
           strategy="afterInteractive"
         />
         {isLoading && <GlobalLoading note={note} />}
-        <Toaster position="top-right" />
+        <Toaster position="top-right" 
+          toastOptions={{
+            style: {
+              background: '#221c15',
+              color: '#e0dcd5',
+              border: '1px solid #383429',
+              fontFamily: 'Inter, sans-serif',
+              fontSize: '14px',
+              borderRadius: '12px',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)'
+            },
+          }} 
+        />
         <BodyMeasureEstimateProvider>
           <AuthProvider>
             <AISuggestSizeProvider>

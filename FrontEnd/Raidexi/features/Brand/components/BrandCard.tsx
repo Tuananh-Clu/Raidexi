@@ -19,44 +19,44 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand }) => {
     switch (status) {
       case BrandStatus.OPTIMIZED:
         return {
-          borderColor: 'group-hover:border-primary/50',
+          borderColor: 'group-hover:border-primary/60 group-hover:shadow-md group-hover:shadow-primary/5',
           statusColor: 'text-primary',
           statusIcon: 'verified',
-          statusText: 'Optimized',
+          statusText: 'Đã tối ưu',
           metricValueColor: 'text-white',
-          buttonStyles: 'border border-border-sepia hover:bg-primary hover:border-primary hover:text-background-dark text-text-paper',
-          buttonText: 'View Profile',
+          buttonStyles: 'border border-border-subtle hover:bg-primary/10 hover:border-primary/40 hover:text-primary text-text-muted bg-surface-dark shadow-sm',
+          buttonText: 'Xem hồ sơ',
           buttonIcon: 'arrow_forward',
           cornerTag: null,
           iconGrayscale: 'grayscale group-hover:grayscale-0'
         };
       case BrandStatus.RECALIBRATE:
         return {
-          borderColor: 'group-hover:border-danger',
-          statusColor: 'text-danger',
+          borderColor: 'group-hover:border-rose-500/60 group-hover:shadow-md group-hover:shadow-rose-500/5',
+          statusColor: 'text-rose-400',
           statusIcon: 'warning',
-          statusText: 'Recalibrate',
-          metricValueColor: 'text-danger',
-          buttonStyles: 'bg-danger/10 border border-danger hover:bg-danger text-danger hover:text-white',
-          buttonText: 'Fix Alignment',
+          statusText: 'Cần căn chỉnh',
+          metricValueColor: 'text-rose-400',
+          buttonStyles: 'bg-rose-500/10 border border-rose-500/30 hover:bg-rose-500/20 text-rose-400 shadow-sm',
+          buttonText: 'Sửa lỗi',
           buttonIcon: 'build',
           cornerTag: (
-            <div className="absolute top-0 right-0 w-0 h-0 border-t-[30px] border-t-danger border-l-[30px] border-l-transparent"></div>
+            <div className="absolute top-0 right-0 w-0 h-0 border-t-[30px] border-t-rose-500 border-l-[30px] border-l-transparent"></div>
           ),
           iconGrayscale: 'grayscale'
         };
       case BrandStatus.PENDING:
         return {
-          borderColor: 'group-hover:border-white/40',
-          statusColor: 'text-white',
+          borderColor: 'group-hover:border-border-brass group-hover:shadow-md',
+          statusColor: 'text-text-dim',
           statusIcon: 'pending',
-          statusText: 'Pending',
-          metricValueColor: 'text-white',
-          buttonStyles: 'border border-dotted border-text-muted hover:border-solid hover:border-white hover:bg-white/5 text-text-muted hover:text-white',
-          buttonText: brand.metricValue === '0/12' ? 'Initialize' : 'Resume Setup',
+          statusText: 'Đang chờ',
+          metricValueColor: 'text-text-dim',
+          buttonStyles: 'border border-dashed border-border-subtle hover:border-solid hover:border-primary/40 hover:bg-primary/5 text-text-dim hover:text-primary bg-surface-dark shadow-sm',
+          buttonText: brand.metricValue === '0/12' ? 'Bắt đầu' : 'Tiếp tục',
           buttonIcon: 'edit',
           cornerTag: null,
-          iconGrayscale: 'grayscale'
+          iconGrayscale: 'grayscale opacity-50'
         };
     }
   };
@@ -65,40 +65,40 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand }) => {
 
   return (
     <>
-        <article className={`bg-surface-dark border border-border-sepia p-5 flex flex-col gap-4 group transition-colors relative overflow-hidden ${config.borderColor}`}>
+      <article className={`bg-surface-dark border border-border-subtle rounded-2xl p-6 flex flex-col gap-5 group transition-all duration-300 relative overflow-hidden shadow-sm ${config.borderColor}`}>
       {config.cornerTag}
       
       <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <div className={`w-10 h-10 bg-white/5 flex items-center justify-center border border-white/10 transition-all ${config.iconGrayscale}`}>
-            <img src={icon} alt={`${name} icon`} className="object-contain w-6 h-6" />
+        <div className="flex items-center gap-4">
+          <div className={`w-12 h-12 bg-[#2a241d] flex items-center justify-center border border-border-subtle rounded-xl transition-all duration-300 shadow-sm ${config.iconGrayscale}`}>
+            <img src={icon} alt={`${name} icon`} className="object-contain w-7 h-7" />
           </div>
           <div>
-            <h3 className="text-lg font-bold leading-none">{name}</h3>
-            <span className="font-mono text-xs text-text-muted">{refCode}</span>
+            <h3 className="text-lg font-bold text-white leading-tight mb-1">{name}</h3>
+            <span className="font-mono text-[10px] font-semibold tracking-wider text-text-dim uppercase">{refCode}</span>
           </div>
         </div>
-        <span className={`material-symbols-outlined ${status === BrandStatus.PENDING ? 'text-text-muted' : config.statusColor}`} title={config.statusText}>
+        <span className={`material-symbols-outlined text-[20px] ${status === BrandStatus.PENDING ? 'text-text-dim' : config.statusColor}`} title={config.statusText}>
           {config.statusIcon}
         </span>
       </div>
 
-      <div className="w-full h-px my-1 bg-border-sepia/50"></div>
+      <div className="w-full h-px bg-border-subtle my-1"></div>
 
-      <div className="grid grid-cols-2 font-mono text-xs gap-y-2">
-        <span className="text-text-muted">Status:</span>
-        <span className={`${config.statusColor} text-right uppercase`}>{config.statusText}</span>
+      <div className="grid grid-cols-2 font-mono text-[11px] gap-y-3 font-medium">
+        <span className="text-text-dim tracking-wider">Status:</span>
+        <span className={`${config.statusColor} font-bold text-right uppercase tracking-wider`}>{config.statusText}</span>
         
-        <span className="text-text-muted">Last Sync:</span>
-        <span className={`${lastSync === '--' ? 'text-text-muted' : 'text-white'} text-right`}>{lastSync}</span>
+        <span className="text-text-dim tracking-wider">Last Sync:</span>
+        <span className={`${lastSync === '--' ? 'text-text-dim' : 'text-text-secondary font-bold'} text-right`}>{lastSync}</span>
         
-        <span className="text-text-muted">{metricLabel}:</span>
-        <span className={`${config.metricValueColor} text-right`}>{metricValue}</span>
+        <span className="text-text-dim tracking-wider">{metricLabel}:</span>
+        <span className={`${config.metricValueColor} font-bold text-right`}>{metricValue}</span>
       </div>
 
-      <div className="pt-2 mt-auto">
-        <button onClick={handleClick} className={`w-full h-9 uppercase text-xs font-bold tracking-wider font-mono transition-all flex items-center justify-center gap-2 ${config.buttonStyles}`}>
-          <h1 className=''>Estimate Brand</h1>
+      <div className="pt-3 mt-auto border-t border-border-subtle">
+        <button onClick={handleClick} className={`w-full h-10 rounded-xl uppercase text-xs font-bold tracking-wider transition-all flex items-center justify-center gap-2 ${config.buttonStyles}`}>
+          <span>{config.buttonText}</span>
           <span className="material-symbols-outlined !text-[16px]">{config.buttonIcon}</span>
         </button>
       </div>

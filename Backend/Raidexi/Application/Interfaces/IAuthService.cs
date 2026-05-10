@@ -12,14 +12,14 @@ namespace Raidexi.Application.Interfaces
         Task<AuthResult> LoginWithFirebase(string token);
         Task LogOut();
         Task SaveMeaure(MeasureData data);
-        Task SaveCustomProfile(SaveMeasureCustomDataList data);
+     
         Task<SaveMeasureDataDto> GetMeasureForUser(string id);
         Task SaveBrandMeasure( DataBrand resultAnalysis);
         Task<DataBrandAnalysisResult> GetDataBrandAnalysisAsync();
 
         Task<List<SaveMeasureCustomDataList>> GetCustomProfileForUser();
         Task UpdateCustomProfile(SaveMeasureCustomDataList data);
-
+        Task SaveCustomProfile(SaveMeasureCustomDataList data);
 
     }
     public class AuthResult

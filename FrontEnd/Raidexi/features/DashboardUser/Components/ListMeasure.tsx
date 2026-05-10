@@ -77,7 +77,7 @@ export const ListMeasure = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
           />
 
           {/* Panel wrapper */}
@@ -87,56 +87,49 @@ export const ListMeasure = ({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.97 }}
               transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
-              className="relative pointer-events-auto w-full max-w-5xl flex flex-col bg-[#0d0a08] border border-[#2e1f14] shadow-[0_0_0_1px_#1a0e07,0_40px_100px_rgba(0,0,0,0.9)]"
+              className="relative pointer-events-auto w-full max-w-5xl flex flex-col bg-surface-dark border border-border-subtle shadow-2xl rounded-2xl overflow-hidden font-sans"
             >
-              {/* Corner ornaments */}
-              <span className="absolute -top-px -left-px w-5 h-5 border-t-2 border-l-2 border-[#c87832] pointer-events-none" />
-              <span className="absolute -top-px -right-px w-5 h-5 border-t-2 border-r-2 border-[#c87832] pointer-events-none" />
-              <span className="absolute -bottom-px -left-px w-5 h-5 border-b-2 border-l-2 border-[#c87832] pointer-events-none" />
-              <span className="absolute -bottom-px -right-px w-5 h-5 border-b-2 border-r-2 border-[#c87832] pointer-events-none" />
-
               {/* Close button */}
               <motion.button
                 onClick={onClose}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="absolute -top-11 right-0 md:top-0 md:-right-11 z-[60] w-10 h-10 flex items-center justify-center bg-[#c87832] text-[#0d0a08] hover:bg-[#e09040] transition-colors"
+                className="absolute top-4 right-4 z-[60] w-8 h-8 rounded-full flex items-center justify-center bg-[#2a241d] text-text-dim hover:bg-surface-hover hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-primary outline-none"
               >
                 <X size={18} strokeWidth={2.5} />
               </motion.button>
 
               {/* ── Header ── */}
-              <header className="px-7 pt-6 pb-5 border-b border-[#1e140c] flex-shrink-0">
+              <header className="px-7 pt-6 pb-5 border-b border-border-subtle flex-shrink-0 bg-[#15120e]">
                 <div className="flex items-start justify-between">
                   {/* Left: title */}
                   <div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <Shield size={10} className="text-[#c87832]" strokeWidth={1.5} />
-                      <span className="font-mono text-[9px] tracking-[0.22em] text-[#4a3325] uppercase">
-                        RAIDEXI_SYSTEM // SECURE_ACCESS_GRANTED
+                    <div className="flex items-center gap-2 mb-2">
+                      <Shield size={14} className="text-primary" strokeWidth={2} />
+                      <span className="font-mono text-[10px] tracking-[0.2em] font-semibold text-text-dim uppercase">
+                        Hồ sơ đo lường cá nhân
                       </span>
-                      <span className="w-[5px] h-[5px] rounded-full bg-[#c87832] animate-pulse" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                     </div>
                     <h1
-                      className="font-bold italic text-[#f0e0c8] text-2xl leading-none tracking-tight"
-                      style={{ fontFamily: "'Playfair Display', serif" }}
+                      className="font-bold text-white text-2xl tracking-tight"
                     >
-                      Measurement History{" "}
-                      <em className="text-[#c87832]">Archive</em>
+                      Lịch sử đo lường{" "}
+                      <span className="text-primary font-light">Archive</span>
                     </h1>
                   </div>
 
                   {/* Right: stats */}
-                  <div className="flex items-center gap-6">
+                  <div className="hidden sm:flex items-center gap-8 mr-12">
                     {[
-                      { label: "RECORDS", value: activeRecordCount },
-                      { label: "INTEGRITY", value: "100%" },
+                      { label: "Bản ghi", value: activeRecordCount },
+                      { label: "Độ chính xác", value: "100%" },
                     ].map(({ label, value }) => (
                       <div key={label} className="text-right">
-                        <div className="font-mono text-xl font-semibold text-[#c87832] leading-none">
+                        <div className="text-xl font-bold text-primary leading-none">
                           {value}
                         </div>
-                        <div className="font-mono text-[8px] text-[#4a3325] tracking-[0.2em] mt-1 uppercase">
+                        <div className="text-[10px] font-semibold text-text-dim tracking-wider mt-1.5 uppercase">
                           {label}
                         </div>
                       </div>
@@ -144,20 +137,18 @@ export const ListMeasure = ({
                   </div>
                 </div>
 
-                {/* Gradient divider */}
-                <div className="mt-4 h-px bg-gradient-to-r from-[#c87832] via-[#2e1f14] to-transparent" />
-                <div className="flex gap-2 mt-4">
+                <div className="flex gap-2 mt-6">
                   {[
-                    { key: "self", label: "Ban than" },
-                    { key: "family", label: "Nguoi than" },
+                    { key: "self", label: "Bản thân" },
+                    { key: "family", label: "Người thân" },
                   ].map((tab) => (
                     <button
                       key={tab.key}
                       onClick={() => setActiveTab(tab.key as "self" | "family")}
-                      className={`px-4 py-2 font-mono text-[9px] font-bold tracking-[0.18em] uppercase border transition-colors ${
+                      className={`px-5 py-2 text-xs font-bold tracking-wide uppercase rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-primary outline-none ${
                         activeTab === tab.key
-                          ? "border-[#c87832] bg-[#c87832] text-[#0d0a08]"
-                          : "border-[#1e140c] text-[#7a5440] hover:border-[#c87832] hover:text-[#c87832]"
+                          ? "bg-primary text-background-dark shadow-sm"
+                          : "bg-surface-dark border border-border-subtle text-text-muted hover:border-primary/30 hover:text-primary"
                       }`}
                     >
                       {tab.label}
@@ -167,8 +158,8 @@ export const ListMeasure = ({
               </header>
 
               {/* ── Table ── */}
-              <div className={`overflow-x-auto overflow-y-auto max-h-80 flex-1 [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-track]:bg-[#0a0705] [&::-webkit-scrollbar-thumb]:bg-[#2e1f14] ${activeTab === "self" ? "" : "hidden"}`}>
-                <table className="w-full border-collapse table-fixed">
+              <div className={`overflow-x-auto overflow-y-auto max-h-80 flex-1 scrollbar-thin scrollbar-thumb-border-subtle scrollbar-track-transparent ${activeTab === "self" ? "" : "hidden"}`}>
+                <table className="w-full border-collapse table-fixed text-sm">
                   <colgroup>
                     <col className="w-[23%]" />
                     <col className="w-[11%]" />
@@ -180,11 +171,11 @@ export const ListMeasure = ({
                   </colgroup>
 
                   <thead>
-                    <tr className="bg-[#0a0705]">
+                    <tr className="bg-[#15120e]">
                       {COLS.map((col, i) => (
                         <th
                           key={col + i}
-                          className={`px-3.5 py-2.5 font-mono text-[8.5px] tracking-[0.18em] text-[#4a3325] uppercase border-b border-[#1a100a] font-normal whitespace-nowrap ${
+                          className={`px-5 py-3 text-[11px] font-semibold tracking-wider text-text-dim uppercase border-b border-border-subtle whitespace-nowrap ${
                             i === COLS.length - 1 ? "text-right" : "text-left"
                           }`}
                         >
@@ -201,13 +192,13 @@ export const ListMeasure = ({
                         initial={{ opacity: 0, x: -6 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.05, duration: 0.28, ease: "easeOut" }}
-                        className="border-b border-[#150e09] hover:bg-[#1a0e08] transition-colors"
+                        className="border-b border-border-subtle hover:bg-surface-hover transition-colors"
                       >
                         {/* Timestamp */}
-                        <td className="px-3.5 py-3.5">
-                          <div className="flex items-center gap-2">
-                            <Clock size={9} className="text-[#3a2518]" strokeWidth={1.5} />
-                            <span className="font-mono text-[11px] text-[#7a5440] tracking-[0.06em]">
+                        <td className="px-5 py-4">
+                          <div className="flex items-center gap-2.5">
+                            <Clock size={14} className="text-text-dim" strokeWidth={2} />
+                            <span className="font-mono text-xs font-medium text-text-muted">
                               {record.lastUpdate}
                             </span>
                           </div>
@@ -222,32 +213,31 @@ export const ListMeasure = ({
                               record.dataMeasure.hip,
                               record.dataMeasure.height,
                             ] as (number | undefined)[]).map((val, vi) => (
-                              <td key={vi} className="px-3.5 py-3.5">
-                                <span className="font-mono text-[13px] font-semibold text-[#f0e0c8] tracking-[0.04em]">
+                              <td key={vi} className="px-5 py-4">
+                                <span className="font-mono text-[13px] font-semibold text-white">
                                   {val ?? "—"}
                                 </span>
                               </td>
                             ))}
                           </>
                         ) : (
-                          <td colSpan={13} className="px-3.5 py-3.5">
-                            <span className="font-mono text-[9px] text-[#2e1f14] tracking-[0.2em] uppercase">
-                              — no_data_available —
+                          <td colSpan={5} className="px-5 py-4">
+                            <span className="text-xs font-medium text-text-dim italic">
+                              Chưa có dữ liệu
                             </span>
                           </td>
                         )}
 
                         {/* Actions */}
-                        <td className="px-3.5 py-3.5 text-right">
-                          <div className="flex items-center justify-end gap-1.5">
+                        <td className="px-5 py-4 text-right">
+                          <div className="flex items-center justify-end gap-2">
                             {[
-                              { label: "GET", icon: <Eye size={9} /> },
-                              { label: "PRINT", icon: <Printer size={9} /> },
+                              { label: "Xem", icon: <Eye size={12} /> },
                             ].map(({ label, icon }) => (
                               <button
-                              onClick={() => context.setDataMeasured?.([record])}
+                                onClick={() => context.setDataMeasured?.([record])}
                                 key={label}
-                                className="inline-flex items-center gap-1 px-2.5 py-1 font-mono text-[8.5px] tracking-[0.14em] font-semibold uppercase border border-[#1e140c] text-[#4a3325] hover:border-[#c87832] hover:bg-[#c87832] hover:text-[#0d0a08] transition-all duration-150 cursor-pointer"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase rounded-md border border-border-subtle text-text-muted hover:border-primary/40 hover:bg-primary/5 hover:text-primary transition-all duration-150 focus-visible:ring-2 focus-visible:ring-primary outline-none"
                               >
                                 {icon}
                                 {label}
@@ -262,8 +252,8 @@ export const ListMeasure = ({
               </div>
 
               {activeTab === "family" && (
-                <div className="overflow-x-auto overflow-y-auto max-h-80 flex-1 [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-track]:bg-[#0a0705] [&::-webkit-scrollbar-thumb]:bg-[#2e1f14]">
-                  <table className="w-full border-collapse table-fixed">
+                <div className="overflow-x-auto overflow-y-auto max-h-80 flex-1 scrollbar-thin scrollbar-thumb-border-subtle scrollbar-track-transparent">
+                  <table className="w-full border-collapse table-fixed text-sm">
                     <colgroup>
                       <col className="w-[23%]" />
                       <col className="w-[11%]" />
@@ -275,11 +265,11 @@ export const ListMeasure = ({
                     </colgroup>
 
                     <thead>
-                      <tr className="bg-[#0a0705]">
+                      <tr className="bg-[#15120e]">
                         {FAMILY_COLS.map((col, i) => (
                           <th
                             key={col + i}
-                            className={`px-3.5 py-2.5 font-mono text-[8.5px] tracking-[0.18em] text-[#4a3325] uppercase border-b border-[#1a100a] font-normal whitespace-nowrap ${
+                            className={`px-5 py-3 text-[11px] font-semibold tracking-wider text-text-dim uppercase border-b border-border-subtle whitespace-nowrap ${
                               i === FAMILY_COLS.length - 1 ? "text-right" : "text-left"
                             }`}
                           >
@@ -292,9 +282,9 @@ export const ListMeasure = ({
                     <tbody>
                       {isFamilyLoading ? (
                         Array.from({ length: 3 }).map((_, idx) => (
-                          <tr key={idx} className="border-b border-[#150e09]">
-                            <td colSpan={7} className="px-3.5 py-4">
-                              <div className="h-4 w-full animate-pulse bg-[#1a100a]" />
+                          <tr key={idx} className="border-b border-border-subtle">
+                            <td colSpan={7} className="px-5 py-5">
+                              <div className="h-4 w-full animate-pulse bg-surface-hover rounded" />
                             </td>
                           </tr>
                         ))
@@ -305,20 +295,20 @@ export const ListMeasure = ({
                             initial={{ opacity: 0, x: -6 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: idx * 0.05, duration: 0.28, ease: "easeOut" }}
-                            className="border-b border-[#150e09] hover:bg-[#1a0e08] transition-colors"
+                            className="border-b border-border-subtle hover:bg-surface-hover transition-colors"
                           >
-                            <td className="px-3.5 py-3.5">
-                              <div className="flex items-center gap-2">
+                            <td className="px-5 py-4">
+                              <div className="flex items-center gap-3">
                                 <span
-                                  className="h-2.5 w-2.5 rounded-full border border-[#1a100a]"
+                                  className="h-3 w-3 rounded-full shadow-sm"
                                   style={{ backgroundColor: profile.color }}
                                 />
                                 <div className="min-w-0">
-                                  <span className="block font-mono text-[12px] font-semibold text-[#f0e0c8] truncate">
+                                  <span className="block text-sm font-semibold text-white truncate">
                                     {profile.name}
                                   </span>
-                                  <span className="font-mono text-[8px] tracking-[0.14em] uppercase text-[#4a3325]">
-                                    {profile.dataMeasure ? "has_measure" : "no_measure"}
+                                  <span className="text-[10px] font-medium text-text-dim uppercase mt-0.5 block">
+                                    {profile.dataMeasure ? "Có dữ liệu" : "Chưa có dữ liệu"}
                                   </span>
                                 </div>
                               </div>
@@ -333,38 +323,38 @@ export const ListMeasure = ({
                                   profile.dataMeasure.hip,
                                   profile.dataMeasure.height,
                                 ] as (number | undefined)[]).map((val, vi) => (
-                                  <td key={vi} className="px-3.5 py-3.5">
-                                    <span className="font-mono text-[13px] font-semibold text-[#f0e0c8] tracking-[0.04em]">
+                                  <td key={vi} className="px-5 py-4">
+                                    <span className="font-mono text-[13px] font-semibold text-white">
                                       {val ?? "--"}
                                     </span>
                                   </td>
                                 ))}
                               </>
                             ) : (
-                              <td colSpan={5} className="px-3.5 py-3.5">
-                                <span className="font-mono text-[9px] text-[#2e1f14] tracking-[0.2em] uppercase">
-                                  -- no_data_available --
+                              <td colSpan={5} className="px-5 py-4">
+                                <span className="text-xs font-medium text-text-dim italic">
+                                  Chưa có dữ liệu
                                 </span>
                               </td>
                             )}
 
-                            <td className="px-3.5 py-3.5 text-right">
+                            <td className="px-5 py-4 text-right">
                               <button
                                 onClick={() => handleUseFamilyMeasure(profile)}
                                 disabled={!profile.dataMeasure}
-                                className="inline-flex items-center gap-1 px-2.5 py-1 font-mono text-[8.5px] tracking-[0.14em] font-semibold uppercase border border-[#1e140c] text-[#4a3325] hover:border-[#c87832] hover:bg-[#c87832] hover:text-[#0d0a08] transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-40"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase rounded-md border border-border-subtle text-text-muted hover:border-primary/40 hover:bg-primary/5 hover:text-primary transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-primary outline-none"
                               >
-                                <Eye size={9} />
-                                GET
+                                <Eye size={12} />
+                                Xem
                               </button>
                             </td>
                           </motion.tr>
                         ))
                       ) : (
                         <tr>
-                          <td colSpan={7} className="px-3.5 py-10 text-center">
-                            <span className="font-mono text-[9px] text-[#4a3325] tracking-[0.2em] uppercase">
-                              -- no_family_profiles --
+                          <td colSpan={7} className="px-5 py-10 text-center">
+                            <span className="text-sm text-text-dim">
+                              Chưa có hồ sơ người thân nào.
                             </span>
                           </td>
                         </tr>
@@ -375,38 +365,26 @@ export const ListMeasure = ({
               )}
 
               {activeTab === "self" && (
-                <div className="overflow-y-auto max-h-[420px] border-t border-[#1e140c] [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-track]:bg-[#0a0705] [&::-webkit-scrollbar-thumb]:bg-[#2e1f14]">
+                <div className="overflow-y-auto max-h-[420px] scrollbar-thin scrollbar-thumb-border-subtle scrollbar-track-transparent">
                   <AnalysisMeasure dataMeasurements={dataMeasured} />
                 </div>
               )}
 
-              <footer className="px-7 py-3 border-t border-[#1a100a] bg-[#0a0705] flex items-center justify-between flex-shrink-0">
+              <footer className="px-7 py-4 border-t border-border-subtle bg-[#15120e] flex items-center justify-between flex-shrink-0">
                 <div className="flex gap-7">
                   {[
-                    { k: "SESSION", v: "0XBF812" },
-                    { k: "ENCRYPTION", v: "AES-256" },
+                    { k: "PHIÊN BẢN", v: "1.0.0" },
+                    { k: "BẢO MẬT", v: "Tiêu chuẩn" },
                   ].map(({ k, v }) => (
                     <div key={k} className="flex items-center gap-2">
-                      <span className="font-mono text-[8px] text-[#3a2518] tracking-[0.15em] uppercase">
+                      <span className="text-[10px] font-semibold text-text-dim uppercase tracking-wider">
                         {k}:
                       </span>
-                      <span className="font-mono text-[8px] text-[#7a5440] tracking-[0.1em]">
+                      <span className="text-[10px] font-medium text-text-muted">
                         {v}
                       </span>
                     </div>
                   ))}
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <span className="font-mono text-[8px] text-[#3a2518] tracking-[0.15em]">
-                    PAGE 01 / 44
-                  </span>
-                  <div className="flex gap-1">
-                    <span className="w-1.5 h-0.5 bg-[#c87832]" />
-                    <span className="w-1.5 h-0.5 bg-[#1e140c]" />
-                    <span className="w-1.5 h-0.5 bg-[#1e140c]" />
-                  </div>
-                  <ChevronRight size={10} className="text-[#2e1f14]" />
                 </div>
               </footer>
             </motion.div>

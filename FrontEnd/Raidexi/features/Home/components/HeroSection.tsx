@@ -19,10 +19,10 @@ export const HeroSection: React.FC = () => {
               <span className="w-2 h-2 bg-primary animate-pulse"></span>
               <span className="font-mono text-xs tracking-widest uppercase" style={{ color: "var(--color-Background)" }}>Hệ thống Trực tuyến</span>
             </div>
-            <h2 className="text-5xl md:text-6xl font-medium leading-[1.1] tracking-tight text-white">
+            <h1 className="text-5xl md:text-6xl font-medium leading-[1.1] tracking-tight text-white">
               Đo lường cơ thể bạn. <br />
               <span style={{ color: "var(--color-Background)" }} className="italic ">Chính xác.</span>
-            </h2>
+            </h1>
             <p className="text-lg text-[#b8b19d] leading-relaxed max-w-md " >
               Số đo cơ thể chính xác được chuyển đổi thành kích cỡ cụ thể của từng thương hiệu. Loại bỏ sự mơ hồ khi đoán mò bằng dữ liệu khách quan.
             </p>

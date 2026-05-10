@@ -6,58 +6,63 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./Raidexi/**/*.{js,ts,jsx,tsx}",
+    "./features/**/*.{js,ts,jsx,tsx}",
+    "./Shared/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
       colors: {
-           gold: {
-                400: '#FACC15',
-                500: '#EAB308', 
-                600: '#CA8A04',
-                700: '#A16207',
-                accent: '#E6B325',
-              },
-              dark: {
-                900: '#0a0a0a',
-                800: '#121212',
-                700: '#1a1a1a',
-              }
-      },
+        /* ── Brand Gold ────────────────── */
         primary: "#f2a60d",
+        "primary-dark": "#d4a00f",
+
+        /* ── Surfaces ──────────────────── */
+        "background-dark": "#1a1510",
         "background-light": "#f8f7f5",
-        "background-dark": "#1a1612",
-        "surface-dark": "#262018",
-        "paper-white": "#e6e1d6",
+        "surface-dark": "#221c15",
+        "surface-hover": "#2a241d",
+        "surface-card": "#1e1914",
         "panel-bg": "#221c15",
         "panel-header": "#262018",
         "input-bg": "#1a1612",
-        "text-main": "#e0dcd5",
-        "text-dim": "#bab09c",
-        "text-dark": "#181611",
-        "border-subtle": "#383429",
-        "border-brass": "#544c3b",
-        "accent-brass": "#f2a60d",
-        "decor-dark": "#3a3429",
-        "surface-dark": "#231e18",
-        "surface-hover": "#2a241d",
-        "text-aged": "#e6e1d3",
-        "text-muted": "#9c9486",
-        "border-brass": "#5c4f3a",
         "terminal-black": "#13100c",
-        "border-dark": "#544d3b",
-        "surface-dark": "#2a2415",
-        "border-color": "#393328",
-        "border-highlight": "#544b3b",
+        "background-card": "#1e1914",
+
+        /* ── Text ──────────────────────── */
         "text-main": "#f2f0ed",
-        "text-muted": "#b9af9d",
-      
+        "text-secondary": "#e0dcd5",
+        "text-muted": "#b8b19d",
+        "text-dim": "#9c9486",
+        "text-dark": "#181611",
+        "text-aged": "#e6e1d3",
+        "paper-white": "#e6e1d6",
+
+        /* ── Borders ───────────────────── */
+        "border-subtle": "#383429",
+        "border-color": "#44402f",
+        "border-brass": "#544c3b",
+        "border-dark": "#544d3b",
+        "border-highlight": "#544b3b",
+        "border-retro": "#44402f",
+        "decor-dark": "#3a3429",
+
+        /* ── Accent ────────────────────── */
+        "accent-brass": "#f2a60d",
+
+        /* ── Gold Palette ──────────────── */
+        gold: {
+          400: "#FACC15",
+          500: "#EAB308",
+          600: "#CA8A04",
+          700: "#A16207",
+          accent: "#E6B325",
+        },
+      },
       fontFamily: {
         display: ["Newsreader", "serif"],
-        mono: ["JetBrains Mono", "monospace"],
-        sans: ["Noto Sans", "sans-serif"],
-        display: ["Newsreader", "serif"],
-        sans: ["Noto Sans", "sans-serif"],
+        sans: ["Inter", "Noto Sans", "sans-serif"],
         mono: [
+          "JetBrains Mono",
           "ui-monospace",
           "SFMono-Regular",
           "Menlo",
@@ -70,10 +75,13 @@ module.exports = {
       },
       borderRadius: {
         DEFAULT: "0px",
-        sm: "0px",
-        lg: "0px",
-        xl: "0px",
-        full: "0px",
+        sm: "2px",
+        md: "4px",
+        lg: "6px",
+        xl: "8px",
+        "2xl": "12px",
+        "3xl": "16px",
+        full: "9999px",
         none: "0px",
       },
       animation: {
