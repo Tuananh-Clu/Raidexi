@@ -41,7 +41,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   return (
-    <aside className="flex flex-col w-full gap-8 p-8 border-r no-print lg:w-80 bg-stone-900/50 border-stone-800 shrink-0">
+    <aside className="flex flex-col w-full gap-8 p-8 border-r no-print lg:w-80 bg-white border-stone-800 text-white shrink-0">
       <div>
         <h2 className="text-stone-500 font-mono text-xs uppercase tracking-[0.2em] mb-4">Export Format</h2>
         <div className="flex flex-col gap-1 p-1 border border-stone-800">
@@ -73,7 +73,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Email Form Panel */}
         {isEmailFormOpen && (
-          <div className="p-4 mt-4 duration-300 border border-stone-700 bg-stone-950/30 animate-in fade-in slide-in-from-top-2">
+          <div className="p-4 mt-4 duration-300 border border-stone-700 bg-white animate-in fade-in slide-in-from-top-2">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-stone-400 font-mono text-[10px] uppercase tracking-widest">Share Transmission</h3>
               <button onClick={() => setIsEmailFormOpen(false)} className="font-mono text-xs uppercase text-stone-600 hover:text-stone-400">
@@ -88,7 +88,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   value={data.to}
                   onChange={(e) => setData(prev => ({ ...prev, to: e.target.value }))}
                   placeholder="ENTER ADDRESS..." 
-                  className="w-full p-3 font-mono text-xs border rounded-none outline-none bg-stone-900 border-stone-800 text-paper focus:border-primary focus:ring-0 placeholder:text-stone-700"
+                  className="w-full p-3 font-mono text-xs border rounded-none outline-none bg-white border-stone-800 text-paper focus:border-primary focus:ring-0 placeholder:text-stone-700"
                 />
               </div>
               <div>
@@ -98,13 +98,13 @@ const Sidebar: React.FC<SidebarProps> = ({
                   value={data.body}
                   onChange={(e) => setData(prev => ({ ...prev, body: e.target.value }))}
                   placeholder="ENTER MESSAGE..." 
-                  className="w-full p-3 font-mono text-xs border rounded-none outline-none resize-none bg-stone-900 border-stone-800 text-paper focus:border-primary focus:ring-0 placeholder:text-stone-700"
+                  className="w-full p-3 font-mono text-xs border rounded-none outline-none resize-none bg-white border-stone-800 text-paper focus:border-primary focus:ring-0 placeholder:text-stone-700"
                 />
               </div>
               <button
                 onClick={handleSendEmail}
                 disabled={isSendingEmail}
-                className="w-full bg-stone-800 hover:bg-stone-700 text-primary border border-primary/30 px-4 py-2 text-[10px] font-mono font-bold tracking-widest uppercase transition-all"
+                className="w-full bg-white hover:bg-stone-700 text-black border border-primary/30 px-4 py-2 text-[10px] font-mono font-bold tracking-widest uppercase transition-all"
               >
                 {isSendingEmail ? 'SENDING...' : 'TRANSMIT DATA'}
               </button>

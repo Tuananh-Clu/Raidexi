@@ -1,80 +1,107 @@
 "use client";
 import React from 'react';
 import { motion } from 'framer-motion';
+import { CheckCircle2 } from 'lucide-react';
 
 export const CalibrationSection: React.FC = () => {
-  const steps = [
-    { letter: 'A', title: 'Chiếu hình trục', desc: 'Camera truyền thống làm sai lệch chiều sâu. Thuật toán của chúng tôi làm phẳng trường chụp, sửa lỗi méo phối cảnh để đảm bảo các phép đo chân tay được thực hiện trên một mặt phẳng đồng nhất.' },
-    { letter: 'B', title: 'Trích xuất khung xương', desc: 'Chúng tôi xác định 24 điểm khớp chính. Bằng cách đo khoảng cách vector giữa các điểm xương ổn định thay vì diện tích bề mặt phần mềm, sai số chỉ dưới 0.5cm.' },
-    { letter: 'C', title: 'Chuẩn hóa tham chiếu', desc: 'Các phép đo được tham chiếu chéo với đầu vào chiều cao đã biết hoặc đối tượng tham chiếu chuẩn (kích thước thẻ ISO 7810) để hiệu chỉnh tỷ lệ pixel sang milimet một cách linh hoạt.' }
+  const measurements = [
+    { label: 'Vai', value: '44.2', icon: '↔️' },
+    { label: 'Ngực', value: '96.0', icon: '🫁' },
+    { label: 'Eo', value: '78.5', icon: '⬤' },
+    { label: 'Hông', value: '98.0', icon: '⬤' },
+    { label: 'Chiều cao', value: '172.0', icon: '↕️' },
+    { label: 'Dài tay', value: '61.5', icon: '💪' },
+    { label: 'Đùi', value: '57.3', icon: '🦵' },
+    { label: 'Cổ', value: '38.0', icon: '🔵' },
+  ];
+
+  const benefits = [
+    'Không cần thước dây, chỉ cần camera',
+    'Đo 13 vị trí trong 5 giây',
+    'Chính xác đến ±0.5cm',
+    'Lưu trữ lịch sử số đo của bạn',
   ];
 
   return (
-    <section className="px-6 py-24 border-b border-border-subtle bg-background-dark">
-      <div className="mx-auto max-w-7xl">
-        <div className="pl-6 mb-16 border-l-2 border-primary">
-          <h2 className="mb-2 text-3xl font-medium text-white">Khoa học Hiệu chuẩn</h2>
-          <p className="text-[#b8b19d] text-lg font-light max-w-2xl">Chuyển đổi dữ liệu pixel thành kích thước vật lý bằng tỷ lệ tham chiếu.</p>
-        </div>
-        <div className="grid items-start gap-12 lg:grid-cols-2">
-          <div className="space-y-8">
-            {steps.map((step) => (
-              <div key={step.letter}>
-                <h3 className="flex items-center gap-3 mb-3 text-xl font-medium text-white">
-                  <span className="flex items-center justify-center w-8 h-8 font-mono text-xs border bg-surface-dark border-border-subtle text-primary">{step.letter}</span>
-                  {step.title}
-                </h3>
-                <p className="text-[#b8b19d] font-light leading-relaxed">
-                  {step.desc}
-                </p>
-              </div>
-            ))}
-          </div>
+    <section className="relative py-24 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-white via-[#f8fafc] to-[#f0f9ff]" />
 
-          {/* Custom Diagram */}
-          <div className="border border-border-subtle bg-surface-dark p-8 relative min-h-[400px] flex flex-col justify-between">
-            <div className="absolute inset-0 border-[0.5px] border-[#383429] m-4 pointer-events-none opacity-50"></div>
-            {/* Corner Markers */}
-            <div className="absolute top-0 left-0 w-4 h-4 m-4 border-t border-l border-primary"></div>
-            <div className="absolute top-0 right-0 w-4 h-4 m-4 border-t border-r border-primary"></div>
-            <div className="absolute bottom-0 left-0 w-4 h-4 m-4 border-b border-l border-primary"></div>
-            <div className="absolute bottom-0 right-0 w-4 h-4 m-4 border-b border-r border-primary"></div>
+      <div className="relative mx-auto max-w-7xl px-6">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
 
-            <div className="relative flex items-center justify-center flex-1">
-              <div className="relative w-32 h-64">
-                <motion.div
-                  initial={{ height: 0 }}
-                  whileInView={{ height: "100%" }}
-                  transition={{ duration: 1.5, ease: "easeInOut" }}
-                  className="absolute top-0 bottom-0 w-px -translate-x-1/2 left-1/2 bg-primary/30"
-                ></motion.div>
-                <motion.div
-                  initial={{ width: 0 }}
-                  whileInView={{ width: "100%" }}
-                  transition={{ duration: 1.5, ease: "easeInOut", delay: 0.5 }}
-                  className="absolute left-0 right-0 h-px top-8 bg-primary/30"
-                ></motion.div>
-                <motion.div
-                  initial={{ width: 0 }}
-                  whileInView={{ width: "100%" }}
-                  transition={{ duration: 1.5, ease: "easeInOut", delay: 1 }}
-                  className="absolute h-px bottom-24 left-4 right-4 bg-primary/30"
-                ></motion.div>
-                {/* Dots */}
-                <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} transition={{ delay: 0.5 }} className="absolute left-0 w-2 h-2 -translate-x-1/2 -translate-y-1/2 top-8 bg-primary"></motion.div>
-                <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} transition={{ delay: 0.5 }} className="absolute right-0 w-2 h-2 translate-x-1/2 -translate-y-1/2 top-8 bg-primary"></motion.div>
-                <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} transition={{ delay: 1 }} className="absolute w-2 h-2 -translate-x-1/2 translate-y-1/2 bottom-24 left-4 bg-primary"></motion.div>
-                <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} transition={{ delay: 1 }} className="absolute w-2 h-2 translate-x-1/2 translate-y-1/2 bottom-24 right-4 bg-primary"></motion.div>
-                {/* Labels */}
-                <div className="absolute top-4 -right-12 font-mono text-[10px] text-primary">d(x,y)</div>
-                <div className="absolute bottom-20 -left-12 font-mono text-[10px] text-primary">ref_scale</div>
+          {/* Left: What you actually get */}
+          <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.7 }}
+            className="flex flex-col gap-8">
+            <div>
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#ecfdf5] border border-[#bbf7d0] text-[#059669] text-xs font-semibold tracking-wider uppercase mb-5">
+                📐 Kết quả bạn nhận được
+              </span>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#0f172a] mb-4 leading-tight">
+                13 số đo cơ thể<br />
+                <span className="gradient-text">đầy đủ & chính xác</span>
+              </h2>
+              <p className="text-[#64748b] text-lg leading-relaxed">
+                Raidexi đo tất cả những gì bạn cần khi mua quần áo — từ vòng ngực, vòng eo, đến chiều dài tay và chân — tất cả chỉ từ một lần đứng trước camera.
+              </p>
+            </div>
+
+            {/* Benefits */}
+            <ul className="space-y-3">
+              {benefits.map((b) => (
+                <li key={b} className="flex items-center gap-3 text-[#334155] font-medium">
+                  <CheckCircle2 size={18} className="text-[#059669] flex-shrink-0" />
+                  {b}
+                </li>
+              ))}
+            </ul>
+
+            {/* Accuracy badge */}
+            <div className="flex items-center gap-4 p-5 rounded-2xl bg-gradient-to-r from-[#eff6ff] to-[#ecfeff] border border-[#bfdbfe]">
+              <div className="text-3xl font-black gradient-text">99.8%</div>
+              <div>
+                <p className="font-bold text-[#0f172a] text-sm">Độ chính xác</p>
+                <p className="text-xs text-[#64748b]">Được kiểm chứng trên 10,000+ lần đo</p>
               </div>
             </div>
-            <div className="mt-8 pt-4 border-t border-border-subtle flex justify-between font-mono text-xs text-[#534d3c]">
-              <span>HÌNH 2.4 - BẢN ĐỒ KHUNG XƯƠNG</span>
-              <span>TỶ LỆ: 1:12</span>
+          </motion.div>
+
+          {/* Right: Measurement card preview */}
+          <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.1 }}>
+            <div className="rounded-3xl bg-white border border-[#e2e8f0] shadow-xl shadow-[#2563eb]/5 overflow-hidden">
+              {/* Card header */}
+              <div className="px-6 py-4 bg-gradient-to-r from-[#f8fafc] to-[#eff6ff] border-b border-[#e2e8f0] flex items-center justify-between">
+                <span className="font-semibold text-sm text-[#0f172a]">Kết quả đo của bạn</span>
+                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#ecfdf5] text-[#059669] text-xs font-semibold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#059669] animate-pulse" />
+                  Hoàn tất
+                </span>
+              </div>
+
+              {/* Grid of measurements */}
+              <div className="p-6 grid grid-cols-2 gap-3">
+                {measurements.map((m, i) => (
+                  <motion.div key={m.label}
+                    initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }} transition={{ delay: 0.3 + i * 0.07 }}
+                    className="flex items-center gap-3 p-3.5 rounded-xl bg-[#f8fafc] border border-[#f1f5f9] hover:border-[#bfdbfe] hover:bg-[#eff6ff] transition-colors">
+                    <span className="text-lg">{m.icon}</span>
+                    <div>
+                      <p className="text-[11px] text-[#94a3b8] font-medium">{m.label}</p>
+                      <p className="text-sm font-bold text-[#0f172a]">{m.value} <span className="text-xs text-[#94a3b8] font-normal">cm</span></p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Footer note */}
+              <div className="px-6 pb-5 flex items-center gap-2 text-xs text-[#94a3b8]">
+                <CheckCircle2 size={12} className="text-[#059669]" />
+                Đã lưu vào hồ sơ · 11/05/2026
+              </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

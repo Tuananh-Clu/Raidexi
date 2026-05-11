@@ -4,15 +4,16 @@ import { motion } from "framer-motion";
 
 export default function LoadingScreen({ note }: { note: string }) {
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-500 bg-gradient-to-br from-black/50 via-orange-950/30 to-black/50 backdrop-blur-md">
+    <div className="fixed inset-0 flex items-center justify-center z-500 bg-white/60 backdrop-blur-xl">
       <motion.div
         className="relative flex flex-col items-center justify-center gap-6"
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
       >
+        {/* Glow background */}
         <motion.div
-          className="absolute w-40 h-40 rounded-full bg-gradient-to-r from-orange-500/30 via-amber-500/30 to-orange-600/30 blur-2xl"
+          className="absolute w-40 h-40 rounded-full bg-gradient-to-r from-[#2563eb]/20 via-[#06b6d4]/20 to-[#2563eb]/20 blur-2xl"
           animate={{ 
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3]
@@ -24,10 +25,13 @@ export default function LoadingScreen({ note }: { note: string }) {
           }}
         />
 
+        {/* Spinner */}
         <div className="relative w-24 h-24">
           <motion.div
-            className="absolute inset-0 rounded-full border-[3px] border-transparent bg-gradient-to-r from-orange-500 via-amber-400 to-orange-500 bg-clip-border"
+            className="absolute inset-0 rounded-full border-[3px] border-transparent"
             style={{
+              borderImage: 'linear-gradient(135deg, #2563eb, #06b6d4) 1',
+              borderRadius: '9999px',
               maskImage: "linear-gradient(to bottom right, transparent 40%, black 60%)",
               WebkitMaskImage: "linear-gradient(to bottom right, transparent 40%, black 60%)"
             }}
@@ -37,10 +41,17 @@ export default function LoadingScreen({ note }: { note: string }) {
               duration: 1.2, 
               ease: "linear" 
             }}
-          />
+          >
+            <div className="absolute inset-0 rounded-full border-[3px] border-transparent bg-gradient-to-r from-[#2563eb] via-[#06b6d4] to-[#2563eb] bg-clip-border" 
+              style={{
+                maskImage: "linear-gradient(to bottom right, transparent 40%, black 60%)",
+                WebkitMaskImage: "linear-gradient(to bottom right, transparent 40%, black 60%)"
+              }}
+            />
+          </motion.div>
 
           <motion.div
-            className="absolute inset-3 rounded-full border-[2.5px] border-transparent bg-gradient-to-l from-amber-400 via-orange-300 to-amber-400 bg-clip-border"
+            className="absolute inset-3 rounded-full border-[2.5px] border-transparent bg-gradient-to-l from-[#06b6d4] via-[#2563eb] to-[#06b6d4] bg-clip-border"
             style={{
               maskImage: "linear-gradient(to top left, transparent 40%, black 60%)",
               WebkitMaskImage: "linear-gradient(to top left, transparent 40%, black 60%)"
@@ -52,8 +63,10 @@ export default function LoadingScreen({ note }: { note: string }) {
               ease: "linear" 
             }}
           />
+          
+          {/* Center dot */}
           <motion.div
-            className="absolute inset-0 w-3 h-3 m-auto rounded-full shadow-lg bg-gradient-to-br from-orange-400 to-amber-500 shadow-orange-500/50"
+            className="absolute inset-0 w-3 h-3 m-auto rounded-full shadow-lg bg-gradient-to-br from-[#2563eb] to-[#06b6d4] shadow-[#2563eb]/30"
             animate={{ 
               scale: [1, 1.5, 1],
               opacity: [1, 0.7, 1]
@@ -65,10 +78,11 @@ export default function LoadingScreen({ note }: { note: string }) {
             }}
           />
 
+          {/* Orbiting dots */}
           {[0, 120, 240].map((rotation, i) => (
             <motion.div
               key={i}
-              className="absolute w-1.5 h-1.5 bg-orange-400 rounded-full shadow-sm shadow-orange-400"
+              className="absolute w-1.5 h-1.5 bg-[#06b6d4] rounded-full shadow-sm shadow-[#06b6d4]"
               style={{
                 top: "50%",
                 left: "50%",
@@ -88,14 +102,16 @@ export default function LoadingScreen({ note }: { note: string }) {
             />
           ))}
         </div>
+        
+        {/* Label */}
         <motion.div
-          className="px-6 py-2 mt-8 border rounded-full bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-orange-500/10 border-orange-500/20 backdrop-blur-sm"
+          className="px-6 py-2.5 mt-8 rounded-2xl bg-gradient-to-r from-[#2563eb]/5 via-[#06b6d4]/5 to-[#2563eb]/5 border border-[#2563eb]/10 backdrop-blur-sm"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
           <motion.p
-            className="text-sm font-semibold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-orange-400"
+            className="text-sm font-semibold tracking-wider gradient-text"
             animate={{ 
               backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
             }}
@@ -111,8 +127,10 @@ export default function LoadingScreen({ note }: { note: string }) {
             {note}
           </motion.p>
         </motion.div>
+        
+        {/* Bottom glow */}
         <motion.div
-          className="absolute w-32 h-1 rounded-full -bottom-8 bg-gradient-to-r from-transparent via-orange-500/40 to-transparent blur-sm"
+          className="absolute w-32 h-1 rounded-full -bottom-8 bg-gradient-to-r from-transparent via-[#2563eb]/30 to-transparent blur-sm"
           animate={{ 
             opacity: [0.3, 0.6, 0.3],
             scaleX: [0.8, 1.2, 0.8]

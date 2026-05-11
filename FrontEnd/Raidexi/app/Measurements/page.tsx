@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import  { useContext, useState } from "react";
 import { MeasurementData, SystemStatus } from "../../features/Camera/types";
 import ControlPanel from "@/features/Camera/components/ControlPanel";
@@ -44,7 +44,7 @@ export function Page() {
   const [status] = useState<SystemStatus>(INITIAL_STATUS);
 
   return (
-    <div className="flex flex-col w-full h-screen overflow-hidden bg-[#1a1510] font-sans">
+    <div className="flex flex-col w-full h-screen overflow-hidden bg-[#f8fafc] font-sans">
       <NavBar />
       <h1 className="sr-only">Đo lường cơ thể bằng AI</h1>
 

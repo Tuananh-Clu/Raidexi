@@ -1,4 +1,4 @@
-import  { useContext, useState } from "react";
+﻿import  { useContext, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Gender, ProductType, SizeSystem } from "../types";
 import { BrandContext } from "@/provider/BrandProvider";
@@ -74,7 +74,7 @@ export const SizeCustomizer = ({type}:{type: string}) => {
           ${
             isSelected
               ? "bg-primary/15 text-primary border-primary/50 shadow-sm"
-              : "bg-surface-dark text-text-dim border-border-subtle hover:border-primary/30 hover:text-primary hover:bg-primary/5"
+              : "bg-white text-[#94a3b8] border-border-subtle hover:border-primary/30 hover:text-primary hover:bg-primary/5"
           }
         `}
       >
@@ -89,14 +89,14 @@ export const SizeCustomizer = ({type}:{type: string}) => {
   };
 
   return (
-    <div className="relative w-full max-w-2xl p-1 bg-[#1a1510]/95 backdrop-blur-md rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.4)]">
+    <div className="relative w-full max-w-2xl p-1 bg-[#f8fafc]/95 backdrop-blur-md rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.4)]">
       <div className="absolute w-4 h-4 border-t-2 border-l-2 -top-1 -left-1 border-primary rounded-tl-lg" />
       <div className="absolute w-4 h-4 border-t-2 border-r-2 -top-1 -right-1 border-primary rounded-tr-lg" />
       <div className="absolute w-4 h-4 border-b-2 border-l-2 -bottom-1 -left-1 border-primary rounded-bl-lg" />
       <div className="absolute w-4 h-4 border-b-2 border-r-2 -bottom-1 -right-1 border-primary rounded-br-lg" />
 
       <div
-        className="relative p-8 border md:p-10 border-border-subtle bg-surface-dark rounded-2xl shadow-sm"
+        className="relative p-8 border md:p-10 border-border-subtle bg-white rounded-2xl shadow-sm"
         style={{
           backgroundImage: `
             linear-gradient(to right, rgba(242, 166, 13, 0.03) 1px, transparent 1px),
@@ -106,10 +106,10 @@ export const SizeCustomizer = ({type}:{type: string}) => {
         }}
       >
         <div className="mb-10 space-y-3 text-center">
-          <h2 className="font-mono text-3xl font-bold tracking-wide uppercase md:text-4xl text-white">
+          <h2 className="font-mono text-3xl font-bold tracking-wide uppercase md:text-4xl text-[#0f172a]">
             Tùy chỉnh kết quả định cỡ
           </h2>
-          <p className="text-[10px] md:text-xs text-text-dim font-semibold uppercase tracking-[0.2em]">
+          <p className="text-[10px] md:text-xs text-[#94a3b8] font-semibold uppercase tracking-[0.2em]">
             Thiết lập thông số để AI đề xuất size chính xác
           </p>
         </div>
@@ -184,7 +184,7 @@ export const SizeCustomizer = ({type}:{type: string}) => {
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold tracking-widest uppercase text-white group-hover:text-primary">
+                <p className="text-xs font-bold tracking-widest uppercase text-[#0f172a] group-hover:text-primary">
                   Bảng đo gần nhất
                 </p>
               </div>
@@ -200,7 +200,7 @@ export const SizeCustomizer = ({type}:{type: string}) => {
           <div className="flex gap-4 pt-6">
             <button
               onClick={onClose}
-              className="flex-1 px-6 py-3.5 text-sm font-bold tracking-wider uppercase transition-all bg-surface-dark border border-border-subtle rounded-xl text-text-muted hover:bg-surface-hover hover:text-white shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              className="flex-1 px-6 py-3.5 text-sm font-bold tracking-wider uppercase transition-all bg-white border border-border-subtle rounded-xl text-text-muted hover:bg-[#f1f5f9] hover:text-[#0f172a] shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               Hủy bỏ
             </button>

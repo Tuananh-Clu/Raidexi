@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ProfileTag } from "../types";
@@ -26,7 +26,7 @@ const RELATION_OPTIONS = [
 ];
 
 const TAG_COLORS = [
-  "#f2a60d",
+  "#2563eb",
   "#4ade80",
   "#60a5fa",
   "#f472b6",
@@ -52,7 +52,7 @@ const ProfileTagSelector: React.FC<ProfileTagSelectorProps> = ({
   const DEFAULT_PROFILES: ProfileTag[] = [{
     id: "self",
     name: "Bản thân",
-    color: "#f2a60d",
+    color: "#2563eb",
     dataMeasure: null,
   }];
 
@@ -338,7 +338,7 @@ const ProfileTagSelector: React.FC<ProfileTagSelectorProps> = ({
                   <button
                     onClick={handleAddProfile}
                     disabled={!newName.trim()}
-                    className="flex-1 h-10 rounded-lg text-xs font-bold uppercase tracking-wider bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+                    className="flex-1 h-10 rounded-lg text-xs font-bold uppercase tracking-wider bg-blue-600 text-[#0f172a] hover:bg-blue-700 shadow-md hover:shadow-lg transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                   >
                     Lưu
                   </button>

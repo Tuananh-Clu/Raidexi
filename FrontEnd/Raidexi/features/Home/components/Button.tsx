@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 
 import { useRouterService } from '@/Shared/Service/routerService';
@@ -10,11 +10,11 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button: React.FC<ButtonProps> = ({ variant = 'primary', navigation, className = '', children, ...props }) => {
-  const baseStyles = "font-bold uppercase tracking-widest font-mono border transition-colors";
+  const baseStyles = "font-semibold tracking-wide transition-all duration-300 rounded-2xl cursor-pointer";
   const variants = {
-    primary: "bg-primary hover:bg-[#d4ac40] text-background-dark px-8 py-4 text-sm border-primary min-w-[200px]",
-    outline: "bg-transparent hover:bg-surface-dark text-white px-8 py-4 text-sm border-border-subtle min-w-[200px]",
-    small: "bg-primary hover:bg-[#d4ac40] text-background-dark px-5 py-2 text-xs border-primary tracking-wider"
+    primary: "bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] hover:from-[#1d4ed8] hover:to-[#1e40af] text-[#0f172a] px-8 py-4 text-sm shadow-lg shadow-[#2563eb]/20 hover:shadow-xl hover:shadow-[#2563eb]/30 hover:-translate-y-0.5 min-w-[200px]",
+    outline: "bg-white/60 backdrop-blur-sm hover:bg-white text-[#2563eb] px-8 py-4 text-sm border border-[#2563eb]/20 hover:border-[#2563eb]/40 hover:shadow-lg hover:-translate-y-0.5 min-w-[200px]",
+    small: "bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] hover:from-[#1d4ed8] hover:to-[#1e40af] text-[#0f172a] px-5 py-2 text-xs shadow-md shadow-[#2563eb]/15 hover:shadow-lg hover:-translate-y-0.5"
   };
   const { navigate } = useRouterService();
   return (

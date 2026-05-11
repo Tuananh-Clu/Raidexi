@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 
 const BackgroundDecor: React.FC = () => {
   return (
@@ -12,7 +12,7 @@ const BackgroundDecor: React.FC = () => {
       </div>
       
       <div className="fixed z-0 hidden pointer-events-none top-8 right-8 lg:block">
-        <div className="flex items-center justify-center w-32 h-32 p-2 border border-decor-dark opacity-30">
+        <div className="flex items-center justify-center w-32 h-32 p-2 border border-[#e2e8f0] opacity-30">
           <span className="text-6xl material-symbols-outlined text-decor-dark">grid_4x4</span>
         </div>
       </div>

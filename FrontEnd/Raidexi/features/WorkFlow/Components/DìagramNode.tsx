@@ -1,4 +1,4 @@
-export const DiagramNode: React.FC<DiagramNodeProps> = ({ 
+﻿export const DiagramNode: React.FC<DiagramNodeProps> = ({ 
   icon, 
   step, 
   title, 
@@ -16,7 +16,7 @@ export const DiagramNode: React.FC<DiagramNodeProps> = ({
         className={`
           h-36 p-6 flex flex-col gap-4 relative transition-colors duration-300
           ${isDefault 
-            ? 'border border-border-subtle bg-background-dark group-hover:border-primary' 
+            ? 'border border-border-subtle bg-[#f8fafc] group-hover:border-primary' 
             : 'border border-primary bg-[#1a160f] shadow-[0_0_15px_-5px_rgba(212,141,17,0.1)]'
           }
         `}
@@ -27,7 +27,7 @@ export const DiagramNode: React.FC<DiagramNodeProps> = ({
         
         <div className="flex flex-col">
           <span className="mb-1 font-mono text-xs uppercase text-primary">{step}</span>
-          <span className="font-mono text-sm font-bold text-white">{title}</span>
+          <span className="font-mono text-sm font-bold text-[#0f172a]">{title}</span>
         </div>
 
         {/* Decorative Corner Marks */}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React from "react";
 import { FilterBarProps, FilterType } from "../types";
 import { Bot } from "lucide-react";
@@ -20,7 +20,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
     <section className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between font-sans">
       {/* SEARCH */}
       <div className="relative w-full lg:w-[380px] group">
-        <span className="absolute transition -translate-y-1/2 left-3 top-1/2 material-symbols-outlined text-text-dim group-focus-within:text-primary">
+        <span className="absolute transition -translate-y-1/2 left-3 top-1/2 material-symbols-outlined text-[#94a3b8] group-focus-within:text-primary">
           search
         </span>
         <input
@@ -28,13 +28,13 @@ const FilterBar: React.FC<FilterBarProps> = ({
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search brand or id_ref..."
-          className="w-full py-2.5 pl-10 pr-4 text-sm font-medium transition border rounded-xl bg-surface-dark border-border-subtle text-text-secondary placeholder:text-text-dim/50 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none shadow-sm"
+          className="w-full py-2.5 pl-10 pr-4 text-sm font-medium transition border rounded-xl bg-white border-border-subtle text-text-secondary placeholder:text-[#94a3b8]/50 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none shadow-sm"
         />
       </div>
 
       {/* FILTERS */}
       <div className="flex flex-wrap items-center gap-3">
-        <span className="font-mono text-[10px] font-bold tracking-wider uppercase text-text-dim">
+        <span className="font-mono text-[10px] font-bold tracking-wider uppercase text-[#94a3b8]">
           Filter
         </span>
         {filters.map((filter) => (
@@ -44,7 +44,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
             className={`flex items-center gap-2 px-4 py-2 text-[11px] font-bold uppercase tracking-wide border rounded-full transition-all outline-none focus-visible:ring-2 focus-visible:ring-primary ${
               activeFilter === filter.type
                 ? "bg-primary text-background-dark border-primary shadow-md"
-                : "bg-surface-dark text-text-muted border-border-subtle hover:border-primary/40 hover:text-primary hover:bg-primary/5"
+                : "bg-white text-text-muted border-border-subtle hover:border-primary/40 hover:text-primary hover:bg-primary/5"
             }`}
           >
             {filter.label}
@@ -53,7 +53,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
             </span>
           </button>
         ))}
-        <div className="px-3 py-2 ml-2 text-xs border rounded-lg bg-surface-dark border-border-subtle text-text-muted max-w-[320px] flex flex-row items-center gap-3 shadow-sm">
+        <div className="px-3 py-2 ml-2 text-xs border rounded-lg bg-white border-border-subtle text-text-muted max-w-[320px] flex flex-row items-center gap-3 shadow-sm">
           <p className="leading-tight">
             Không tìm thấy thương hiệu? Dùng <span className="font-bold text-primary">Raidexi AI</span> để ước lượng size.
           </p>

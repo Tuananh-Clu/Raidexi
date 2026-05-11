@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 import { SendMailContactService } from '@/Shared/Service/MailService';
 import React, { useState } from 'react';
 
@@ -49,7 +49,7 @@ const ContactForm: React.FC = () => {
             value={formData.name}
             onChange={handleChange}
             type="text" 
-            className="form-input w-full rounded-sm bg-input-bg border border-input-border text-white placeholder-text-muted/30 focus:border-primary focus:ring-0 focus:bg-[#2e2a20] h-12 px-4 font-mono text-sm transition-all" 
+            className="form-input w-full rounded-sm bg-[#f1f5f9] border border-input-border text-[#0f172a] placeholder-text-muted/30 focus:border-primary focus:ring-0 focus:bg-[#2e2a20] h-12 px-4 font-mono text-sm transition-all" 
             placeholder="NGUYEN VAN A" 
             required
           />
@@ -64,7 +64,7 @@ const ContactForm: React.FC = () => {
             value={formData.brand}
             onChange={handleChange}
             type="text" 
-            className="form-input w-full rounded-sm bg-input-bg border border-input-border text-white placeholder-text-muted/30 focus:border-primary focus:ring-0 focus:bg-[#2e2a20] h-12 px-4 font-mono text-sm transition-all" 
+            className="form-input w-full rounded-sm bg-[#f1f5f9] border border-input-border text-[#0f172a] placeholder-text-muted/30 focus:border-primary focus:ring-0 focus:bg-[#2e2a20] h-12 px-4 font-mono text-sm transition-all" 
             placeholder="TÊN THƯƠNG HIỆU" 
             required
           />
@@ -82,7 +82,7 @@ const ContactForm: React.FC = () => {
             value={formData.email}
             onChange={handleChange}
             type="email" 
-            className="form-input w-full rounded-sm bg-input-bg border border-input-border text-white placeholder-text-muted/30 focus:border-primary focus:ring-0 focus:bg-[#2e2a20] h-12 px-4 font-mono text-sm transition-all" 
+            className="form-input w-full rounded-sm bg-[#f1f5f9] border border-input-border text-[#0f172a] placeholder-text-muted/30 focus:border-primary focus:ring-0 focus:bg-[#2e2a20] h-12 px-4 font-mono text-sm transition-all" 
             placeholder="email@company.com" 
             required
           />
@@ -96,7 +96,7 @@ const ContactForm: React.FC = () => {
             value={formData.title}
             onChange={handleChange}
             type="text" 
-            className="form-input w-full rounded-sm bg-input-bg border border-input-border text-white placeholder-text-muted/30 focus:border-primary focus:ring-0 focus:bg-[#2e2a20] h-12 px-4 font-mono text-sm transition-all" 
+            className="form-input w-full rounded-sm bg-[#f1f5f9] border border-input-border text-[#0f172a] placeholder-text-muted/30 focus:border-primary focus:ring-0 focus:bg-[#2e2a20] h-12 px-4 font-mono text-sm transition-all" 
             placeholder="GIÁM ĐỐC SẢN PHẨM" 
           />
         </label>
@@ -110,15 +110,15 @@ const ContactForm: React.FC = () => {
           name="message"
           value={formData.message}
           onChange={handleChange}
-          className="form-textarea w-full rounded-sm bg-input-bg border border-input-border text-white placeholder-text-muted/30 focus:border-primary focus:ring-0 focus:bg-[#2e2a20] p-4 font-mono text-sm min-h-40 resize-y transition-all" 
+          className="form-textarea w-full rounded-sm bg-[#f1f5f9] border border-input-border text-[#0f172a] placeholder-text-muted/30 focus:border-primary focus:ring-0 focus:bg-[#2e2a20] p-4 font-mono text-sm min-h-40 resize-y transition-all" 
           placeholder="Mô tả ngắn gọn về quy mô sản xuất và các thách thức về kỹ thuật đo lường hiện tại của quý doanh nghiệp..."
         ></textarea>
       </label>
 
-      <div className="pt-6 border-t border-dashed border-border-retro">
+      <div className="pt-6 border-t border-dashed border-[#e2e8f0]">
         <button 
           type="submit" 
-          className="group relative inline-flex items-center justify-center px-10 h-14 bg-primary text-background-dark font-bold uppercase tracking-[0.2em] text-sm hover:bg-[#d4a00f] transition-all rounded-sm w-full md:w-auto overflow-hidden shadow-[4px_4px_0px_rgba(0,0,0,0.4)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5"
+          className="group relative inline-flex items-center justify-center px-10 h-14 bg-primary text-background-dark font-bold uppercase tracking-[0.2em] text-sm hover:bg-[#1d4ed8] transition-all rounded-sm w-full md:w-auto overflow-hidden shadow-[4px_4px_0px_rgba(0,0,0,0.4)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5"
         >
           <span className="relative z-10 flex items-center gap-3">
             Gửi Yêu cầu

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { 
   Network, 
   ArrowRightToLine, 
@@ -11,7 +11,7 @@ import { Connector } from './Connector';
 
 export const LogicDiagram: React.FC = () => {
   return (
-    <section className="w-full px-6 lg:px-12 py-20 max-w-[1400px] border-b border-border-subtle bg-surface-dark relative overflow-hidden">
+    <section className="w-full px-6 lg:px-12 py-20 max-w-[1400px] border-b border-border-subtle bg-white relative overflow-hidden">
       {/* Background Grid Pattern */}
       <div 
         className="absolute inset-0 opacity-[0.03] pointer-events-none" 
@@ -23,7 +23,7 @@ export const LogicDiagram: React.FC = () => {
 
       <div className="relative z-10 flex flex-col gap-12">
         <div className="flex flex-col gap-2">
-          <h3 className="flex items-center gap-2 font-mono text-sm font-bold tracking-widest text-white uppercase">
+          <h3 className="flex items-center gap-2 font-mono text-sm font-bold tracking-widest text-[#0f172a] uppercase">
             <Network size={16} className="text-primary" />
             System Logic Diagram
           </h3>

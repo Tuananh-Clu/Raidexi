@@ -7,10 +7,10 @@ import { NavBar } from "@/Shared/Components/components/NavBar";
 
 export default function Page() {
   return (
-    <div className="bg-[#1a1510] min-h-screen text-[#e0dcd5]">
+    <div className="bg-[#f8fafc] min-h-screen text-[#334155]">
       <NavBar />
       <main className="flex flex-col grow">
-      <section className="relative w-full max-w-7xl px-6 pt-16 pb-16 mx-auto grow border-x border-border-subtle bg-surface-dark my-8 rounded-3xl shadow-sm">
+      <section className="relative w-full max-w-7xl px-6 pt-16 pb-16 mx-auto grow border-x border-[#e2e8f0] bg-white my-8 rounded-3xl shadow-sm">
         <HeroSection />
 
         <ArchitectureDiagram />

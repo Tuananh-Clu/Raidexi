@@ -1,4 +1,4 @@
-import toast from "react-hot-toast"
+﻿import toast from "react-hot-toast"
 
 type ToastState = "success" | "error" | "warning"
 
@@ -8,8 +8,8 @@ export const ToasterUi = (message: string, state: ToastState) => {
       className={`
         ${t.visible ? "animate-enter" : "animate-leave"}
         max-w-md w-full
-        bg-[#f2a60d]
-        border-2 border-[#f2a60d]
+        bg-[#2563eb]
+        border-2 border-[#2563eb]
         shadow-lg
         pointer-events-auto
         flex

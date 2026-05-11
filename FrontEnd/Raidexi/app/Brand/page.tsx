@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import Hero from "@/features/Brand/components/Hero";
 import { Footer } from "@/Shared/Components/components/Footer";
 import { NavBar } from "@/Shared/Components/components/NavBar";
@@ -68,7 +68,7 @@ export default function Page() {
     setCurrentPage(1);
   };
   return (
-    <div className="bg-[#1a1510] min-h-screen font-sans">
+    <div className="bg-[#f8fafc] min-h-screen font-sans">
       {BrandContexts.popUpSettings.isopened == true && (
         <div className="fixed flex items-center justify-center w-full h-full pointer-events-none inset-1 z-[400] backdrop-blur-sm bg-black/40">
           <div className="pointer-events-auto">
@@ -81,7 +81,7 @@ export default function Page() {
         <main className="flex flex-col w-full gap-8 px-4 sm:px-6 lg:px-8 py-8 mx-auto grow max-w-7xl">
           <section className="flex flex-col items-start justify-between gap-6 pb-6 border-b md:flex-row md:items-end border-border-subtle">
             <div className="max-w-2xl">
-              <h2 className="mb-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
+              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0f172a] md:text-4xl">
                 Brand Estimate
               </h2>
               <p className="text-base text-text-muted leading-relaxed">
@@ -107,7 +107,7 @@ export default function Page() {
               <BrandCard key={brand.id} brand={brand} />
             ))}
             {filteredBrands.length === 0 && (
-              <div className="py-16 text-sm font-semibold text-center bg-surface-dark border border-dashed rounded-2xl col-span-full border-border-subtle text-text-muted">
+              <div className="py-16 text-sm font-semibold text-center bg-white border border-dashed rounded-2xl col-span-full border-border-subtle text-text-muted">
                 Không tìm thấy thương hiệu phù hợp.
               </div>
             )}

@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+﻿import { AnimatePresence, motion } from "framer-motion";
 import { X, Shield, Clock, Eye, Printer, ChevronRight } from "lucide-react";
 import { data, ProfileTag } from "@/features/Camera/types";
 import { useContext, useEffect, useState } from "react";
@@ -87,32 +87,32 @@ export const ListMeasure = ({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.97 }}
               transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
-              className="relative pointer-events-auto w-full max-w-5xl flex flex-col bg-surface-dark border border-border-subtle shadow-2xl rounded-2xl overflow-hidden font-sans"
+              className="relative pointer-events-auto w-full max-w-5xl flex flex-col bg-white border border-border-subtle shadow-2xl rounded-2xl overflow-hidden font-sans"
             >
               {/* Close button */}
               <motion.button
                 onClick={onClose}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="absolute top-4 right-4 z-[60] w-8 h-8 rounded-full flex items-center justify-center bg-[#2a241d] text-text-dim hover:bg-surface-hover hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-primary outline-none"
+                className="absolute top-4 right-4 z-[60] w-8 h-8 rounded-full flex items-center justify-center bg-[#e2e8f0] text-[#94a3b8] hover:bg-[#f1f5f9] hover:text-[#0f172a] transition-colors focus-visible:ring-2 focus-visible:ring-primary outline-none"
               >
                 <X size={18} strokeWidth={2.5} />
               </motion.button>
 
               {/* ── Header ── */}
-              <header className="px-7 pt-6 pb-5 border-b border-border-subtle flex-shrink-0 bg-[#15120e]">
+              <header className="px-7 pt-6 pb-5 border-b border-border-subtle flex-shrink-0 bg-[#f1f5f9]">
                 <div className="flex items-start justify-between">
                   {/* Left: title */}
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Shield size={14} className="text-primary" strokeWidth={2} />
-                      <span className="font-mono text-[10px] tracking-[0.2em] font-semibold text-text-dim uppercase">
+                      <span className="font-mono text-[10px] tracking-[0.2em] font-semibold text-[#94a3b8] uppercase">
                         Hồ sơ đo lường cá nhân
                       </span>
                       <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                     </div>
                     <h1
-                      className="font-bold text-white text-2xl tracking-tight"
+                      className="font-bold text-[#0f172a] text-2xl tracking-tight"
                     >
                       Lịch sử đo lường{" "}
                       <span className="text-primary font-light">Archive</span>
@@ -129,7 +129,7 @@ export const ListMeasure = ({
                         <div className="text-xl font-bold text-primary leading-none">
                           {value}
                         </div>
-                        <div className="text-[10px] font-semibold text-text-dim tracking-wider mt-1.5 uppercase">
+                        <div className="text-[10px] font-semibold text-[#94a3b8] tracking-wider mt-1.5 uppercase">
                           {label}
                         </div>
                       </div>
@@ -148,7 +148,7 @@ export const ListMeasure = ({
                       className={`px-5 py-2 text-xs font-bold tracking-wide uppercase rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-primary outline-none ${
                         activeTab === tab.key
                           ? "bg-primary text-background-dark shadow-sm"
-                          : "bg-surface-dark border border-border-subtle text-text-muted hover:border-primary/30 hover:text-primary"
+                          : "bg-white border border-border-subtle text-text-muted hover:border-primary/30 hover:text-primary"
                       }`}
                     >
                       {tab.label}
@@ -171,11 +171,11 @@ export const ListMeasure = ({
                   </colgroup>
 
                   <thead>
-                    <tr className="bg-[#15120e]">
+                    <tr className="bg-[#f1f5f9]">
                       {COLS.map((col, i) => (
                         <th
                           key={col + i}
-                          className={`px-5 py-3 text-[11px] font-semibold tracking-wider text-text-dim uppercase border-b border-border-subtle whitespace-nowrap ${
+                          className={`px-5 py-3 text-[11px] font-semibold tracking-wider text-[#94a3b8] uppercase border-b border-border-subtle whitespace-nowrap ${
                             i === COLS.length - 1 ? "text-right" : "text-left"
                           }`}
                         >
@@ -192,12 +192,12 @@ export const ListMeasure = ({
                         initial={{ opacity: 0, x: -6 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.05, duration: 0.28, ease: "easeOut" }}
-                        className="border-b border-border-subtle hover:bg-surface-hover transition-colors"
+                        className="border-b border-border-subtle hover:bg-[#f1f5f9] transition-colors"
                       >
                         {/* Timestamp */}
                         <td className="px-5 py-4">
                           <div className="flex items-center gap-2.5">
-                            <Clock size={14} className="text-text-dim" strokeWidth={2} />
+                            <Clock size={14} className="text-[#94a3b8]" strokeWidth={2} />
                             <span className="font-mono text-xs font-medium text-text-muted">
                               {record.lastUpdate}
                             </span>
@@ -214,7 +214,7 @@ export const ListMeasure = ({
                               record.dataMeasure.height,
                             ] as (number | undefined)[]).map((val, vi) => (
                               <td key={vi} className="px-5 py-4">
-                                <span className="font-mono text-[13px] font-semibold text-white">
+                                <span className="font-mono text-[13px] font-semibold text-[#0f172a]">
                                   {val ?? "—"}
                                 </span>
                               </td>
@@ -222,7 +222,7 @@ export const ListMeasure = ({
                           </>
                         ) : (
                           <td colSpan={5} className="px-5 py-4">
-                            <span className="text-xs font-medium text-text-dim italic">
+                            <span className="text-xs font-medium text-[#94a3b8] italic">
                               Chưa có dữ liệu
                             </span>
                           </td>
@@ -265,11 +265,11 @@ export const ListMeasure = ({
                     </colgroup>
 
                     <thead>
-                      <tr className="bg-[#15120e]">
+                      <tr className="bg-[#f1f5f9]">
                         {FAMILY_COLS.map((col, i) => (
                           <th
                             key={col + i}
-                            className={`px-5 py-3 text-[11px] font-semibold tracking-wider text-text-dim uppercase border-b border-border-subtle whitespace-nowrap ${
+                            className={`px-5 py-3 text-[11px] font-semibold tracking-wider text-[#94a3b8] uppercase border-b border-border-subtle whitespace-nowrap ${
                               i === FAMILY_COLS.length - 1 ? "text-right" : "text-left"
                             }`}
                           >
@@ -284,7 +284,7 @@ export const ListMeasure = ({
                         Array.from({ length: 3 }).map((_, idx) => (
                           <tr key={idx} className="border-b border-border-subtle">
                             <td colSpan={7} className="px-5 py-5">
-                              <div className="h-4 w-full animate-pulse bg-surface-hover rounded" />
+                              <div className="h-4 w-full animate-pulse bg-[#f1f5f9] rounded" />
                             </td>
                           </tr>
                         ))
@@ -295,7 +295,7 @@ export const ListMeasure = ({
                             initial={{ opacity: 0, x: -6 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: idx * 0.05, duration: 0.28, ease: "easeOut" }}
-                            className="border-b border-border-subtle hover:bg-surface-hover transition-colors"
+                            className="border-b border-border-subtle hover:bg-[#f1f5f9] transition-colors"
                           >
                             <td className="px-5 py-4">
                               <div className="flex items-center gap-3">
@@ -304,10 +304,10 @@ export const ListMeasure = ({
                                   style={{ backgroundColor: profile.color }}
                                 />
                                 <div className="min-w-0">
-                                  <span className="block text-sm font-semibold text-white truncate">
+                                  <span className="block text-sm font-semibold text-[#0f172a] truncate">
                                     {profile.name}
                                   </span>
-                                  <span className="text-[10px] font-medium text-text-dim uppercase mt-0.5 block">
+                                  <span className="text-[10px] font-medium text-[#94a3b8] uppercase mt-0.5 block">
                                     {profile.dataMeasure ? "Có dữ liệu" : "Chưa có dữ liệu"}
                                   </span>
                                 </div>
@@ -324,7 +324,7 @@ export const ListMeasure = ({
                                   profile.dataMeasure.height,
                                 ] as (number | undefined)[]).map((val, vi) => (
                                   <td key={vi} className="px-5 py-4">
-                                    <span className="font-mono text-[13px] font-semibold text-white">
+                                    <span className="font-mono text-[13px] font-semibold text-[#0f172a]">
                                       {val ?? "--"}
                                     </span>
                                   </td>
@@ -332,7 +332,7 @@ export const ListMeasure = ({
                               </>
                             ) : (
                               <td colSpan={5} className="px-5 py-4">
-                                <span className="text-xs font-medium text-text-dim italic">
+                                <span className="text-xs font-medium text-[#94a3b8] italic">
                                   Chưa có dữ liệu
                                 </span>
                               </td>
@@ -353,7 +353,7 @@ export const ListMeasure = ({
                       ) : (
                         <tr>
                           <td colSpan={7} className="px-5 py-10 text-center">
-                            <span className="text-sm text-text-dim">
+                            <span className="text-sm text-[#94a3b8]">
                               Chưa có hồ sơ người thân nào.
                             </span>
                           </td>
@@ -370,14 +370,14 @@ export const ListMeasure = ({
                 </div>
               )}
 
-              <footer className="px-7 py-4 border-t border-border-subtle bg-[#15120e] flex items-center justify-between flex-shrink-0">
+              <footer className="px-7 py-4 border-t border-border-subtle bg-[#f1f5f9] flex items-center justify-between flex-shrink-0">
                 <div className="flex gap-7">
                   {[
                     { k: "PHIÊN BẢN", v: "1.0.0" },
                     { k: "BẢO MẬT", v: "Tiêu chuẩn" },
                   ].map(({ k, v }) => (
                     <div key={k} className="flex items-center gap-2">
-                      <span className="text-[10px] font-semibold text-text-dim uppercase tracking-wider">
+                      <span className="text-[10px] font-semibold text-[#94a3b8] uppercase tracking-wider">
                         {k}:
                       </span>
                       <span className="text-[10px] font-medium text-text-muted">

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 
 const Hero: React.FC = () => {
   return (
@@ -9,7 +9,7 @@ const Hero: React.FC = () => {
           <span>System Documentation v2.4</span>
         </div>
         
-        <h1 className="text-5xl font-bold leading-none tracking-tight text-white lg:text-7xl">
+        <h1 className="text-5xl font-bold leading-none tracking-tight text-[#0f172a] lg:text-7xl">
           How It Works
         </h1>
         

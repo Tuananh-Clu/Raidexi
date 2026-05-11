@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+﻿import React, { useState, useEffect, useContext } from "react";
 import { MeasurementData, SystemStatus, ProfileTag } from "../types";
 import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 import { useRouterService } from "@/Shared/Service/routerService";
@@ -349,7 +349,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             animate={{ opacity: 1, y: 0 }}
             onClick={() => navigate("/Brand")}
             aria-label="Xem gợi ý thời trang"
-            className="group w-full h-12 relative overflow-hidden rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-transform active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-blue-500 text-white shadow-md hover:shadow-lg"
+            className="group w-full h-12 relative overflow-hidden rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-transform active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-blue-500 text-[#0f172a] shadow-md hover:shadow-lg"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 transition-transform duration-300 group-hover:scale-105" aria-hidden="true" />
             <Shirt size={18} className="relative z-10" aria-hidden="true" />
@@ -383,7 +383,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             aria-label={context.openCamera ? "Bắt đầu đo ngay" : "Bật camera"}
             className={`w-full h-14 rounded-xl text-sm font-bold tracking-wide transition-all flex items-center justify-center gap-2.5 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-blue-500 shadow-sm ${
               context.openCamera
-                ? "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md"
+                ? "bg-blue-600 text-[#0f172a] hover:bg-blue-700 hover:shadow-md"
                 : "bg-white border border-slate-300 text-slate-700 hover:border-blue-500 hover:text-blue-600"
             }`}
           >
@@ -401,7 +401,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                 context?.setMeasuring?.(false);
               }}
               aria-label="Tắt camera"
-              className="flex-1 h-11 rounded-xl bg-rose-50 text-rose-600 text-xs font-semibold tracking-wide border border-rose-200 hover:bg-rose-600 hover:text-white hover:border-rose-600 transition-all flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-rose-500"
+              className="flex-1 h-11 rounded-xl bg-rose-50 text-rose-600 text-xs font-semibold tracking-wide border border-rose-200 hover:bg-rose-600 hover:text-[#0f172a] hover:border-rose-600 transition-all flex items-center justify-center gap-2 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-rose-500"
             >
               <Power size={14} aria-hidden="true" />
               Tắt camera

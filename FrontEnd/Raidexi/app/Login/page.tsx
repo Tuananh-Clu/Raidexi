@@ -1,14 +1,8 @@
 "use client";
 import React, { useContext, useState } from "react";
-import Button from "../../features/Auth/components/Button";
-import InputField from "../../features/Auth/components/InputField";
-import Checkbox from "../../features/Auth/components/CheckBox";
-import BackgroundDecor from "../../features/Auth/components/BackgroundDecor";
-
-import { ChromiumIcon } from "lucide-react";
+import { ChromiumIcon, ArrowLeft, Lock, Mail } from "lucide-react";
 import { AuthContext } from "@/provider/AuthProvider";
 import { useLoadingStore } from "@/Shared/store/loading.store";
-
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -16,9 +10,10 @@ const LoginPage: React.FC = () => {
   const [keepActive, setKeepActive] = useState(false);
   const { startLoading, stopLoading, isLoading } = useLoadingStore();
   const context = useContext(AuthContext);
+
   const handleInitialize = (e: React.FormEvent) => {
     e.preventDefault();
-    startLoading?.("Intializing session...");
+    startLoading?.("Đang đăng nhập...");
     setTimeout(async () => {
       await context?.AuthLogin(email, password);
       stopLoading?.();
@@ -26,7 +21,7 @@ const LoginPage: React.FC = () => {
   };
 
   const handleSSO = () => {
-    startLoading?.("Redirecting to Google...");
+    startLoading?.("Đang chuyển hướng đến Google...");
     setTimeout(async () => {
       await context?.AuthLoginWithGoogle();
       stopLoading?.();
@@ -34,117 +29,100 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <>
-      <div className="relative flex flex-col min-h-screen retro-grid">
-        <button className="fixed z-20 p-2 transition border top-4 left-4 hover:bg-primary border-primary" onClick={() => window.history.back()}>
-          <h1>Back</h1>
-        </button>
-        <BackgroundDecor />
-        <div className="z-10 flex items-center justify-center flex-1 p-4 sm:p-8">
-          <div className="w-full max-w-[520px] bg-panel-bg border border-border-brass shadow-[0_0_0_1px_rgba(0,0,0,0.5)] flex flex-col">
-            {/* Header Section */}
-            <div className="p-8 pb-6 border-b border-border-brass bg-panel-header">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-accent-brass font-mono text-xs tracking-widest border border-primary  px-2 py-0.5 opacity-80 select-none">
-                    SYS.LOGIN.V1
-                  </span>
-                  <div className="w-2 h-2 bg-green-500 animate-pulse"></div>
-                </div>
-                <h1 className="text-3xl font-bold leading-none tracking-tight uppercase text-paper-white md:text-4xl">
-                  RAIDEXI
-                  <br />
-                  INFRASTRUCTURE
-                </h1>
-                <p className="mt-2 text-sm italic font-normal tracking-wide text-text-dim font-display">
-                  Authorized Personnel Only. All activities are logged.
-                </p>
-              </div>
+    <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#f8fafc] via-[#e0f2fe] to-[#dbeafe]" />
+      <div className="absolute inset-0 bg-dot-pattern opacity-30" />
+      <div className="absolute top-10 right-[15%] w-80 h-80 rounded-full bg-gradient-to-br from-[#2563eb]/8 to-[#06b6d4]/6 blur-3xl" />
+      <div className="absolute bottom-10 left-[10%] w-64 h-64 rounded-full bg-gradient-to-tr from-[#06b6d4]/6 to-[#2563eb]/5 blur-3xl" />
+
+      {/* Back button */}
+      <button className="fixed z-20 top-6 left-6 flex items-center gap-2 px-4 py-2 rounded-xl bg-white/80 border border-[#e2e8f0] text-[#334155] text-sm font-medium hover:bg-white hover:shadow-sm transition-all backdrop-blur-sm"
+        onClick={() => window.history.back()}>
+        <ArrowLeft size={16} />
+        Quay lại
+      </button>
+
+      {/* Login card */}
+      <div className="relative z-10 w-full max-w-[440px] mx-4">
+        <div className="bg-white/90 backdrop-blur-xl rounded-3xl border border-[#e2e8f0] shadow-xl shadow-[#2563eb]/5 overflow-hidden">
+          {/* Header */}
+          <div className="px-8 pt-8 pb-6 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#2563eb] to-[#06b6d4] flex items-center justify-center mx-auto mb-5 shadow-lg shadow-[#2563eb]/20">
+              <Lock size={22} className="text-white" />
             </div>
-
-            <form
-              onSubmit={handleInitialize}
-              className="flex flex-col gap-6 p-8"
-            >
-              <InputField
-                label="Operator ID (Email)"
-                type="email"
-                placeholder="user@raidexi.com"
-                icon="id_card"
-                value={email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-                required
-              />
-
-              <InputField
-                label="Access Key (Password)"
-                type="password"
-                placeholder="••••••••••••"
-                icon="key"
-                value={password}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-                required
-              />
-
-              <div className="flex items-center justify-between pt-2">
-                <Checkbox
-                  label="Keep session active"
-                  checked={keepActive}
-                  onChange={(e) => setKeepActive(e.target.checked)}
-                />
-                <a
-                  href="#"
-                  className="text-sm underline transition-all text-text-dim hover:text-accent-brass decoration-border-brass hover:decoration-accent-brass underline-offset-4"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    alert("Reset sequence initiated.");
-                  }}
-                >
-                  Reset Key?
-                </a>
-              </div>
-
-              <Button
-                type="submit"
-                icon="terminal"
-                fullWidth
-                disabled={isLoading}
-                className={isLoading ? "opacity-80 cursor-wait" : ""}
-              >
-                {isLoading ? "INITIALIZING..." : "INITIALIZE SESSION"}
-              </Button>
-
-              {/* Divider */}
-              <div className="relative flex items-center py-2">
-                <div className="flex-grow border-t border-border-brass"></div>
-                <span className="flex-shrink mx-4 font-mono text-xs tracking-widest uppercase select-none text-border-brass">
-                  Enterprise Access
-                </span>
-                <div className="flex-grow border-t border-border-brass"></div>
-              </div>
-
-              <Button
-                type="button"
-                variant="outline"
-                icon="domain_verification"
-                fullWidth
-                onClick={handleSSO}
-                className="cursor-pointer hover:bg-amber-500"
-              >
-                <span className="flex flex-row items-center justify-center">
-                  Sign in with Google <ChromiumIcon className="ml-2" size={16} />
-                </span>
-              </Button>
-            </form>
-            <div className="bg-[#15120e] border-t border-border-brass p-3 px-8 flex justify-between items-center text-[10px] text-border-brass font-mono uppercase select-none">
-              <span>Status: Operational</span>
-              <span>Latency: 12ms</span>
-              <span>Port: 443</span>
-            </div>
+            <h1 className="text-2xl font-bold text-[#0f172a] mb-1">Đăng nhập Raidexi</h1>
+            <p className="text-sm text-[#64748b]">Truy cập vào hệ thống đo lường cơ thể</p>
           </div>
+
+          <form onSubmit={handleInitialize} className="px-8 pb-8 flex flex-col gap-5">
+            {/* Email */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-[#334155]">Email</label>
+              <div className="relative">
+                <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8]" />
+                <input type="email" placeholder="you@example.com" required
+                  value={email} onChange={(e) => setEmail(e.target.value)}
+                  className="w-full h-11 pl-10 pr-4 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] text-[#0f172a] text-sm focus:outline-none focus:border-[#2563eb] focus:ring-2 focus:ring-[#2563eb]/10 transition-all placeholder:text-[#cbd5e1]" />
+              </div>
+            </div>
+
+            {/* Password */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-[#334155]">Mật khẩu</label>
+              <div className="relative">
+                <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8]" />
+                <input type="password" placeholder="••••••••" required
+                  value={password} onChange={(e) => setPassword(e.target.value)}
+                  className="w-full h-11 pl-10 pr-4 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] text-[#0f172a] text-sm focus:outline-none focus:border-[#2563eb] focus:ring-2 focus:ring-[#2563eb]/10 transition-all placeholder:text-[#cbd5e1]" />
+              </div>
+            </div>
+
+            {/* Remember + Forgot */}
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <input type="checkbox" checked={keepActive}
+                  onChange={(e) => setKeepActive(e.target.checked)}
+                  className="w-4 h-4 rounded-md border border-[#cbd5e1] bg-white checked:bg-[#2563eb] checked:border-[#2563eb] text-white focus:ring-0 focus:ring-offset-0 transition-colors" />
+                <span className="text-sm text-[#64748b] group-hover:text-[#334155] transition-colors">Ghi nhớ</span>
+              </label>
+              <a href="#" className="text-sm text-[#2563eb] hover:text-[#1d4ed8] font-medium transition-colors"
+                onClick={(e) => { e.preventDefault(); alert("Chức năng đặt lại mật khẩu."); }}>
+                Quên mật khẩu?
+              </a>
+            </div>
+
+            {/* Submit */}
+            <button type="submit" disabled={isLoading}
+              className={`w-full h-11 rounded-xl bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] text-white font-semibold text-sm shadow-md shadow-[#2563eb]/20 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 ${isLoading ? 'opacity-70 cursor-wait' : ''}`}>
+              {isLoading ? "Đang xử lý..." : "Đăng nhập"}
+            </button>
+
+            {/* Divider */}
+            <div className="relative flex items-center py-1">
+              <div className="flex-grow h-px bg-[#e2e8f0]" />
+              <span className="px-4 text-xs text-[#94a3b8] font-medium">hoặc</span>
+              <div className="flex-grow h-px bg-[#e2e8f0]" />
+            </div>
+
+            {/* Google SSO */}
+            <button type="button" onClick={handleSSO}
+              className="w-full h-11 rounded-xl border border-[#e2e8f0] bg-white text-[#334155] font-semibold text-sm hover:bg-[#f8fafc] hover:border-[#cbd5e1] hover:shadow-sm transition-all flex items-center justify-center gap-2">
+              <ChromiumIcon size={16} />
+              Đăng nhập với Google
+            </button>
+
+            {/* Sign up link */}
+            <p className="text-center text-sm text-[#64748b] pt-2">
+              Chưa có tài khoản?{" "}
+              <a href="/SignUp" className="text-[#2563eb] font-semibold hover:text-[#1d4ed8] transition-colors">
+                Đăng ký miễn phí
+              </a>
+            </p>
+          </form>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { CustomerData, Measurement } from '../types';
 
 interface MeasurementSheetProps {
@@ -31,7 +31,7 @@ const MeasurementSheet: React.FC<MeasurementSheetProps> = ({ customer, measureme
 
       <div className="border border-stone-900">
         <table className="w-full border-collapse">
-          <thead className="text-white bg-stone-900">
+          <thead className="text-[#0f172a] bg-stone-900">
             <tr>
               <th className="px-6 py-3 text-xs font-bold tracking-widest text-left uppercase border-r border-stone-700">Vị trí đo</th>
               <th className="px-6 py-3 text-xs font-bold tracking-widest text-right uppercase">Số đo</th>

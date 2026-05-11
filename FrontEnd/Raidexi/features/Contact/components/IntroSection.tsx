@@ -1,13 +1,13 @@
-import React from 'react';
+﻿import React from 'react';
 
 const IntroSection: React.FC = () => {
   return (
-    <div className="p-8 lg:p-12 border-b border-border-retro bg-[#1a1812]">
+    <div className="p-8 lg:p-12 border-b border-[#e2e8f0] ">
       <div className="flex items-center gap-2 mb-6">
         <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
         <p className="text-primary text-xs font-bold tracking-[0.2em] uppercase">Hợp tác Doanh nghiệp</p>
       </div>
-      <h1 className="text-white text-4xl lg:text-5xl font-light leading-tight tracking-[-0.02em] mb-6">
+      <h1 className="text-[#0f172a] text-4xl lg:text-5xl font-light leading-tight tracking-[-0.02em] mb-6">
         Liên hệ với Đội ngũ Đối tác
       </h1>
       <p className="max-w-2xl pl-6 font-serif text-lg italic leading-relaxed border-l-2 text-text-muted border-primary/30">

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 import React, {
   useState,
@@ -254,7 +254,7 @@ const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
           <div className="relative flex flex-col items-center gap-4">
             <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl animate-pulse" aria-hidden="true" />
             <p className="relative z-10 text-xs tracking-[0.3em] text-blue-400 uppercase font-semibold">Chuẩn bị tư thế</p>
-            <h2 className="relative z-10 text-[120px] leading-none font-bold text-white drop-shadow-[0_0_40px_rgba(59,130,246,0.5)] tabular-nums" aria-label={`Còn lại ${countDowns} giây`}>
+            <h2 className="relative z-10 text-[120px] leading-none font-bold text-[#0f172a] drop-shadow-[0_0_40px_rgba(59,130,246,0.5)] tabular-nums" aria-label={`Còn lại ${countDowns} giây`}>
               {countDowns}
             </h2>
             <p className="relative z-10 text-sm text-slate-300 font-medium tracking-wide">Đứng thẳng · Dang tay 45° · Nhìn thẳng</p>
@@ -370,7 +370,7 @@ const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
           {context.measuring ? (
             <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-blue-600 border border-blue-500 shadow-[0_4px_20px_rgba(59,130,246,0.3)]">
               <span className="w-2 h-2 bg-white rounded-full animate-pulse" aria-hidden="true" />
-              <p className="font-mono text-xs font-bold text-white tracking-wide">Đang ghi nhận số đo — giữ nguyên!</p>
+              <p className="font-mono text-xs font-bold text-[#0f172a] tracking-wide">Đang ghi nhận số đo — giữ nguyên!</p>
             </div>
           ) : context.openCamera ? (
             <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white/95 border border-slate-200 backdrop-blur-md shadow-lg">

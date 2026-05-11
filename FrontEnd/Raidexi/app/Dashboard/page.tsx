@@ -5,49 +5,58 @@ import { BodyMeasureEstimateContext } from "../../provider/BodyMeasureEstimate";
 import { NavBar } from "../../Shared/Components/components/NavBar";
 import { useContext, useState } from "react";
 import Sidebar from "@/features/DashboardUser/Components/Sidebar";
+import { AuthContext } from "@/provider/AuthProvider";
+import { Camera } from "lucide-react";
 
 export default function Page() {
   const context = useContext(BodyMeasureEstimateContext);
+  const authContext = useContext(AuthContext);
   const dataMeasurements = context?.dataMeasured;
   const [editProfileOpen, setEditProfileOpen] = useState(false);
+
+  const lastUpdate = dataMeasurements && dataMeasurements.length > 0
+    ? new Date(
+        [...dataMeasurements].sort(
+          (a, b) => new Date(b.lastUpdate).getTime() - new Date(a.lastUpdate).getTime()
+        )[0].lastUpdate
+      ).toLocaleDateString("vi-VN")
+    : null;
+
   return (
-    <>
-      <NavBar></NavBar>
-      <main className="w-full px-6 py-8 mx-auto grow max-w-360">
-        <header className="flex flex-col justify-between gap-4 pb-6 mb-8 border-b border-border-color md:flex-row md:items-end">
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col">
+      <NavBar />
+
+      {/* Page header */}
+      <div className="border-b border-[#e2e8f0] bg-white">
+        <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="px-2 py-0.5 bg-[#2a241b] border border-border-color text-primary text-[10px] font-mono tracking-widest uppercase">
-                Thành viên Vintage
+            <div className="flex items-center gap-2 mb-1">
+              <span className="px-2.5 py-1 rounded-lg bg-[#eff6ff] border border-[#bfdbfe] text-[#2563eb] text-[10px] font-bold tracking-wider uppercase">
+                Hồ sơ cá nhân
               </span>
-              <span className="px-2 py-0.5 border border-border-color text-text-muted text-[10px] font-mono tracking-widest uppercase">
-                Trạng thái: Hoạt động
+              <span className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#ecfdf5] border border-[#bbf7d0] text-[#059669] text-[10px] font-bold tracking-wider uppercase">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#059669] animate-pulse" />
+                Hoạt động
               </span>
             </div>
-            <h2 className="text-3xl font-light tracking-tight text-white uppercase md:text-4xl">
-              Quản lý Hồ sơ & Số đo
-            </h2>
+            <h1 className="text-2xl font-bold text-[#0f172a]">
+              Xin chào, {authContext?.userData?.fullName || "bạn"} 👋
+            </h1>
+            <p className="text-sm text-[#64748b] mt-0.5">
+              {lastUpdate ? `Cập nhật lần cuối: ${lastUpdate}` : "Chưa có dữ liệu đo lường"}
+            </p>
           </div>
 
-          <div className="hidden text-right md:block">
-            <p className="font-mono text-sm tracking-wider text-primary">
-              REF: RX-8821-VN
-            </p>
-            <p className="text-xs italic text-text-muted">
-              Cập nhật lần cuối:{" "}
-              {dataMeasurements && dataMeasurements.length > 0
-                ? new Date(
-                    dataMeasurements.sort(
-                      (a, b) =>
-                        new Date(b.lastUpdate).getTime() -
-                        new Date(a.lastUpdate).getTime()
-                    )[0].lastUpdate
-                  ).toLocaleDateString("vi-VN", {})
-                : "2024-01-01"}
-            </p>
-          </div>
-        </header>
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+          <a href="/Measurements"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] text-white text-sm font-semibold shadow-md shadow-[#2563eb]/20 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 whitespace-nowrap">
+            <Camera size={16} />
+            Đo lường mới
+          </a>
+        </div>
+      </div>
+
+      <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           <Sidebar setIsOpenProfile={setEditProfileOpen} />
           <Dashboard
             dataMeasurements={dataMeasurements}
@@ -56,6 +65,6 @@ export default function Page() {
           />
         </div>
       </main>
-    </>
+    </div>
   );
 }

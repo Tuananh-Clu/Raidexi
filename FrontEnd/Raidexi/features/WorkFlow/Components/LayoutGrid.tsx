@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { 
   Eraser, 
   Shuffle, 
@@ -12,12 +12,12 @@ import { FeatureItem } from './FeatureItem';
 const LayerGrid: React.FC = () => {
   return (
     <section className="w-full px-6 lg:px-12 py-20 max-w-[1400px]">
-      <div className="grid grid-cols-1 gap-0 border lg:grid-cols-2 border-border-subtle bg-background-dark">
+      <div className="grid grid-cols-1 gap-0 border lg:grid-cols-2 border-border-subtle bg-[#f8fafc]">
         
         {/* Left Column: Normalization */}
         <div className="flex flex-col border-b lg:border-b-0 lg:border-r border-border-subtle">
-          <div className="p-8 border-b border-border-subtle bg-surface-dark">
-            <h3 className="mb-2 text-2xl font-bold text-white font-display">Measurement Normalization Layer</h3>
+          <div className="p-8 border-b border-border-subtle bg-white">
+            <h3 className="mb-2 text-2xl font-bold text-[#0f172a] font-display">Measurement Normalization Layer</h3>
             <p className="font-mono text-sm text-text-muted">STEP_01 // PRE_PROCESSING</p>
           </div>
           <div className="flex flex-col gap-8 p-8">
@@ -39,8 +39,8 @@ const LayerGrid: React.FC = () => {
           </div>
         </div>
         <div className="flex flex-col">
-          <div className="p-8 border-b border-border-subtle bg-surface-dark">
-            <h3 className="mb-2 text-2xl font-bold text-white font-display">Brand Sizing Logic Layer</h3>
+          <div className="p-8 border-b border-border-subtle bg-white">
+            <h3 className="mb-2 text-2xl font-bold text-[#0f172a] font-display">Brand Sizing Logic Layer</h3>
             <p className="font-mono text-sm text-text-muted">STEP_02 // ALGORITHMIC_RESOLUTION</p>
           </div>
           <div className="flex flex-col gap-8 p-8">

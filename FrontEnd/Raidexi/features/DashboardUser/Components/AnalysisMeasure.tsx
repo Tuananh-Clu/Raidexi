@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { data } from "@/features/Camera/types";
 import { useMemo, useRef, useEffect } from "react";
 
@@ -138,7 +138,7 @@ export const AnalysisMeasure = ({ dataMeasurements }: AnalysisMeasureProps) => {
 
     // Line
     ctx.beginPath();
-    ctx.strokeStyle = "#f2a60d";
+    ctx.strokeStyle = "#2563eb";
     ctx.lineWidth = 2.5;
     ctx.lineJoin = "round";
     points.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
@@ -148,9 +148,9 @@ export const AnalysisMeasure = ({ dataMeasurements }: AnalysisMeasureProps) => {
     points.forEach((p) => {
       ctx.beginPath();
       ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
-      ctx.fillStyle = "#1a1510";
+      ctx.fillStyle = "#f8fafc";
       ctx.fill();
-      ctx.strokeStyle = "#f2a60d";
+      ctx.strokeStyle = "#2563eb";
       ctx.lineWidth = 2.5;
       ctx.stroke();
 
@@ -165,16 +165,16 @@ export const AnalysisMeasure = ({ dataMeasurements }: AnalysisMeasureProps) => {
   if (!dataMeasurements || dataMeasurements.length === 0) return null;
 
   return (
-    <section aria-labelledby="analysis-heading" className="flex flex-col gap-0 bg-surface-dark relative font-sans border border-border-subtle rounded-2xl shadow-sm overflow-hidden mb-6">
+    <section aria-labelledby="analysis-heading" className="flex flex-col gap-0 bg-white relative font-sans border border-border-subtle rounded-2xl shadow-sm overflow-hidden mb-6">
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 border-b border-border-subtle bg-[#15120e]">
+      <header className="flex items-center justify-between px-6 py-4 border-b border-border-subtle bg-[#f1f5f9]">
         <div className="flex items-center gap-3">
           <span className="material-symbols-outlined text-primary text-[20px]" aria-hidden="true">analytics</span>
-          <h2 id="analysis-heading" className="text-sm font-bold tracking-wide text-white">
+          <h2 id="analysis-heading" className="text-sm font-bold tracking-wide text-[#0f172a]">
             Phân tích số đo
           </h2>
         </div>
-        <span className="font-medium text-xs text-text-dim">
+        <span className="font-medium text-xs text-[#94a3b8]">
           {enriched.length} tháng · {new Date().getFullYear()}
         </span>
       </header>
@@ -184,12 +184,12 @@ export const AnalysisMeasure = ({ dataMeasurements }: AnalysisMeasureProps) => {
         <table className="w-full text-sm" aria-label="Bảng chi tiết số đo theo tháng">
           <caption className="sr-only">Lịch sử và tiến độ số đo cơ thể của bạn</caption>
           <thead>
-            <tr className="border-b border-border-subtle bg-[#15120e]">
+            <tr className="border-b border-border-subtle bg-[#f1f5f9]">
               {["Tháng", "Vai", "Ngực", "Eo", "Hông", "Cao", "Điểm"].map((col) => (
                 <th
                   scope="col"
                   key={col}
-                  className="px-4 py-3 font-semibold text-xs text-text-dim text-left whitespace-nowrap"
+                  className="px-4 py-3 font-semibold text-xs text-[#94a3b8] text-left whitespace-nowrap"
                 >
                   {col}
                 </th>
@@ -203,24 +203,24 @@ export const AnalysisMeasure = ({ dataMeasurements }: AnalysisMeasureProps) => {
               return (
                 <tr
                   key={idx}
-                  className="border-b border-border-subtle hover:bg-surface-hover transition-colors group"
+                  className="border-b border-border-subtle hover:bg-[#f1f5f9] transition-colors group"
                 >
                   <td className="px-4 py-3 text-sm font-medium text-text-muted">
                     <time dateTime={entry.lastUpdate}>{formatMonth(entry.lastUpdate)}</time>
                   </td>
-                  <td className="px-4 py-3 font-mono text-[13px] text-white font-semibold">
+                  <td className="px-4 py-3 font-mono text-[13px] text-[#0f172a] font-semibold">
                     {entry.dataMeasure.shoulderWidth ?? "—"}
                   </td>
-                  <td className="px-4 py-3 font-mono text-[13px] text-white font-semibold">
+                  <td className="px-4 py-3 font-mono text-[13px] text-[#0f172a] font-semibold">
                     {entry.dataMeasure.chest ?? "—"}
                   </td>
-                  <td className="px-4 py-3 font-mono text-[13px] text-white font-semibold">
+                  <td className="px-4 py-3 font-mono text-[13px] text-[#0f172a] font-semibold">
                     {entry.dataMeasure.waist ?? "—"}
                   </td>
-                  <td className="px-4 py-3 font-mono text-[13px] text-white font-semibold">
+                  <td className="px-4 py-3 font-mono text-[13px] text-[#0f172a] font-semibold">
                     {entry.dataMeasure.hip ?? "—"}
                   </td>
-                  <td className="px-4 py-3 font-mono text-[13px] text-white font-semibold">
+                  <td className="px-4 py-3 font-mono text-[13px] text-[#0f172a] font-semibold">
                     {entry.dataMeasure.height ?? "—"}
                   </td>
                   <td className="px-4 py-3">
@@ -283,9 +283,9 @@ export const AnalysisMeasure = ({ dataMeasurements }: AnalysisMeasureProps) => {
           ].map((s, i) => (
             <article
               key={i}
-              className="p-5 border-r border-border-subtle last:border-r-0 bg-surface-dark hover:bg-surface-hover transition-colors flex flex-col justify-center"
+              className="p-5 border-r border-border-subtle last:border-r-0 bg-white hover:bg-[#f1f5f9] transition-colors flex flex-col justify-center"
             >
-              <h3 className="text-xs font-semibold text-text-dim mb-2">
+              <h3 className="text-xs font-semibold text-[#94a3b8] mb-2">
                 {s.label}
               </h3>
               <p className="font-mono text-2xl font-bold tracking-tight" style={s.valueStyle}>
@@ -300,11 +300,11 @@ export const AnalysisMeasure = ({ dataMeasurements }: AnalysisMeasureProps) => {
       )}
 
       {/* Chart */}
-      <section aria-label="Biểu đồ tiến độ" className="border-t border-border-subtle p-6 bg-surface-dark">
-        <h3 className="text-xs font-semibold text-text-dim mb-4">
+      <section aria-label="Biểu đồ tiến độ" className="border-t border-border-subtle p-6 bg-white">
+        <h3 className="text-xs font-semibold text-[#94a3b8] mb-4">
           Tiến trình hoàn thiện theo thời gian
         </h3>
-        <div className="w-full h-48 bg-[#15120e] rounded-xl border border-border-subtle p-2">
+        <div className="w-full h-48 bg-[#f1f5f9] rounded-xl border border-border-subtle p-2">
           <canvas
             ref={canvasRef}
             aria-label="Biểu đồ đường hiển thị tiến trình điểm số theo thời gian"

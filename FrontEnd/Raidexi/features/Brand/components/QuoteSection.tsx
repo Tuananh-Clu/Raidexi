@@ -1,8 +1,8 @@
-import React from 'react';
+﻿import React from 'react';
 
 const QuoteSection: React.FC = () => {
   return (
-    <section className="w-full border-t border-border-subtle py-24 bg-surface-dark font-sans">
+    <section className="w-full border-t border-border-subtle py-24 bg-white font-sans">
       <div className=" mx-auto px-6 text-center max-w-4xl">
         <span className="mb-6 text-4xl material-symbols-outlined text-primary opacity-80">
           format_quote
@@ -11,10 +11,10 @@ const QuoteSection: React.FC = () => {
           "Hạ tầng của RAIDEXI cho phép chúng tôi duy trì di sản thủ công trong khi vận hành ở quy mô kỹ thuật số. Đây là sự chính xác mà thời trang cao cấp yêu cầu."
         </blockquote>
         <cite className="flex flex-col items-center gap-1 not-italic">
-          <span className="text-sm font-bold tracking-widest text-white uppercase">
+          <span className="text-sm font-bold tracking-widest text-[#0f172a] uppercase">
             Giám đốc Vận hành
           </span>
-          <span className="text-xs font-semibold tracking-wide uppercase text-text-dim">
+          <span className="text-xs font-semibold tracking-wide uppercase text-[#94a3b8]">
             Tập đoàn Thời trang Quốc tế
           </span>
         </cite>

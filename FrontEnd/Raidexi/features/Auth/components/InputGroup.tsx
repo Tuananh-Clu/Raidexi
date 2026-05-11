@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { InputGroupProps } from '../types';
 
 
@@ -22,7 +22,7 @@ export const InputGroup: React.FC<InputGroupProps> = ({
       <input
         id={id}
         type={type}
-        className="w-full bg-[#2a2415]  border border-border-dark text-white p-4 h-14 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder:text-[#544d3b] rounded-sm transition-colors font-sans text-lg"
+        className="w-full bg-[#2a2415]  border border-[#cbd5e1] text-[#0f172a] p-4 h-14 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none placeholder:text-[#cbd5e1] rounded-sm transition-colors font-sans text-lg"
         placeholder={placeholder}
         value={value}
         onChange={onChange}
