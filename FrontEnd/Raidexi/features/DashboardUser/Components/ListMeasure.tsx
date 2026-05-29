@@ -365,7 +365,7 @@ export const ListMeasure = ({
               )}
 
               {activeTab === "self" && (
-                <div className="overflow-y-auto max-h-[420px] scrollbar-thin scrollbar-thumb-border-subtle scrollbar-track-transparent">
+                <div className="overflow-y-auto max-h-[220px] scrollbar-thin scrollbar-thumb-border-subtle scrollbar-track-transparent">
                   <AnalysisMeasure dataMeasurements={dataMeasured} />
                 </div>
               )}

@@ -19,7 +19,6 @@ function BrandResultPage() {
     return storedBrandData ? JSON.parse(storedBrandData) : [];
   });
 
-  // dataMeasured is data[] — measurements live under dataMeasured[0].dataMeasure
   const latestMeasure = context?.dataMeasured?.[0]?.dataMeasure;
   const measurements = {
     chest: latestMeasure?.chest,
