@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Lock, Sliders, ClipboardCheck } from 'lucide-react';
 
 export const FeaturesFooter: React.FC = () => {
@@ -9,8 +9,8 @@ export const FeaturesFooter: React.FC = () => {
           <Lock size={20} strokeWidth={2} />
         </div>
         <div>
-          <h5 className="mb-1 font-sans text-sm font-bold tracking-wide text-[#0f172a] uppercase">Encrypted Core</h5>
-          <p className="text-xs text-text-muted font-sans leading-relaxed">All logic kernels are isolated in secure containers.</p>
+          <h5 className="mb-1 font-sans text-sm font-bold tracking-wide text-[var(--ink)] uppercase">Lõi mã hóa</h5>
+          <p className="text-xs text-text-muted font-sans leading-relaxed">Mọi nhân logic được cô lập trong vùng chứa bảo mật.</p>
         </div>
       </div>
       
@@ -19,8 +19,8 @@ export const FeaturesFooter: React.FC = () => {
           <Sliders size={20} strokeWidth={2} />
         </div>
         <div>
-          <h5 className="mb-1 font-sans text-sm font-bold tracking-wide text-[#0f172a] uppercase">Adjustable Bias</h5>
-          <p className="text-xs text-text-muted font-sans leading-relaxed">Real-time adjustment of ease parameters via API.</p>
+          <h5 className="mb-1 font-sans text-sm font-bold tracking-wide text-[var(--ink)] uppercase">Điều chỉnh độ rộng</h5>
+          <p className="text-xs text-text-muted font-sans leading-relaxed">Điều chỉnh tham số độ thoải mái theo thời gian thực qua API.</p>
         </div>
       </div>
       
@@ -29,8 +29,8 @@ export const FeaturesFooter: React.FC = () => {
           <ClipboardCheck size={20} strokeWidth={2} />
         </div>
         <div>
-          <h5 className="mb-1 font-sans text-sm font-bold tracking-wide text-[#0f172a] uppercase">Audit Trail</h5>
-          <p className="text-xs text-text-muted font-sans leading-relaxed">Full traceability of decision logic for every output.</p>
+          <h5 className="mb-1 font-sans text-sm font-bold tracking-wide text-[var(--ink)] uppercase">Dấu vết kiểm toán</h5>
+          <p className="text-xs text-text-muted font-sans leading-relaxed">Truy vết đầy đủ logic quyết định cho từng kết quả.</p>
         </div>
       </div>
     </div>

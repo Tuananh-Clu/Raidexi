@@ -1,129 +1,98 @@
-﻿"use client"
-import { SendMailContactService } from '@/Shared/Service/MailService';
-import React, { useState } from 'react';
+﻿"use client";
+
+import React, { useState } from "react";
+import { ArrowRight, Send } from "lucide-react";
+import { SendMailContactService } from "@/Shared/Service/MailService";
+import { ToasterUi } from "@/Shared/Ui/ToasterUi";
+
+const initialFormData = {
+  name: "",
+  brand: "",
+  email: "",
+  title: "",
+  message: "",
+};
+
+const fields = [
+  { name: "name", label: "Họ và tên", placeholder: "Nguyễn Văn A", required: true, type: "text" },
+  { name: "brand", label: "Tên thương hiệu", placeholder: "Tên thương hiệu", required: true, type: "text" },
+  { name: "email", label: "Email công ty", placeholder: "email@company.com", required: true, type: "email" },
+  { name: "title", label: "Chức danh", placeholder: "Giám đốc sản phẩm", required: false, type: "text" },
+] as const;
 
 const ContactForm: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    brand: '',
-    email: '',
-    title: '',
-    message: ''
-  });
+  const [formData, setFormData] = useState(initialFormData);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
+    setFormData((current) => ({ ...current, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-   const data= await SendMailContactService({
-      name: formData.name,
-      email: formData.email,
-      message: formData.message,
-      tier: formData.brand
-    });
-    if(data){
-      setFormData({
-        name: '',
-        brand: '',
-        email: '',
-        title: '',
-        message: ''
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const data = await SendMailContactService({
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+        tier: formData.brand,
       });
-      alert("Cảm ơn bạn! Yêu cầu đã được gửi.");
+
+      if (data) {
+        setFormData(initialFormData);
+        ToasterUi("Yêu cầu đã được gửi", "success");
+      }
+    } catch {
+      ToasterUi("Không thể gửi yêu cầu lúc này", "error");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col max-w-3xl gap-8">
-      <div className="flex flex-col gap-6 md:flex-row">
-        <label className="flex flex-col flex-1 group">
-          <span className="flex justify-between pb-2 text-xs font-bold tracking-widest uppercase transition-colors text-text-paper opacity-70 group-focus-within:text-primary">
-            Họ và Tên
-            <span className="text-[10px] opacity-50 font-normal normal-case tracking-normal">Bắt buộc</span>
-          </span>
-          <input 
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            type="text" 
-            className="form-input w-full rounded-sm bg-[#f1f5f9] border border-input-border text-[#0f172a] placeholder-text-muted/30 focus:border-primary focus:ring-0 focus:bg-[#2e2a20] h-12 px-4 font-mono text-sm transition-all" 
-            placeholder="NGUYEN VAN A" 
-            required
-          />
-        </label>
-        <label className="flex flex-col flex-1 group">
-          <span className="flex justify-between pb-2 text-xs font-bold tracking-widest uppercase transition-colors text-text-paper opacity-70 group-focus-within:text-primary">
-            Tên Thương Hiệu
-            <span className="text-[10px] opacity-50 font-normal normal-case tracking-normal">Bắt buộc</span>
-          </span>
-          <input 
-            name="brand"
-            value={formData.brand}
-            onChange={handleChange}
-            type="text" 
-            className="form-input w-full rounded-sm bg-[#f1f5f9] border border-input-border text-[#0f172a] placeholder-text-muted/30 focus:border-primary focus:ring-0 focus:bg-[#2e2a20] h-12 px-4 font-mono text-sm transition-all" 
-            placeholder="TÊN THƯƠNG HIỆU" 
-            required
-          />
-        </label>
+    <form onSubmit={handleSubmit} className="max-w-3xl space-y-6">
+      <div className="grid gap-5 md:grid-cols-2">
+        {fields.map((field) => (
+          <label key={field.name} className="block">
+            <span className="mb-2 flex items-center justify-between gap-3">
+              <span className="rx-label">{field.label}</span>
+              {field.required && <span className="font-mono text-[10px] uppercase text-[var(--ink-muted)]">Bắt buộc</span>}
+            </span>
+            <input
+              name={field.name}
+              value={formData[field.name]}
+              onChange={handleChange}
+              type={field.type}
+              className="rx-input"
+              placeholder={field.placeholder}
+              required={field.required}
+            />
+          </label>
+        ))}
       </div>
 
-      <div className="flex flex-col gap-6 md:flex-row">
-        <label className="flex flex-col flex-1 group">
-          <span className="flex justify-between pb-2 text-xs font-bold tracking-widest uppercase transition-colors text-text-paper opacity-70 group-focus-within:text-primary">
-            Email Công Ty
-            <span className="text-[10px] opacity-50 font-normal normal-case tracking-normal">Bắt buộc</span>
-          </span>
-          <input 
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            type="email" 
-            className="form-input w-full rounded-sm bg-[#f1f5f9] border border-input-border text-[#0f172a] placeholder-text-muted/30 focus:border-primary focus:ring-0 focus:bg-[#2e2a20] h-12 px-4 font-mono text-sm transition-all" 
-            placeholder="email@company.com" 
-            required
-          />
-        </label>
-        <label className="flex flex-col flex-1 group">
-          <span className="pb-2 text-xs font-bold tracking-widest uppercase transition-colors text-text-paper opacity-70 group-focus-within:text-primary">
-            Chức Danh
-          </span>
-          <input 
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            type="text" 
-            className="form-input w-full rounded-sm bg-[#f1f5f9] border border-input-border text-[#0f172a] placeholder-text-muted/30 focus:border-primary focus:ring-0 focus:bg-[#2e2a20] h-12 px-4 font-mono text-sm transition-all" 
-            placeholder="GIÁM ĐỐC SẢN PHẨM" 
-          />
-        </label>
-      </div>
-
-      <label className="flex flex-col w-full group">
-        <span className="pb-2 text-xs font-bold tracking-widest uppercase transition-colors text-text-paper opacity-70 group-focus-within:text-primary">
-          Thông điệp / Nhu cầu Định cỡ
-        </span>
-        <textarea 
+      <label className="block">
+        <span className="rx-label mb-2 block">Thông điệp / nhu cầu định cỡ</span>
+        <textarea
           name="message"
           value={formData.message}
           onChange={handleChange}
-          className="form-textarea w-full rounded-sm bg-[#f1f5f9] border border-input-border text-[#0f172a] placeholder-text-muted/30 focus:border-primary focus:ring-0 focus:bg-[#2e2a20] p-4 font-mono text-sm min-h-40 resize-y transition-all" 
-          placeholder="Mô tả ngắn gọn về quy mô sản xuất và các thách thức về kỹ thuật đo lường hiện tại của quý doanh nghiệp..."
-        ></textarea>
+          className="rx-input min-h-44 resize-y py-4"
+          placeholder="Mô tả quy mô sản phẩm, hệ thống size hiện tại và vấn đề định cỡ thương hiệu đang gặp."
+        />
       </label>
 
-      <div className="pt-6 border-t border-dashed border-[#e2e8f0]">
-        <button 
-          type="submit" 
-          className="group relative inline-flex items-center justify-center px-10 h-14 bg-primary text-background-dark font-bold uppercase tracking-[0.2em] text-sm hover:bg-[#1d4ed8] transition-all rounded-sm w-full md:w-auto overflow-hidden shadow-[4px_4px_0px_rgba(0,0,0,0.4)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5"
-        >
-          <span className="relative z-10 flex items-center gap-3">
-            Gửi Yêu cầu
-            <span className="text-lg transition-transform material-symbols-outlined group-hover:translate-x-1">arrow_right_alt</span>
-          </span>
+      <div className="flex flex-col justify-between gap-4 border-t border-[rgba(24,23,20,0.1)] pt-6 md:flex-row md:items-center">
+        <p className="max-w-md text-sm leading-relaxed text-[var(--ink-muted)]">
+          Chúng tôi phản hồi bằng hướng tích hợp phù hợp với bảng size, dữ liệu sản phẩm và mục tiêu giảm đổi trả.
+        </p>
+        <button type="submit" disabled={isSubmitting} className={`rx-btn rx-btn-primary w-full md:w-auto ${isSubmitting ? "rx-btn-loading" : ""}`}>
+          <Send size={15} strokeWidth={1.35} />
+          {isSubmitting ? "Đang gửi" : "Gửi yêu cầu"}
+          <ArrowRight size={15} strokeWidth={1.35} />
         </button>
       </div>
     </form>

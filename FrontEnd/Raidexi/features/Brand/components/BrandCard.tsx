@@ -1,110 +1,86 @@
 ﻿"use client";
-import React, { useContext } from 'react';
-import { Brand, BrandStatus } from '../types';
-import { BrandContext} from '@/provider/BrandProvider';
+
+import React, { useContext } from "react";
+import { AlertTriangle, ArrowRight, CheckCircle2, Clock3, Settings2 } from "lucide-react";
+import { Brand, BrandStatus } from "../types";
+import { BrandContext } from "@/provider/BrandProvider";
 
 interface BrandCardProps {
   brand: Brand;
 }
 
+const statusConfig = {
+  [BrandStatus.OPTIMIZED]: {
+    icon: CheckCircle2,
+    label: "Đã tối ưu",
+    badge: "rx-badge rx-badge-blue",
+    tone: "text-[var(--signal-blue)]",
+    action: "Xem hồ sơ",
+  },
+  [BrandStatus.RECALIBRATE]: {
+    icon: AlertTriangle,
+    label: "Cần cân chỉnh",
+    badge: "rx-badge rx-badge-red",
+    tone: "text-[var(--tailor-red)]",
+    action: "Cân chỉnh",
+  },
+  [BrandStatus.PENDING]: {
+    icon: Clock3,
+    label: "Đang chờ",
+    badge: "rx-badge",
+    tone: "text-[var(--ink-muted)]",
+    action: "Tiếp tục",
+  },
+};
+
 const BrandCard: React.FC<BrandCardProps> = ({ brand }) => {
   const { name, refCode, status, lastSync, metricLabel, metricValue, icon } = brand;
-  const context=useContext(BrandContext);
-  const {setPopUpSettings}=context;
+  const { setPopUpSettings } = useContext(BrandContext);
+  const config = statusConfig[status];
+  const StatusIcon = config.icon;
 
   const handleClick = () => {
-    setPopUpSettings({isopened:true,brandrefcode:name,gender:"",productType:"",sizeSystem:""});
+    setPopUpSettings({ isopened: true, brandrefcode: name, gender: "", productType: "", sizeSystem: "" });
   };
-  const getConfig = (status: BrandStatus) => {
-    switch (status) {
-      case BrandStatus.OPTIMIZED:
-        return {
-          borderColor: 'group-hover:border-primary/60 group-hover:shadow-md group-hover:shadow-primary/5',
-          statusColor: 'text-primary',
-          statusIcon: 'verified',
-          statusText: 'Đã tối ưu',
-          metricValueColor: 'text-[#0f172a]',
-          buttonStyles: 'border border-border-subtle hover:bg-primary/10 hover:border-primary/40 hover:text-primary text-text-muted bg-white shadow-sm',
-          buttonText: 'Xem hồ sơ',
-          buttonIcon: 'arrow_forward',
-          cornerTag: null,
-          iconGrayscale: 'grayscale group-hover:grayscale-0'
-        };
-      case BrandStatus.RECALIBRATE:
-        return {
-          borderColor: 'group-hover:border-rose-500/60 group-hover:shadow-md group-hover:shadow-rose-500/5',
-          statusColor: 'text-rose-400',
-          statusIcon: 'warning',
-          statusText: 'Cần căn chỉnh',
-          metricValueColor: 'text-rose-400',
-          buttonStyles: 'bg-rose-500/10 border border-rose-500/30 hover:bg-rose-500/20 text-rose-400 shadow-sm',
-          buttonText: 'Sửa lỗi',
-          buttonIcon: 'build',
-          cornerTag: (
-            <div className="absolute top-0 right-0 w-0 h-0 border-t-[30px] border-t-rose-500 border-l-[30px] border-l-transparent"></div>
-          ),
-          iconGrayscale: 'grayscale'
-        };
-      case BrandStatus.PENDING:
-        return {
-          borderColor: 'group-hover:border-[#e2e8f0] group-hover:shadow-md',
-          statusColor: 'text-[#94a3b8]',
-          statusIcon: 'pending',
-          statusText: 'Đang chờ',
-          metricValueColor: 'text-[#94a3b8]',
-          buttonStyles: 'border border-dashed border-border-subtle hover:border-solid hover:border-primary/40 hover:bg-primary/5 text-[#94a3b8] hover:text-primary bg-white shadow-sm',
-          buttonText: brand.metricValue === '0/12' ? 'Bắt đầu' : 'Tiếp tục',
-          buttonIcon: 'edit',
-          cornerTag: null,
-          iconGrayscale: 'grayscale opacity-50'
-        };
-    }
-  };
-
-  const config = getConfig(status);
+  const iconSrc = typeof icon === "string" && (icon.startsWith("/") || icon.startsWith("http")) ? icon : "/logo.png";
 
   return (
-    <>
-      <article className={`bg-white border border-border-subtle rounded-2xl p-6 flex flex-col gap-5 group transition-all duration-300 relative overflow-hidden shadow-sm ${config.borderColor}`}>
-      {config.cornerTag}
-      
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-4">
-          <div className={`w-12 h-12 bg-[#e2e8f0] flex items-center justify-center border border-border-subtle rounded-xl transition-all duration-300 shadow-sm ${config.iconGrayscale}`}>
-            <img src={icon} alt={`${name} icon`} className="object-contain w-7 h-7" />
+    <article className="rx-card group flex min-h-[270px] flex-col gap-5 p-5 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 hover:border-[rgba(93,116,101,0.28)]">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex min-w-0 items-center gap-4">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[1.15rem] bg-[rgba(24,23,20,0.06)] ring-1 ring-[rgba(24,23,20,0.1)]">
+            <img src={iconSrc} alt={`${name} biểu tượng`} className="h-8 w-8 object-contain" />
           </div>
-          <div>
-            <h3 className="text-lg font-bold text-[#0f172a] leading-tight mb-1">{name}</h3>
-            <span className="font-mono text-[10px] font-semibold tracking-wider text-[#94a3b8] uppercase">{refCode}</span>
+          <div className="min-w-0">
+            <h3 className="truncate text-lg font-extrabold text-[var(--ink)]">{name}</h3>
+            <p className="mt-1 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--ink-muted)]">{refCode}</p>
           </div>
         </div>
-        <span className={`material-symbols-outlined text-[20px] ${status === BrandStatus.PENDING ? 'text-[#94a3b8]' : config.statusColor}`} title={config.statusText}>
-          {config.statusIcon}
+        <span className={config.badge} title={config.label}>
+          <StatusIcon size={13} strokeWidth={1.35} className={config.tone} />
+          {config.label}
         </span>
       </div>
 
-      <div className="w-full h-px bg-border-subtle my-1"></div>
-
-      <div className="grid grid-cols-2 font-mono text-[11px] gap-y-3 font-medium">
-        <span className="text-[#94a3b8] tracking-wider">Status:</span>
-        <span className={`${config.statusColor} font-bold text-right uppercase tracking-wider`}>{config.statusText}</span>
-        
-        <span className="text-[#94a3b8] tracking-wider">Last Sync:</span>
-        <span className={`${lastSync === '--' ? 'text-[#94a3b8]' : 'text-text-secondary font-bold'} text-right`}>{lastSync}</span>
-        
-        <span className="text-[#94a3b8] tracking-wider">{metricLabel}:</span>
-        <span className={`${config.metricValueColor} font-bold text-right`}>{metricValue}</span>
+      <div className="grid gap-px overflow-hidden rounded-[1.15rem] bg-[rgba(24,23,20,0.08)]">
+        {[
+          ["Trạng thái", config.label],
+          ["Đồng bộ", lastSync === "--" ? "Chưa có" : lastSync],
+          [metricLabel, metricValue],
+        ].map(([label, value]) => (
+          <div key={label} className="grid grid-cols-[1fr_auto] gap-3 bg-[rgba(255,253,247,0.82)] px-4 py-3 font-mono text-[11px]">
+            <span className="uppercase tracking-[0.14em] text-[var(--ink-muted)]">{label}</span>
+            <span className="font-bold text-[var(--ink)]">{value}</span>
+          </div>
+        ))}
       </div>
 
-      <div className="pt-3 mt-auto border-t border-border-subtle">
-        <button onClick={handleClick} className={`w-full h-10 rounded-xl uppercase text-xs font-bold tracking-wider transition-all flex items-center justify-center gap-2 ${config.buttonStyles}`}>
-          <span>{config.buttonText}</span>
-          <span className="material-symbols-outlined !text-[16px]">{config.buttonIcon}</span>
-        </button>
-      </div>
+      <button onClick={handleClick} className="rx-btn rx-btn-secondary mt-auto w-full" type="button">
+        <Settings2 size={14} strokeWidth={1.35} />
+        {status === BrandStatus.PENDING && metricValue === "0/12" ? "Bắt đầu" : config.action}
+        <ArrowRight size={14} strokeWidth={1.35} />
+      </button>
     </article>
-    </>
-
   );
 };
 

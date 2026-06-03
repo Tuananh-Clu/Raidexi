@@ -45,13 +45,13 @@ export const DrawCanvasTypeBody = (
   canvasCtx.clearRect(0, 0, canvasWidth * 0.3, canvasHeight * 0.15);
 
 
-  canvasCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+  canvasCtx.fillStyle = 'rgba(23, 19, 15, 0.72)';
   canvasCtx.fillRect(20, 20, canvasWidth * 0.4, canvasHeight * 0.12);
 
   const messages = {
-    start: { text: 'Bắt Đầu Đo', fontSize: Math.min(48, canvasHeight * 0.08), color: '#FF4444' },
-    processing: { text: 'Đang Xử Lý...', fontSize: Math.min(48, canvasHeight * 0.08), color: '#FFAA00' },
-    success: { text: 'Đo Thành Công!', fontSize: Math.min(40, canvasHeight * 0.07), color: '#44FF44' }
+    start: { text: 'Bắt Đầu Đo', fontSize: Math.min(48, canvasHeight * 0.08), color: '#b93a34' },
+    processing: { text: 'Đang Xử Lý...', fontSize: Math.min(48, canvasHeight * 0.08), color: '#9b6930' },
+    success: { text: 'Đo Thành Công!', fontSize: Math.min(40, canvasHeight * 0.07), color: '#5d7465' }
   };
 
   let status = null;
@@ -71,7 +71,7 @@ export const DrawCanvasTypeBody = (
   }
 
   if (status) {
-    canvasCtx.font = `bold ${status.fontSize}px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
+    canvasCtx.font = `600 ${status.fontSize}px Manrope, sans-serif`;
     canvasCtx.fillStyle = status.color;
     canvasCtx.textAlign = 'left';
     canvasCtx.textBaseline = 'middle';
@@ -81,7 +81,7 @@ export const DrawCanvasTypeBody = (
     const progress = Buffer.current.length / 50;
     canvasCtx.fillStyle = 'rgba(255, 255, 255, 0.3)';
     canvasCtx.fillRect(40, canvasHeight * 0.095, canvasWidth * 0.35, 8);
-    canvasCtx.fillStyle = '#44FF44';
+    canvasCtx.fillStyle = '#5d7465';
     canvasCtx.fillRect(40, canvasHeight * 0.095, (canvasWidth * 0.35) * progress, 8);
   }
 };

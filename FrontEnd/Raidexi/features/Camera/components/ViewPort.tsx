@@ -1,113 +1,100 @@
 ﻿"use client";
+
 import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useContext,
-  useMemo,
-} from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { Maximize, Ruler, Sun, User } from "lucide-react";
 import { DrawPointLandmark } from "../hooks/DrawCanvas";
 import { HandleMeasureEstimate } from "../hooks/HandleMeasureEstimate";
 import { detectPose } from "../hooks/DetermineMeasure";
-import { Ruler, Maximize, User, Sun } from "lucide-react";
-
 
 interface ViewportProps {
   showGrid: boolean;
   triggerFlash: boolean;
 }
 
+const guideItems = [
+  { icon: Ruler, text: "Đứng thẳng, nhìn về phía trước" },
+  { icon: Maximize, text: "Dang tay khoảng 45 độ so với thân" },
+  { icon: User, text: "Đặt toàn thân trong vùng hiệu chuẩn" },
+  { icon: Sun, text: "Ánh sáng đều, nền đơn giản" },
+];
+
 const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
   const [flashActive, setFlashActive] = useState(false);
+  const [countDowns, setCountDowns] = useState(5);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const mpCameraRef = useRef<any | null>(null);
   const poseRef = useRef<any>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null!);
   const context = useContext(BodyMeasureEstimateContext);
-  const [countDowns, setCountDowns] = useState(5);
 
   useEffect(() => {
-    if (triggerFlash) {
-      setFlashActive(true);
-      const timer = setTimeout(() => setFlashActive(false), 150);
-      return () => clearTimeout(timer);
-    }
+    if (!triggerFlash) return;
+    setFlashActive(true);
+    const timer = setTimeout(() => setFlashActive(false), 150);
+    return () => clearTimeout(timer);
   }, [triggerFlash]);
 
   useEffect(() => {
     if (!context.measuring) {
       setCountDowns(5);
-      context?.setCountdown?.(20);
+      context.setCountdown?.(20);
       return;
     }
 
     let count = 5;
     const countdownInterval = setInterval(() => {
-      count--;
+      count -= 1;
       setCountDowns(count);
       if (count <= 0) {
         clearInterval(countdownInterval);
-        context?.setCountdown?.(15);
+        context.setCountdown?.(15);
       }
     }, 1000);
 
-    return () => {
-      clearInterval(countdownInterval);
-    };
-  }, [context.measuring]);
+    return () => clearInterval(countdownInterval);
+  }, [context.measuring, context.setCountdown]);
 
   useEffect(() => {
-    if (countDowns === 0) {
-      const er = setInterval(() => {
-        if (context.countdown === 0) {
-          clearInterval(er);
-          return;
-        }
+    if (countDowns !== 0) return;
 
-        context?.setCountdown?.((prev: number) => prev - 1);
-      }, 1000);
-      return () => clearInterval(er);
-    }
-  }, [countDowns, context.countdown, context.setCountdown]);
+    const measurementTimer = setInterval(() => {
+      if (context.countdown === 0) {
+        clearInterval(measurementTimer);
+        return;
+      }
+      context.setCountdown?.((previous: number) => previous - 1);
+    }, 1000);
+
+    return () => clearInterval(measurementTimer);
+  }, [context.countdown, context.setCountdown, countDowns]);
 
   const onResults = useCallback(
     (results: any) => {
-      if (!results.poseWorldLandmarks) return;
-      if (!canvasRef.current || !videoRef.current || !poseRef.current) return;
+      if (!results.poseWorldLandmarks || !canvasRef.current || !videoRef.current || !poseRef.current) return;
 
       const canvasCtx = canvasRef.current.getContext("2d");
       if (!canvasCtx) return;
+
       const videoWidth = videoRef.current.videoWidth;
       const videoHeight = videoRef.current.videoHeight;
+      if (videoWidth === 0 || videoHeight === 0) return;
 
-      if (videoWidth === 0 || videoHeight === 0) {
-        console.warn("⚠️ Video dimensions not ready");
-        return;
-      }
-      if (
-        canvasRef.current.width !== videoWidth ||
-        canvasRef.current.height !== videoHeight
-      ) {
+      if (canvasRef.current.width !== videoWidth || canvasRef.current.height !== videoHeight) {
         canvasRef.current.width = videoWidth;
         canvasRef.current.height = videoHeight;
       }
+
       canvasCtx.clearRect(0, 0, videoWidth, videoHeight);
       canvasCtx.save();
 
       try {
-        DrawPointLandmark(
-          canvasCtx,
-          "rgba(0, 255, 0, 0.8)",
-          results,
-          canvasRef
-        );
+        DrawPointLandmark(canvasCtx, "rgba(93,116,101,0.82)", results, canvasRef);
       } catch (error) {
-        console.error("❌ Error drawing landmarks:", error);
+        console.error("Error drawing landmarks:", error);
       }
-      results.poseWorldLandMarks
-      const Landmarks = [
+
+      const landmarks = [
         results.poseLandmarks?.[0],
         results.poseLandmarks?.[11],
         results.poseLandmarks?.[12],
@@ -117,47 +104,58 @@ const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
         results.poseLandmarks?.[26],
         results.poseLandmarks?.[27],
         results.poseLandmarks?.[28],
-        
       ];
-      const allLandmarksPresent = Landmarks.every((landmark) => landmark.visibility! > 0);
+
+      const allLandmarksPresent = landmarks.every((landmark) => (landmark?.visibility ?? 0) > 0);
       if (!allLandmarksPresent) {
-        console.warn("⚠️ Not all required landmarks are detected.");
         canvasCtx.restore();
         return;
       }
-      if (context.measuring === true && countDowns < 1 && allLandmarksPresent) {
+
+      if (context.measuring && countDowns < 1) {
         try {
           const type = detectPose(results.poseWorldLandmarks);
-
           HandleMeasureEstimate({
             context,
             canvasCtx,
-            results:{
-              poseWorldLandmarks: results.poseWorldLandmarks,
-            },
+            results: { poseWorldLandmarks: results.poseWorldLandmarks },
             type,
           });
         } catch (error) {
-          console.error("❌ Error in measurement:", error);
+          console.error("Error in measurement:", error);
         }
       }
 
       canvasCtx.restore();
     },
-    [context, countDowns]
+    [context, countDowns],
   );
+
   useEffect(() => {
-    if (poseRef.current) {
-      poseRef.current.onResults(onResults);
-    }
+    if (poseRef.current) poseRef.current.onResults(onResults);
   }, [onResults]);
-  const initPose = async () => {
+
+  const cleanup = useCallback(() => {
+    if (mpCameraRef.current) {
+      const track = mpCameraRef.current.video.srcObject?.getTracks().find((item: any) => item.kind === "video");
+      track?.stop();
+      mpCameraRef.current.stop();
+      mpCameraRef.current = null;
+    }
+    if (poseRef.current) {
+      poseRef.current.close();
+      poseRef.current = null;
+    }
+  }, []);
+
+  const initPose = useCallback(async () => {
     if (poseRef.current) return;
+
     const mpPose = await import("@mediapipe/pose");
     const camera = await import("@mediapipe/camera_utils");
+
     poseRef.current = new mpPose.Pose({
-      locateFile: (file) =>
-        `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`,
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`,
     });
     poseRef.current.setOptions({
       modelComplexity: 2,
@@ -168,32 +166,19 @@ const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
       minTrackingConfidence: 0.7,
     });
     poseRef.current.onResults(onResults);
+
     if (videoRef.current) {
       mpCameraRef.current = new camera.Camera(videoRef.current, {
         onFrame: async () => {
-          if (poseRef.current)
-            await poseRef.current.send({ image: videoRef.current! });
+          if (poseRef.current) await poseRef.current.send({ image: videoRef.current! });
         },
         width: 1280,
         height: 720,
       });
       mpCameraRef.current.start();
     }
-  };
-  const cleanup = () => {
-    if (mpCameraRef.current) {
-      const track = mpCameraRef.current.video.srcObject
-        ?.getTracks()
-        .find((t: any) => t.kind === "video");
-      track?.stop();
-      mpCameraRef.current.stop();
-      mpCameraRef.current = null;
-    }
-    if (poseRef.current) {
-      poseRef.current.close();
-      poseRef.current = null;
-    }
-  };
+  }, [onResults]);
+
   useEffect(() => {
     const run = async () => {
       if (context.openCamera || context.measuring) {
@@ -201,196 +186,126 @@ const Viewport: React.FC<ViewportProps> = ({ showGrid, triggerFlash }) => {
         await initPose();
       }
     };
+
     run();
     return () => {
-      if (canvasRef.current) {
-        canvasRef.current
-          .getContext("2d")
-          ?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-      }
-      if (mpCameraRef.current) {
-        const track = mpCameraRef.current.video.srcObject
-          ?.getTracks()
-          .find((t: any) => t.kind === "video");
-        track?.stop();
-        mpCameraRef.current.stop();
-        mpCameraRef.current = null;
-      }
+      canvasRef.current?.getContext("2d")?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      cleanup();
     };
-  }, [context.openCamera]);
+  }, [cleanup, context.openCamera, context.measuring, initPose]);
 
   useEffect(() => {
     if (!context.capturedFallback) return;
-    (async () => {
-      await cleanup();
-      context.Buffer!.current = [];
-      setCountDowns(5);
-      context?.setMeasuring!(false);
-      context.setCountdown!(20);
-      context.setDataMeasured!([]);
-      context.setCapturedFallback!(false);
-      const ctx = canvasRef.current?.getContext("2d");
-      ctx?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
+    (async () => {
+      cleanup();
+      if (context.Buffer) context.Buffer.current = [];
+      setCountDowns(5);
+      context.setMeasuring?.(false);
+      context.setCountdown?.(20);
+      context.setDataMeasured?.([]);
+      context.setCapturedFallback?.(false);
+      canvasRef.current?.getContext("2d")?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
       await initPose();
     })();
-  }, [context.capturedFallback]);
+  }, [
+    cleanup,
+    context.Buffer,
+    context.capturedFallback,
+    context.setCapturedFallback,
+    context.setCountdown,
+    context.setDataMeasured,
+    context.setMeasuring,
+    initPose,
+  ]);
 
   const gridItems = useMemo(
-    () =>
-      Array.from({ length: 16 }).map((_, i) => (
-        <div key={i} className="border border-[#c87832]/20" />
-      )),
-    []
+    () => Array.from({ length: 16 }).map((_, index) => <div key={index} className="border border-[rgba(165,109,43,0.24)]" />),
+    [],
   );
 
   return (
-    <section aria-label="Màn hình Camera" className="relative bg-slate-50 flex items-center justify-center p-4 lg:p-6 border-r border-slate-200 overflow-hidden group h-full font-sans">
-      {/* Background glow */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent pointer-events-none" aria-hidden="true" />
-      
-      {context.measuring && countDowns > 0 && (
-        <div className="absolute flex items-center justify-center w-full h-full font-mono text-center bg-slate-900/80 backdrop-blur-md pointer-events-none z-[54]" aria-live="assertive">
-          <div className="relative flex flex-col items-center gap-4">
-            <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl animate-pulse" aria-hidden="true" />
-            <p className="relative z-10 text-xs tracking-[0.3em] text-blue-400 uppercase font-semibold">Chuẩn bị tư thế</p>
-            <h2 className="relative z-10 text-[120px] leading-none font-bold text-[#0f172a] drop-shadow-[0_0_40px_rgba(59,130,246,0.5)] tabular-nums" aria-label={`Còn lại ${countDowns} giây`}>
-              {countDowns}
-            </h2>
-            <p className="relative z-10 text-sm text-slate-300 font-medium tracking-wide">Đứng thẳng · Dang tay 45° · Nhìn thẳng</p>
-          </div>
-        </div>
-      )}
-      <div className="relative flex items-center justify-center w-full h-full overflow-hidden bg-slate-900 rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] border border-slate-200" role="presentation">
-        <div className="absolute inset-0 z-10 pointer-events-none bg-gradient-to-t from-slate-900/60 via-transparent to-slate-900/30" aria-hidden="true"></div>
+    <section aria-label="Màn hình camera" className="relative flex min-h-[68vh] items-center justify-center overflow-hidden p-4 lg:min-h-0 lg:p-5">
+      <div className="rx-shell h-full w-full min-h-[540px]">
+        <div className="rx-core relative flex h-full min-h-[540px] items-center justify-center overflow-hidden bg-[var(--ink)] text-[var(--surface-paper)]">
+          <canvas ref={canvasRef} aria-hidden="true" className="absolute inset-0 z-[5] h-full w-full object-cover" />
+          <video ref={videoRef} autoPlay muted playsInline aria-label="Luồng video từ camera" className="h-full w-full object-cover opacity-92" />
 
-        <canvas
-          ref={canvasRef}
-          aria-hidden="true"
-          className="absolute inset-0 object-cover w-full h-full z-5"
-        />
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          playsInline
-          aria-label="Luồng video từ camera"
-          className="object-cover w-full h-full"
-        />
+          <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(circle_at_50%_45%,transparent_0%,rgba(24,23,20,0.1)_42%,rgba(24,23,20,0.66)_100%)]" aria-hidden="true" />
+          <div className={`pointer-events-none absolute inset-0 z-50 bg-[var(--surface-paper)] transition-opacity duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${flashActive ? "opacity-90" : "opacity-0"}`} aria-hidden="true" />
 
-        <div
-          className={`absolute inset-0 bg-white z-50 transition-opacity duration-150 ${
-            flashActive ? "opacity-90" : "opacity-0"
-          }`}
-          aria-hidden="true"
-        />
-
-        <div className="absolute z-20 border border-blue-400/30 rounded-2xl pointer-events-none inset-4 lg:inset-6" aria-hidden="true">
-          {/* Corner accents */}
-          <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 rounded-tl-2xl border-blue-500"></div>
-          <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 rounded-tr-2xl border-blue-500"></div>
-          <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 rounded-bl-2xl border-blue-500"></div>
-          <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 rounded-br-2xl border-blue-500"></div>
-
-          <div className="absolute w-16 h-16 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 opacity-60">
-            <div className="absolute top-1/2 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
-            <div className="absolute left-1/2 top-0 h-full w-[1px] bg-gradient-to-b from-transparent via-blue-400 to-transparent"></div>
-            <div className="absolute w-2 h-2 -translate-x-1/2 -translate-y-1/2 rounded-full top-1/2 left-1/2 bg-blue-500"></div>
-          </div>
-
-          {showGrid && (
-            <div className="absolute inset-0 grid grid-cols-4 grid-rows-4 pointer-events-none opacity-20">
-              {gridItems}
+          {context.measuring && countDowns > 0 && (
+            <div className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center bg-[rgba(24,23,20,0.82)] text-center" aria-live="assertive">
+              <div className="relative flex flex-col items-center gap-4">
+                <p className="rx-label text-[var(--brass)]">Chuẩn bị tư thế</p>
+                <h2 className="font-mono text-[8rem] font-semibold leading-none text-[var(--surface-paper)] tabular-nums" aria-label={`Còn lại ${countDowns} giây`}>
+                  {countDowns}
+                </h2>
+                <p className="max-w-xs text-sm text-white/72">Đứng thẳng, dang tay 45 độ, nhìn thẳng về camera.</p>
+              </div>
             </div>
           )}
 
-          <div className="absolute top-[15%] left-[25%] right-[25%] bottom-[15%] border border-dashed border-blue-400/40 rounded-xl">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white border border-blue-200 text-blue-600 px-3 py-1 text-[9px] font-mono font-bold tracking-widest rounded-full flex items-center gap-1.5 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" /> TARGET_AREA
+          <div className="pointer-events-none absolute inset-4 z-20 rounded-[1.6rem] border border-[rgba(255,253,247,0.2)] lg:inset-6" aria-hidden="true">
+            <div className="absolute inset-x-[25%] inset-y-[14%] rounded-[1.3rem] border border-dashed border-[rgba(242,166,13,0.5)]">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[var(--surface-paper)] px-3 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-[var(--ink)] ring-1 ring-[rgba(24,23,20,0.12)]">
+                Vùng hiệu chuẩn
+              </div>
             </div>
-            <div className="absolute inset-0 rounded-xl bg-blue-500/[0.02]"></div>
+
+            <div className="absolute left-1/2 top-1/2 h-16 w-16 -translate-x-1/2 -translate-y-1/2 opacity-70">
+              <div className="absolute left-0 top-1/2 h-px w-full bg-[rgba(255,253,247,0.42)]" />
+              <div className="absolute left-1/2 top-0 h-full w-px bg-[rgba(255,253,247,0.42)]" />
+              <div className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--brass)]" />
+            </div>
+
+            {showGrid && <div className="absolute inset-0 grid grid-cols-4 grid-rows-4 opacity-45">{gridItems}</div>}
           </div>
 
-          <div className="absolute flex items-center gap-2 top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm">
-            <div className="w-1.5 h-1.5 bg-rose-500 rounded-full shadow-[0_0_5px_rgba(244,63,94,0.8)] animate-pulse"></div>
-            <div className="font-mono text-[10px] font-bold text-rose-600 tracking-wider">
-              REC
-            </div>
+          <div className="absolute right-6 top-6 z-30 flex items-center gap-2 rounded-full bg-[rgba(255,253,247,0.88)] px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--ink)] ring-1 ring-[rgba(255,253,247,0.22)]">
+            <span className={`h-1.5 w-1.5 rounded-full ${context.openCamera ? "bg-[var(--tailor-red)]" : "bg-[var(--ink-muted)]"}`} />
+            {context.openCamera ? "Đang ghi hình" : "Camera nghỉ"}
           </div>
-        </div>
 
-        {/* Posture guide overlay */}
-        {context.openCamera && !context.measuring && (
-          <div className="absolute inset-0 z-40 flex flex-col items-center justify-center pointer-events-none" aria-label="Hướng dẫn tư thế" role="complementary">
-            <div className="relative flex flex-col items-center gap-4 p-6 border border-slate-200 bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl max-w-[280px]">
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-b from-blue-50 to-transparent opacity-50" aria-hidden="true" />
-              <p className="relative z-10 font-mono text-[10px] tracking-[0.2em] font-bold text-blue-600 uppercase">
-                Hướng Dẫn Tư Thế
-              </p>
-
-              <svg
-                viewBox="0 0 100 160"
-                className="relative z-10 w-24 h-36 opacity-80"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <circle cx="50" cy="14" r="11" stroke="#3b82f6" strokeWidth="2.5" />
-                <line x1="50" y1="25" x2="50" y2="90" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" />
-                <line x1="50" y1="45" x2="18" y2="72" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" />
-                <line x1="50" y1="45" x2="82" y2="72" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" />
-                <line x1="50" y1="90" x2="32" y2="150" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" />
-                <line x1="50" y1="90" x2="68" y2="150" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" />
-                <path d="M 30 48 A 22 22 0 0 1 70 48" stroke="#3b82f6" strokeWidth="1" strokeDasharray="3 2" opacity="0.5" />
-              </svg>
-
-              <ul className="relative z-10 space-y-2.5 w-full" aria-label="Danh sách hướng dẫn tư thế">
-                {[
-                  { icon: Ruler, text: "Đứng thẳng, nhìn về phía trước" },
-                  { icon: Maximize, text: "Dang tay ra ~45° so với thân" },
-                  { icon: User, text: "Toàn thân trong khung hình" },
-                  { icon: Sun, text: "Ánh sáng đủ, nền đơn giản" },
-                ].map(({ icon: Icon, text }, i) => (
-                  <li key={i} className="flex items-center gap-3 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                    <Icon size={14} className="text-blue-500 shrink-0" aria-hidden="true" />
-                    <span className="text-[10px] font-medium text-slate-700 leading-tight">{text}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <p className="relative z-10 text-[10px] text-slate-500 text-center mt-1">
-                Nhấn <span className="text-blue-600 font-bold">Bắt đầu đo ngay</span> khi đã sẵn sàng
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Bottom status bar */}
-        <div className="absolute z-30 -translate-x-1/2 bottom-8 left-1/2 w-max" role="status" aria-live="polite">
-          {context.measuring ? (
-            <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-blue-600 border border-blue-500 shadow-[0_4px_20px_rgba(59,130,246,0.3)]">
-              <span className="w-2 h-2 bg-white rounded-full animate-pulse" aria-hidden="true" />
-              <p className="font-mono text-xs font-bold text-[#0f172a] tracking-wide">Đang ghi nhận số đo — giữ nguyên!</p>
-            </div>
-          ) : context.openCamera ? (
-            <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white/95 border border-slate-200 backdrop-blur-md shadow-lg">
-              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.4)]" aria-hidden="true" />
-              <p className="font-mono text-xs text-slate-700 font-semibold tracking-wide">Camera sẵn sàng</p>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white/95 border border-slate-200 backdrop-blur-md shadow-lg">
-              <span className="w-2 h-2 bg-slate-400 rounded-full" aria-hidden="true" />
-              <p className="font-mono text-xs text-slate-500 tracking-wide uppercase font-semibold">Camera đang tắt</p>
+          {context.openCamera && !context.measuring && (
+            <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center p-5" aria-label="Hướng dẫn tư thế" role="complementary">
+              <div className="rx-shell w-full max-w-[320px] bg-[rgba(255,253,247,0.62)]">
+                <div className="rx-core p-5 text-[var(--ink)]">
+                  <p className="rx-label text-[var(--signal-blue)]">Hướng dẫn tư thế</p>
+                  <svg viewBox="0 0 100 160" className="mx-auto mt-4 h-36 w-24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="50" cy="14" r="11" stroke="var(--signal-blue)" strokeWidth="2.2" />
+                    <line x1="50" y1="25" x2="50" y2="90" stroke="var(--signal-blue)" strokeWidth="2.2" strokeLinecap="round" />
+                    <line x1="50" y1="45" x2="18" y2="72" stroke="var(--signal-blue)" strokeWidth="2.2" strokeLinecap="round" />
+                    <line x1="50" y1="45" x2="82" y2="72" stroke="var(--signal-blue)" strokeWidth="2.2" strokeLinecap="round" />
+                    <line x1="50" y1="90" x2="32" y2="150" stroke="var(--signal-blue)" strokeWidth="2.2" strokeLinecap="round" />
+                    <line x1="50" y1="90" x2="68" y2="150" stroke="var(--signal-blue)" strokeWidth="2.2" strokeLinecap="round" />
+                    <path d="M 30 48 A 22 22 0 0 1 70 48" stroke="var(--brass)" strokeWidth="1" strokeDasharray="3 2" opacity="0.75" />
+                  </svg>
+                  <ul className="mt-4 space-y-2" aria-label="Danh sách hướng dẫn tư thế">
+                    {guideItems.map(({ icon: Icon, text }) => (
+                      <li key={text} className="flex items-center gap-3 rounded-[1rem] bg-[rgba(24,23,20,0.04)] p-2.5 text-xs font-semibold text-[var(--ink-soft)]">
+                        <Icon size={14} strokeWidth={1.35} className="shrink-0 text-[var(--signal-blue)]" aria-hidden="true" />
+                        <span>{text}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
           )}
-        </div>
 
-        <div className="absolute top-4 left-4 z-30 font-mono text-[9px] font-bold text-slate-600 tracking-widest space-y-1.5 bg-white/90 backdrop-blur-sm p-2 rounded-lg border border-slate-200 shadow-sm" aria-hidden="true">
-          <div className="text-slate-800">CAM_01_SYS</div>
-          <div className="flex gap-2">
-            <span>FPS: 30</span>
-            <span className="text-slate-300">|</span>
-            <span className="text-blue-600">HD_1080</span>
+          <div className="absolute bottom-6 left-1/2 z-30 w-max max-w-[calc(100%-2rem)] -translate-x-1/2" role="status" aria-live="polite">
+            <div className="rounded-full bg-[rgba(255,253,247,0.9)] px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-[0.14em] text-[var(--ink)] ring-1 ring-[rgba(255,253,247,0.24)]">
+              {context.measuring ? "Đang ghi nhận số đo" : context.openCamera ? "Camera sẵn sàng" : "Camera đang tắt"}
+            </div>
+          </div>
+
+          <div className="absolute left-6 top-6 z-30 rounded-[1rem] bg-[rgba(255,253,247,0.88)] p-3 font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-[var(--ink-soft)] ring-1 ring-[rgba(255,253,247,0.22)]" aria-hidden="true">
+            <div className="text-[var(--ink)]">RX_CAM_01</div>
+            <div className="mt-1 flex gap-2">
+              <span>FPS 30</span>
+              <span className="text-[var(--brass)]">HD 1080</span>
+            </div>
           </div>
         </div>
       </div>

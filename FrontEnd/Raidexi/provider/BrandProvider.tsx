@@ -2,6 +2,7 @@
 import { useBrandMeasure } from "@/features/Brand/hooks/useBrandMeasure";
 import { useBrandProfile } from "@/features/Brand/hooks/useBrandProfile";
 import { Brand } from "@/features/Brand/types";
+import { BRANDS } from "@/features/Brand/constants";
 import { useBrandDataUserStore } from "@/Shared/store/brandDataUser.store";
 import { DataToSaveBrandMeasure } from "@/Shared/types";
 
@@ -38,12 +39,16 @@ export const BrandProvider = ({children}: {children: React.ReactNode}) => {
     const {getBrandProfile}=useBrandProfile();
     useEffect(() => {
         const fetchData = async () => {
-            const data = await getBrandProfile();
-            setDataBrand(data);
-            localStorage.setItem("brandData",JSON.stringify(data));
-            if(!isLoggedIn) return;
-            const brandMeasureData = await GetBrandMeasureData();
-            setDataBrandMeasured(brandMeasureData.data);  
+            try {
+                const data = await getBrandProfile();
+                setDataBrand(data);
+                localStorage.setItem("brandData",JSON.stringify(data));
+                if(!isLoggedIn) return;
+                const brandMeasureData = await GetBrandMeasureData();
+                setDataBrandMeasured(brandMeasureData.data);
+            } catch {
+                setDataBrand((current) => current.length > 0 ? current : BRANDS);
+            }
         };
         fetchData();
     }, [isLoggedIn]);

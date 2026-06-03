@@ -1,98 +1,77 @@
-﻿import React from 'react';
+﻿import React from "react";
+import { BadgeCheck, Fingerprint, Mail, MapPin, Phone, Repeat2, ShieldCheck, TrendingDown } from "lucide-react";
+
+const benefits = [
+  { icon: TrendingDown, title: "Giảm đổi trả" },
+  { icon: BadgeCheck, title: "Size đáng tin cậy" },
+  { icon: ShieldCheck, title: "Giữ logic riêng" },
+  { icon: Repeat2, title: "Nhất quán đa kênh" },
+];
 
 const StatsSidebar: React.FC = () => {
   return (
-    <>
-      {/* Stats Block */}
-      <div className="p-8 border-b border-[#e2e8f0]  relative overflow-hidden group">
-        <div className="absolute top-0 right-0 p-2 pointer-events-none opacity-10">
-          <span className="material-symbols-outlined text-[100px]">monitoring</span>
+    <aside className="space-y-6">
+      <div className="rx-shell">
+        <div className="rx-core p-6 md:p-8">
+          <span className="rx-badge rx-badge-red">Dữ liệu tác động</span>
+          <div className="mt-6">
+            <span className="font-mono text-6xl font-semibold tracking-tight text-[var(--ink)] tabular-nums">
+              -18.5<span className="text-3xl text-[var(--tailor-red)]">%</span>
+            </span>
+            <p className="rx-label mt-3">Tỷ lệ hoàn trả</p>
+            <p className="rx-copy mt-4 text-sm">
+              Tín hiệu từ nhóm bán lẻ sau khi chuẩn hóa size bằng dữ liệu cơ thể và luật fit theo thương hiệu.
+            </p>
+          </div>
         </div>
-        <div className="relative z-10">
-          <h3 className="text-text-muted text-[10px] font-bold uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-            <span className="w-1 h-1 bg-primary"></span>
-            Dữ Liệu Hiệu Suất
-          </h3>
-          <div className="border border-[#e2e8f0] p-6  shadow-lg">
-            <div className="flex flex-col gap-1 mb-4">
-              <span className="font-mono text-5xl font-bold tracking-tighter text-[#0f172a] tabular-nums">
-                -18.5<span className="text-2xl text-primary">%</span>
+      </div>
+
+      <div className="rx-shell">
+        <div className="rx-core p-6 md:p-8">
+          <div className="mb-5 flex items-center justify-between gap-3">
+            <span className="rx-badge">Giá trị đối tác</span>
+            <Fingerprint size={18} strokeWidth={1.35} className="text-[var(--brass)]" />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {benefits.map(({ icon: Icon, title }) => (
+              <div key={title} className="rounded-[1.2rem] bg-[rgba(24,23,20,0.04)] p-4 ring-1 ring-[rgba(24,23,20,0.08)]">
+                <Icon size={18} strokeWidth={1.35} className="text-[var(--signal-blue)]" />
+                <h4 className="mt-5 text-xs font-extrabold uppercase leading-tight text-[var(--ink)]">{title}</h4>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="rx-shell">
+        <div className="rx-core p-6 md:p-8">
+          <span className="rx-badge">Liên hệ trực tiếp</span>
+          <div className="mt-5 space-y-3">
+            <a href="mailto:partners@raidexi.com" className="rx-card flex items-center gap-4 p-4">
+              <Mail size={17} strokeWidth={1.35} className="text-[var(--signal-blue)]" />
+              <span>
+                <span className="rx-label block">Email đối tác</span>
+                <span className="font-mono text-sm text-[var(--ink)]">partners@raidexi.com</span>
               </span>
-              <span className="mt-1 font-mono text-xs tracking-widest uppercase text-text-muted">Tỷ lệ hoàn trả (Return Rate)</span>
+            </a>
+            <a href="tel:+842812345678" className="rx-card flex items-center gap-4 p-4">
+              <Phone size={17} strokeWidth={1.35} className="text-[var(--signal-blue)]" />
+              <span>
+                <span className="rx-label block">Hotline kinh doanh</span>
+                <span className="font-mono text-sm text-[var(--ink)]">(+84) 28 1234 5678</span>
+              </span>
+            </a>
+            <div className="rx-card flex items-start gap-4 p-4">
+              <MapPin size={17} strokeWidth={1.35} className="mt-1 text-[var(--brass)]" />
+              <p className="text-sm leading-relaxed text-[var(--ink-soft)]">
+                Tầng 8, Tòa nhà Innovation<br />Quận 1, TP. Hồ Chí Minh, Việt Nam
+              </p>
             </div>
-            <div className="w-full h-px mb-4 bg-border-retro"></div>
-            <p className="font-mono text-xs leading-relaxed text-text-muted">
-              Kết quả ghi nhận từ Đối tác Bán lẻ (Tier-1) trong Q3/2023 sau khi tích hợp API định cỡ tự động của RAIDEXI.
-            </p>
           </div>
         </div>
       </div>
-
-      {/* Benefits Grid */}
-      <div className="p-8 border-b border-[#e2e8f0]">
-        <h3 className="text-primary text-sm font-bold uppercase tracking-[0.15em] mb-6 flex items-center justify-between">
-          Lợi ích Hợp tác
-          <span className="text-lg opacity-50 material-symbols-outlined">stars</span>
-        </h3>
-        <div className="grid grid-cols-2 gap-4">
-          <BenefitCard icon="trending_down" title="Giảm Tỷ Lệ Trả Hàng" />
-          <BenefitCard icon="verified_user" title="Độ Tin Cậy Kích Cỡ" />
-          <BenefitCard icon="fingerprint" title="Bảo Toàn Logic Riêng" />
-          <BenefitCard icon="all_inclusive" title="Tính Nhất Quán" />
-        </div>
-      </div>
-
-      {/* Contact Direct */}
-      <div className="grow p-8">
-        <h4 className="text-text-muted text-xs font-bold uppercase tracking-[0.2em] mb-6">
-          Liên hệ Trực tiếp
-        </h4>
-        <div className="flex flex-col gap-6">
-          <a href="mailto:partners@raidexi.com" className="group border border-[#e2e8f0] p-4 flex items-center gap-4 hover:border-primary hover:bg-[#2563eb] hover:text-white transition-all">
-            <div className=" p-2 rounded-sm group-hover:text-white transition-colors">
-              <span className="text-xl material-symbols-outlined">mail</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[10px] text-text-muted uppercase tracking-wider mb-0.5">Email Đối tác</span>
-              <span className="font-mono text-sm text-[#0f172a]">partners@raidexi.com</span>
-            </div>
-          </a>
-          <a href="tel:+842812345678" className="group border border-[#e2e8f0] p-4 flex items-center gap-4 hover:border-primary hover:bg-[#2563eb] hover:text-white transition-all">
-            <div className=" p-2 rounded-sm group-hover:text-white transition-colors">
-              <span className="text-xl material-symbols-outlined">call</span>
-            </div>
-            <div className="flex flex-col ">
-              <span className="text-[10px] text-text-muted uppercase tracking-wider mb-0.5">Hotline Kinh Doanh</span>
-              <span className="font-mono text-sm text-[#0f172a] ">(+84) 28 1234 5678</span>
-            </div>
-          </a>
-          
-          <div className="pl-2 mt-2 border-l border-[#e2e8f0]">
-            <span className="text-[10px] text-text-muted uppercase tracking-wider block mb-2">Trụ sở</span>
-            <p className="font-serif text-sm leading-relaxed text-text-paper opacity-80">
-              Tầng 8, Tòa nhà Innovation<br />
-              Quận 1, TP. Hồ Chí Minh, VN
-            </p>
-          </div>
-        </div>
-      </div>
-    </>
+    </aside>
   );
 };
-
-interface BenefitCardProps {
-  icon: string;
-  title: string;
-}
-
-const BenefitCard: React.FC<BenefitCardProps> = ({ icon, title }) => (
-  <div className="border border-[#e2e8f0] p-4 hover:border-primary/40 transition-colors  flex flex-col justify-between h-32">
-    <span className="text-2xl material-symbols-outlined text-text-muted">{icon}</span>
-    <div>
-      <h4 className="text-[#0f172a] text-[11px] font-bold uppercase leading-tight mb-1">{title}</h4>
-      <div className="w-4 h-0.5 bg-primary/50"></div>
-    </div>
-  </div>
-);
 
 export default StatsSidebar;

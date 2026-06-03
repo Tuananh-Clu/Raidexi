@@ -1,19 +1,18 @@
-﻿import React from 'react';
+﻿import React from "react";
 
 const IntroSection: React.FC = () => {
   return (
-    <div className="p-8 lg:p-12 border-b border-[#e2e8f0] ">
-      <div className="flex items-center gap-2 mb-6">
-        <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-        <p className="text-primary text-xs font-bold tracking-[0.2em] uppercase">Hợp tác Doanh nghiệp</p>
+    <section className="rx-shell">
+      <div className="rx-core p-6 md:p-8 lg:p-10">
+        <span className="rx-badge rx-badge-blue">Hợp tác doanh nghiệp</span>
+        <h1 className="mt-5 max-w-3xl text-4xl font-extrabold leading-[0.98] text-[var(--ink)] md:text-6xl">
+          Kết nối bảng size thương hiệu với cơ thể thật của khách hàng.
+        </h1>
+        <p className="rx-copy mt-6 max-w-2xl text-lg">
+          Raidexi xây dựng lớp định cỡ giúp thương hiệu chuyển dữ liệu cơ thể thành gợi ý size rõ ràng, có thể kiểm soát và phù hợp với logic riêng của từng dòng sản phẩm.
+        </p>
       </div>
-      <h1 className="text-[#0f172a] text-4xl lg:text-5xl font-light leading-tight tracking-[-0.02em] mb-6">
-        Liên hệ với Đội ngũ Đối tác
-      </h1>
-      <p className="max-w-2xl pl-6 font-serif text-lg italic leading-relaxed border-l-2 text-text-muted border-primary/30">
-        "Chúng tôi xây dựng hạ tầng số để chuẩn hóa kích cỡ thời trang. Hãy chia sẻ những thách thức về định cỡ mà thương hiệu của bạn đang gặp phải, chúng tôi sẽ cung cấp giải pháp kỹ thuật phù hợp nhất."
-      </p>
-    </div>
+    </section>
   );
 };
 

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { ExportFormat } from '../types';
-import { HandleSendDataToMail } from '@/Shared/Service/DownloadService';
-
+﻿import React, { useState } from "react";
+import { Download, Mail, Send, X } from "lucide-react";
+import { ExportFormat } from "../types";
+import { HandleSendDataToMail } from "@/Shared/Service/DownloadService";
+import { ToasterUi } from "@/Shared/Ui/ToasterUi";
 
 interface SidebarProps {
   handleClickExport: (format: ExportFormat) => void;
@@ -9,117 +10,101 @@ interface SidebarProps {
   onFormatChange: (format: ExportFormat) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ 
-  handleClickExport,
-  currentFormat, 
-  onFormatChange,
-}) => {
+const Sidebar: React.FC<SidebarProps> = ({ handleClickExport, currentFormat, onFormatChange }) => {
   const [isEmailFormOpen, setIsEmailFormOpen] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
-  const [data,setData]=useState({
-    to:'',
-    subject:"Raidexi Transmission",
-    body:'',
-    attachments:{
-      base64:'',
-      mineType:'',
-      filenames:''
-    }
-  })
-  const toggleEmailForm = () => setIsEmailFormOpen(!isEmailFormOpen);
-  const handleSendEmail = async () => {
-    if (isSendingEmail) {
-      return;
-    }
+  const [data, setData] = useState({
+    to: "",
+    subject: "Raidexi Measurement Document",
+    body: "",
+    attachments: { base64: "", mineType: "", filenames: "" },
+  });
 
+  const handleSendEmail = async () => {
+    if (isSendingEmail) return;
+    setIsSendingEmail(true);
     try {
-      setIsSendingEmail(true);
       await HandleSendDataToMail(data, currentFormat);
+      ToasterUi("Tài liệu đã được gửi", "success");
+      setIsEmailFormOpen(false);
+    } catch {
+      ToasterUi("Không thể gửi tài liệu", "error");
     } finally {
       setIsSendingEmail(false);
     }
   };
 
   return (
-    <aside className="flex flex-col w-full gap-8 p-8 border-r no-print lg:w-80 bg-white border-stone-800 text-white shrink-0">
-      <div>
-        <h2 className="text-stone-500 font-mono text-xs uppercase tracking-[0.2em] mb-4">Export Format</h2>
-        <div className="flex flex-col gap-1 p-1 border border-stone-800">
-          {(['pdf', 'csv', 'png'] as const).map((format) => (
-            <button
-              key={format}
-              onClick={() => onFormatChange(format)}
-              className={`w-full text-left px-4 py-3 text-sm font-mono cursor-pointer uppercase tracking-widest transition-colors ${currentFormat === format ? 'bg-primary text-charcoal' : 'hover:bg-stone-800 text-stone-400'}`}
-            >
-              {format.toUpperCase()}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <button onClick={() => handleClickExport(currentFormat)} className="w-full bg-primary hover:bg-[#c4a472] text-charcoal px-6 py-4 flex justify-center items-center gap-3 text-sm font-bold tracking-[0.2em] transition-all rounded-none group">
-          <span className="material-symbols-outlined text-[20px] group-active:translate-y-0.5 transition-transform">download</span> 
-          DOWNLOAD
-        </button>
-        
-        <button 
-          onClick={toggleEmailForm}
-          className={`w-full border border-primary text-paper px-6 py-4 flex justify-center items-center gap-3 text-sm font-bold tracking-[0.2em] transition-all rounded-none hover:bg-primary/10 ${isEmailFormOpen ? 'bg-primary/5' : ''}`}
-        >
-          <a href='email/to:' className="material-symbols-outlined text-[20px]">mail</a> 
-          SEND VIA EMAIL
-        </button>
-
-        {/* Email Form Panel */}
-        {isEmailFormOpen && (
-          <div className="p-4 mt-4 duration-300 border border-stone-700 bg-white animate-in fade-in slide-in-from-top-2">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-stone-400 font-mono text-[10px] uppercase tracking-widest">Share Transmission</h3>
-              <button onClick={() => setIsEmailFormOpen(false)} className="font-mono text-xs uppercase text-stone-600 hover:text-stone-400">
-                Close [X]
-              </button>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-[10px] text-stone-500 font-mono uppercase mb-1">Recipient Email</label>
-                <input 
-                  type="email" 
-                  value={data.to}
-                  onChange={(e) => setData(prev => ({ ...prev, to: e.target.value }))}
-                  placeholder="ENTER ADDRESS..." 
-                  className="w-full p-3 font-mono text-xs border rounded-none outline-none bg-white border-stone-800 text-paper focus:border-primary focus:ring-0 placeholder:text-stone-700"
-                />
-              </div>
-              <div>
-                <label className="block text-[10px] text-stone-500 font-mono uppercase mb-1">Reference Note (Optional)</label>
-                <textarea 
-                  rows={3} 
-                  value={data.body}
-                  onChange={(e) => setData(prev => ({ ...prev, body: e.target.value }))}
-                  placeholder="ENTER MESSAGE..." 
-                  className="w-full p-3 font-mono text-xs border rounded-none outline-none resize-none bg-white border-stone-800 text-paper focus:border-primary focus:ring-0 placeholder:text-stone-700"
-                />
-              </div>
-              <button
-                onClick={handleSendEmail}
-                disabled={isSendingEmail}
-                className="w-full bg-white hover:bg-stone-700 text-black border border-primary/30 px-4 py-2 text-[10px] font-mono font-bold tracking-widest uppercase transition-all"
-              >
-                {isSendingEmail ? 'SENDING...' : 'TRANSMIT DATA'}
-              </button>
+    <aside className="no-print w-full shrink-0 p-4 lg:w-[21.5rem] lg:p-5">
+      <div className="rx-shell sticky top-24">
+        <div className="rx-core space-y-6 p-5">
+          <div>
+            <p className="rx-label mb-3">Định dạng xuất</p>
+            <div className="grid grid-cols-3 gap-2 lg:grid-cols-1">
+              {(["pdf", "csv", "png"] as const).map((format) => (
+                <button
+                  key={format}
+                  onClick={() => onFormatChange(format)}
+                  className={`rx-btn ${currentFormat === format ? "rx-btn-primary" : "rx-btn-secondary"}`}
+                  type="button"
+                >
+                  {format.toUpperCase()}
+                </button>
+              ))}
             </div>
           </div>
-        )}
+
+          <div className="space-y-3">
+            <button onClick={() => handleClickExport(currentFormat)} className="rx-btn rx-btn-primary w-full" type="button">
+              <Download size={15} strokeWidth={1.35} />
+              Tải xuống
+            </button>
+            <button onClick={() => setIsEmailFormOpen((value) => !value)} className="rx-btn rx-btn-secondary w-full" type="button">
+              <Mail size={15} strokeWidth={1.35} />
+              Gửi qua email
+            </button>
+          </div>
+
+          {isEmailFormOpen && (
+            <div className="rounded-[1.35rem] bg-[var(--surface-linen)] p-4 ring-1 ring-[rgba(24,23,20,0.08)]">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <p className="rx-label">Chia sẻ tài liệu</p>
+                <button onClick={() => setIsEmailFormOpen(false)} className="rx-icon-btn h-8 w-8" type="button" aria-label="Đóng">
+                  <X size={14} strokeWidth={1.35} />
+                </button>
+              </div>
+              <label className="block">
+                <span className="rx-label mb-2 block">Email nhận</span>
+                <input
+                  type="email"
+                  value={data.to}
+                  onChange={(event) => setData((current) => ({ ...current, to: event.target.value }))}
+                  placeholder="name@company.com"
+                  className="rx-input"
+                />
+              </label>
+              <label className="mt-3 block">
+                <span className="rx-label mb-2 block">Ghi chú</span>
+                <textarea
+                  rows={3}
+                  value={data.body}
+                  onChange={(event) => setData((current) => ({ ...current, body: event.target.value }))}
+                  placeholder="Nội dung gửi kèm"
+                  className="rx-input resize-none py-3"
+                />
+              </label>
+              <button onClick={handleSendEmail} disabled={isSendingEmail} className={`rx-btn rx-btn-primary mt-4 w-full ${isSendingEmail ? "rx-btn-loading" : ""}`} type="button">
+                <Send size={14} strokeWidth={1.35} />
+                {isSendingEmail ? "Đang gửi" : "Gửi tài liệu"}
+              </button>
+            </div>
+          )}
+
+          <p className="text-xs leading-relaxed text-[var(--ink-muted)]">
+            Bản xuất giữ cấu trúc số đo chuẩn để gửi nội bộ, in tại cửa hàng hoặc chuyển cho đối tác may đo.
+          </p>
+        </div>
       </div>
-
-      <div className="mt-auto lg:mt-0">
-        <p className="text-[10px] text-stone-600 font-mono leading-relaxed uppercase tracking-tighter">
-          Generating high-fidelity document based on enterprise standards. All exports and transmissions are logged for audit compliance.
-        </p>
-      </div>
-
-
     </aside>
   );
 };

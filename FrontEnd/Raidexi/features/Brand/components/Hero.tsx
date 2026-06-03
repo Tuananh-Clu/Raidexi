@@ -1,17 +1,15 @@
-﻿import React from 'react';
+﻿import React from "react";
 
 const Hero: React.FC = () => {
   return (
-    <section className="w-full px-6 py-20 mx-auto text-center md:py-32 font-sans bg-white border-b border-border-subtle">
-      <span className="block text-primary text-xs font-bold tracking-[0.2em] uppercase mb-6">
-        Mạng lưới định cỡ toàn cầu
-      </span>
-      <h2 className="mb-8 text-4xl font-bold leading-tight tracking-tight text-[#0f172a] md:text-6xl lg:text-7xl">
-        Đối tác Hạ tầng
-      </h2>
-      <div className="max-w-3xl mx-auto">
-        <p className="text-lg font-medium leading-relaxed md:text-xl text-text-muted">
-          RAIDEXI hợp tác với các nhà mốt hàng đầu thế giới để chuẩn hóa kích thước thông qua trí tuệ nhân tạo. Các đối tác của chúng tôi không chỉ là khách hàng, họ là những người định nghĩa tiêu chuẩn toàn cầu mới.
+    <section className="rx-section pt-32 text-center md:pt-40">
+      <div className="rx-container">
+        <span className="rx-badge rx-badge-blue mx-auto">Mạng lưới định cỡ toàn cầu</span>
+        <h1 className="mx-auto mt-6 max-w-4xl text-5xl font-extrabold leading-[0.95] text-[var(--ink)] md:text-7xl">
+          Đối tác hạ tầng cho size theo từng thương hiệu.
+        </h1>
+        <p className="rx-copy mx-auto mt-7 max-w-3xl text-lg md:text-xl">
+          Raidexi kết nối bảng size, logic fit và dữ liệu cơ thể để mỗi thương hiệu đưa ra một gợi ý rõ ràng thay vì một chuẩn đoán chung chung.
         </p>
       </div>
     </section>

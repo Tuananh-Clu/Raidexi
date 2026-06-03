@@ -1,4 +1,4 @@
-﻿interface FeatureItemProps {
+interface FeatureItemProps {
   icon: React.ReactNode;
   title: string;
   description: string;
@@ -11,7 +11,7 @@ export const FeatureItem: React.FC<FeatureItemProps> = ({ icon, title, descripti
         {icon}
       </div>
       <div className="flex flex-col gap-1">
-        <p className="text-lg font-bold text-[#0f172a] font-display">{title}</p>
+        <p className="text-lg font-bold text-[var(--ink)] font-display">{title}</p>
         <p className="font-sans text-sm leading-relaxed text-text-muted">{description}</p>
       </div>
     </div>

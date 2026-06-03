@@ -1,51 +1,33 @@
-﻿import toast from "react-hot-toast"
+﻿import toast from "react-hot-toast";
+import { AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
 
-type ToastState = "success" | "error" | "warning"
+type ToastState = "success" | "error" | "warning";
+
+const config = {
+  success: { icon: CheckCircle2, tone: "text-[var(--signal-blue)]", label: "Thành công" },
+  error: { icon: XCircle, tone: "text-[var(--tailor-red)]", label: "Lỗi" },
+  warning: { icon: AlertTriangle, tone: "text-[var(--brass)]", label: "Cần chú ý" },
+};
 
 export const ToasterUi = (message: string, state: ToastState) => {
+  const Icon = config[state].icon;
+
   toast.custom((t) => (
     <div
-      className={`
-        ${t.visible ? "animate-enter" : "animate-leave"}
-        max-w-md w-full
-        bg-[#2563eb]
-        border-2 border-[#2563eb]
-        shadow-lg
-        pointer-events-auto
-        flex
-      `}
+      className={`rx-shell pointer-events-auto w-full max-w-md transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+        t.visible ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
+      }`}
+      role="status"
     >
-      <div className="flex-1 w-0 p-4">
-        <div className="flex items-start">
-          
-          {/* ICON */}
-          <div className="flex-shrink-0 pt-0.5">
-            {state === "success" && (
-              <span className="text-red-600 material-symbols-outlined">
-                check_circle
-              </span>
-            )}
-            {state === "error" && (
-              <span className="text-red-600 material-symbols-outlined">
-                error
-              </span>
-            )}
-            {state === "warning" && (
-              <span className="text-red-600 material-symbols-outlined">
-                warning
-              </span>
-            )}
-          </div>
-
-          {/* TEXT */}
-          <div className="flex-1 ml-3">
-            <p className="text-sm font-semibold text-red-700">
-              {message}
-            </p>
-          </div>
-
+      <div className="rx-core flex items-start gap-3 p-4">
+        <span className="rx-icon-btn pointer-events-none h-9 w-9 shrink-0">
+          <Icon size={17} strokeWidth={1.35} className={config[state].tone} />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="rx-label">{config[state].label}</p>
+          <p className="mt-1 text-sm font-semibold text-[var(--ink)]">{message}</p>
         </div>
       </div>
     </div>
-  ))
-}
+  ));
+};

@@ -153,11 +153,11 @@ export const HandleMeasureEstimate = ({
 
   if (context.isMeasured) {
     canvasCtx.clearRect(0, 0, canvasWidth * 0.5, canvasHeight * 0.15);
-    canvasCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    canvasCtx.fillStyle = 'rgba(23, 19, 15, 0.72)';
     canvasCtx.fillRect(20, 20, canvasWidth * 0.4, canvasHeight * 0.12);
 
-    canvasCtx.font = `bold ${Math.min(40, canvasHeight * 0.07)}px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
-    canvasCtx.fillStyle = '#44FF44';
+    canvasCtx.font = `600 ${Math.min(40, canvasHeight * 0.07)}px Manrope, sans-serif`;
+    canvasCtx.fillStyle = '#5d7465';
     canvasCtx.textAlign = 'left';
     canvasCtx.textBaseline = 'middle';
     canvasCtx.fillText('✓ Đo Thành Công!', 40, canvasHeight * 0.075);

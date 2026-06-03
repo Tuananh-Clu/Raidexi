@@ -1,23 +1,21 @@
-﻿import React from 'react';
+﻿import React from "react";
 
 const QuoteSection: React.FC = () => {
   return (
-    <section className="w-full border-t border-border-subtle py-24 bg-white font-sans">
-      <div className=" mx-auto px-6 text-center max-w-4xl">
-        <span className="mb-6 text-4xl material-symbols-outlined text-primary opacity-80">
-          format_quote
-        </span>
-        <blockquote className="mb-8 text-2xl italic leading-relaxed md:text-3xl text-text-muted">
-          "Hạ tầng của RAIDEXI cho phép chúng tôi duy trì di sản thủ công trong khi vận hành ở quy mô kỹ thuật số. Đây là sự chính xác mà thời trang cao cấp yêu cầu."
-        </blockquote>
-        <cite className="flex flex-col items-center gap-1 not-italic">
-          <span className="text-sm font-bold tracking-widest text-[#0f172a] uppercase">
-            Giám đốc Vận hành
-          </span>
-          <span className="text-xs font-semibold tracking-wide uppercase text-[#94a3b8]">
-            Tập đoàn Thời trang Quốc tế
-          </span>
-        </cite>
+    <section className="rx-section pt-0">
+      <div className="rx-container">
+        <div className="rx-shell">
+          <div className="rx-core px-6 py-16 text-center md:px-12 md:py-24">
+            <span className="rx-badge rx-badge-brass mx-auto">Bằng chứng đối tác</span>
+            <blockquote className="mx-auto mt-6 max-w-4xl text-3xl font-extrabold leading-tight text-[var(--ink)] md:text-5xl">
+              “Raidexi giúp chúng tôi giữ logic fit riêng của thương hiệu, nhưng biến nó thành một trải nghiệm chọn size rõ ràng cho khách hàng.”
+            </blockquote>
+            <cite className="mt-8 flex flex-col items-center gap-1 not-italic">
+              <span className="font-mono text-xs font-bold uppercase tracking-[0.16em] text-[var(--ink)]">Giám đốc vận hành</span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--ink-muted)]">Tập đoàn thời trang quốc tế</span>
+            </cite>
+          </div>
+        </div>
       </div>
     </section>
   );

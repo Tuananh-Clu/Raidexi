@@ -84,7 +84,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         }
       } catch (error) {
-        console.error("Auth init error:", error);
         const status = (error as any)?.response?.status;
         if (status === 401 || status === 403) {
           localStorage.removeItem("userData");
@@ -124,7 +123,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }
   useEffect(() => {
-    fetchUserData();
+    if (userData !== null || updateAccounts) {
+      fetchUserData();
+    }
   }, [updateAccounts]);
 
   const AuthLogin = useCallback(

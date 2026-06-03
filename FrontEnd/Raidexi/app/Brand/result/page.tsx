@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { BrandSidebar } from "@/features/Brand/components/BrandSideBar";
 import { Brand } from "@/features/Brand/types";
 import { MainContent } from "@/features/Brand/components/MainContextResult";
@@ -32,9 +32,9 @@ function BrandResultPage() {
   const brandResult = brandData.find((b) => b.name === brand);
 
   return (
-    <div className="bg-[#f8fafc] min-h-screen font-sans">
+    <div className="rx-page min-h-screen">
       <NavBar />
-      <main className="flex-1 w-full px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+      <main className="rx-container flex-1 px-4 pb-16 pt-32 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           <aside className="lg:col-span-4">
             <div className="sticky top-24">
@@ -56,7 +56,7 @@ function BrandResultPage() {
 
 export default function Page() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#f8fafc] animate-pulse" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[var(--surface-canvas)] animate-pulse" />}>
       <BrandResultPage />
     </Suspense>
   );
