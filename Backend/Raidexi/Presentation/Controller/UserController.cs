@@ -37,14 +37,15 @@ namespace Raidexi.Presentation.Controller
                     HashPassword = "",
                     ImageUrl = result.User.ImageUrl,
                     Phone = result.User.Phone,
-                    Address = result.User.Address
+                    Address = result.User.Address,
+                    Role = result.User.Role
                 }
             });
         }
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
-            var result = await authService.RegisterAsync(registerDto.email, registerDto.password, registerDto.fullName);
+            var result = await authService.RegisterAsync(registerDto.email, registerDto.password, registerDto.fullName, registerDto.typeLogin ?? "user");
             if (!result.IsSuccess)
             {
                 return BadRequest(new { message = result.ErrorMessage });
@@ -61,11 +62,11 @@ namespace Raidexi.Presentation.Controller
         public async Task<IActionResult> GetUserData()
         {
             var result = await authService.GetDataUser();
-            var dataMeasure = await authService.GetMeasureForUser(result.User.Id);
             if (result == null)
             {
                 return Unauthorized(new { message = "Error Fetch Data" });
             }
+            var dataMeasure = await authService.GetMeasureForUser(result.User.Id);
             return Ok(new
             {
                 isSuccess = true,
@@ -79,7 +80,8 @@ namespace Raidexi.Presentation.Controller
                     Phone = result.User.Phone,
                     Address = result.User.Address,
                     ImageUrl = result.User.ImageUrl,
-                    HashPassword = ""
+                    HashPassword = "",
+                    Role = result.User.Role
                 },
                 measureData = dataMeasure
             });
@@ -111,7 +113,8 @@ namespace Raidexi.Presentation.Controller
                     HashPassword = "",
                     Phone = result.User.Phone,
                     Address = result.User.Address,
-                    ImageUrl = result.User.ImageUrl
+                    ImageUrl = result.User.ImageUrl,
+                    Role = result.User.Role
                 }
             });
         }

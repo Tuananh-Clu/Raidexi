@@ -16,7 +16,6 @@ import { useLoadingStore } from "@/Shared/store/loading.store";
 import { UserData } from "@/features/Auth/types";
 import { API, api_Response } from "@/Shared/Service/Api";
 
-
 export interface AuthContextType {
   isLoggedIn: boolean;
   userData: any;
@@ -24,12 +23,16 @@ export interface AuthContextType {
   AuthRegister: (
     email: string,
     password: string,
-    username: string
+    username: string,
+    typeLogin?: string,
   ) => Promise<boolean>;
   AuthLoginWithGoogle: () => Promise<boolean>;
   AuthLogout: () => Promise<void>;
   AuthGetDataUser: () => Promise<any>;
-  updateAccount: (formData: UserData, setIsOpen: (isOpen: boolean) => void) => Promise<void>;
+  updateAccount: (
+    formData: UserData,
+    setIsOpen: (isOpen: boolean) => void,
+  ) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -40,8 +43,7 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [updateAccounts, setUpdateAccounts] = useState(false);
-  const { Login, LoginWithGoogle, Logout, Register, GetDataUser } =
-    useAuth();
+  const { Login, LoginWithGoogle, Logout, Register, GetDataUser } = useAuth();
 
   const { startLoading, stopLoading } = useLoadingStore();
   const { navigate } = useRouterService();
@@ -55,73 +57,72 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return userData !== null;
   });
-  const context = useContext(BodyMeasureEstimateContext)
-      const fetchUserData = async () => {
-      try {
-        const data = await GetDataUser();
-        if (data?.user) {
-          setIsLoggedIn(true);
-          setUserData(data.user);
-          localStorage.setItem("userData", JSON.stringify(data.user));
-          const measurementHistory = Array.isArray(data.measureData?.dataMeasure)
-            ? data.measureData.dataMeasure
-            : [];
-          context?.setDataMeasured?.(measurementHistory);
+  const context = useContext(BodyMeasureEstimateContext);
+  const fetchUserData = async () => {
+    try {
+      const data = await GetDataUser();
+      if (data?.user) {
+        setIsLoggedIn(true);
+        setUserData(data.user);
+        localStorage.setItem("userData", JSON.stringify(data.user));
+        const measurementHistory = Array.isArray(data.measureData?.dataMeasure)
+          ? data.measureData.dataMeasure
+          : [];
+        context?.setDataMeasured?.(measurementHistory);
 
-          const latestMeasurement =
-            measurementHistory[measurementHistory.length - 1]?.dataMeasure;
-          if (latestMeasurement) {
-            localStorage.setItem("userMeaurements", JSON.stringify({
+        const latestMeasurement =
+          measurementHistory[measurementHistory.length - 1]?.dataMeasure;
+        if (latestMeasurement) {
+          localStorage.setItem(
+            "userMeaurements",
+            JSON.stringify({
               height: latestMeasurement.height ?? null,
               waist: latestMeasurement.waist ?? null,
               hip: latestMeasurement.hip ?? null,
               chest: latestMeasurement.chest ?? null,
               shoulderWidth: latestMeasurement.shoulderWidth ?? null,
-            }));
-          } else {
-            localStorage.removeItem("userMeaurements");
-          }
-
-        }
-      } catch (error) {
-        const status = (error as any)?.response?.status;
-        if (status === 401 || status === 403) {
-          localStorage.removeItem("userData");
+            }),
+          );
+        } else {
           localStorage.removeItem("userMeaurements");
-          setUserData(null);
-          setIsLoggedIn(false);
         }
-
-      } finally {
       }
-    };
+    } catch (error) {
+      const status = (error as any)?.response?.status;
+      if (status === 401 || status === 403) {
+        localStorage.removeItem("userData");
+        localStorage.removeItem("userMeaurements");
+        setUserData(null);
+        setIsLoggedIn(false);
+      }
+    } finally {
+    }
+  };
   useEffect(() => {
-    if(userData===null){
+    if (userData === null) {
       return;
     }
-
 
     if (userData === null) {
       fetchUserData();
     } else {
-
     }
   }, []);
-  
-  const UpdateAccount=async (formData:UserData, setIsOpen: (isOpen: boolean) => void)=>{
-    try
-    {
-      await api_Response(API.Authentication.UpdateUserData,'PUT',formData);
+
+  const UpdateAccount = async (
+    formData: UserData,
+    setIsOpen: (isOpen: boolean) => void,
+  ) => {
+    try {
+      await api_Response(API.Authentication.UpdateUserData, "PUT", formData);
       setIsOpen(false);
-      ToasterUi("Cập Nhật Thành Công","success");
-      setUpdateAccounts(prev=>!prev);
+      ToasterUi("Cập Nhật Thành Công", "success");
+      setUpdateAccounts((prev) => !prev);
       localStorage.removeItem("userData");
+    } catch {
+      ToasterUi("Cập Nhật Thất Bại", "error");
     }
-    catch
-    {
-      ToasterUi("Cập Nhật Thất Bại","error");
-    }
-  }
+  };
   useEffect(() => {
     if (userData !== null || updateAccounts) {
       fetchUserData();
@@ -134,28 +135,50 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (result) {
         setIsLoggedIn(true);
         const data = await GetDataUser();
+        const user = data?.user ?? result?.user;
+        const role = user?.role?.toLowerCase?.();
 
-        if (data?.user) {
-          setUserData(data.user);
-          localStorage.setItem("userData", JSON.stringify(data.user));
+        if (role === "admin") {
+          setUserData(user);
+          localStorage.setItem("userData", JSON.stringify(user));
+          navigate("/Admin");
+          ToasterUi("Logged in successfully", "success");
+          return result;
         }
-        navigate("/");
-        ToasterUi("Logged in successfully", "success");
+
+        if (role === "user") {
+          setUserData(user);
+          localStorage.setItem("userData", JSON.stringify(user));
+          navigate("/");
+          ToasterUi("Logged in successfully", "success");
+          return result;
+        } else {
+          ToasterUi("You do not have permission to access this page", "error");
+          await Logout();
+          setIsLoggedIn(false);
+          setUserData(null);
+          localStorage.removeItem("userData");
+          navigate("/Login");
+        }
       }
       return result;
     },
-    [Login, GetDataUser, navigate]
+    [Login, GetDataUser, Logout, navigate],
   );
 
   const AuthRegister = useCallback(
-    async (email: string, password: string, username: string) => {
-      return await Register(email, password, username);
+    async (
+      email: string,
+      password: string,
+      username: string,
+      typeLogin = "user",
+    ) => {
+      return await Register(email, password, username, typeLogin);
     },
-    [Register]
+    [Register],
   );
 
   const AuthLoginWithGoogle = useCallback(async () => {
-
     const result = await LoginWithGoogle();
     startLoading?.("Logging in with Google...");
     if (result.isSuccess) {
@@ -185,11 +208,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (data?.user) {
       setUserData(data.user);
       localStorage.setItem("userData", JSON.stringify(data.user));
-
     }
     return data;
   }, [GetDataUser]);
-
 
   const contextValue = useMemo(
     () => ({
@@ -211,8 +232,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       AuthLogout,
       AuthGetDataUser,
       UpdateAccount,
-
-    ]
+    ],
   );
 
   return (

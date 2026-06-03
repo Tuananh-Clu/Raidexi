@@ -27,7 +27,7 @@ const RegistrationForm: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    context?.AuthRegister(formData.email, formData.password, formData.fullname);
+    context?.AuthRegister(formData.email, formData.password, formData.fullname, "user");
   };
 
   return (

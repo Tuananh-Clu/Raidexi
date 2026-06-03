@@ -14,9 +14,10 @@ export const useAuth = () => {
     const Register = async (
         email: string,
         password: string,
-        fullname: string
+        fullname: string,
+        typeLogin: string
     ) => {
-        return await authApi.register({ email, password, fullname });
+        return await authApi.register({ email, password, fullname, typeLogin });
     };
 
     const GetDataUser = async () => {

@@ -16,4 +16,5 @@ export type LoginParams = {
 
 export type RegisterParams = LoginParams & {
   fullname: string;
+  typeLogin: string;
 };

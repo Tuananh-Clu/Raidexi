@@ -11,7 +11,6 @@ namespace Raidexi.Infrastructure.Services
     {
         private static readonly string Model = "gemini-3-flash-preview";
 
-        // Prompt template for image-based size chart extraction
         private string promptTemplate =
         @"
 You are an AI that extracts structured data from clothing size chart images.
@@ -72,7 +71,6 @@ IMPORTANT:
         {
             var m = data.dataMeasure;
 
-            // Build supplementary block only when camera captured extra fields
             var supplementary = new System.Text.StringBuilder();
             if (m.Neck > 0)          supplementary.AppendLine($"- Vòng cổ: {m.Neck} cm");
             if (m.SleeveLength > 0)  supplementary.AppendLine($"- Dài tay: {m.SleeveLength} cm");

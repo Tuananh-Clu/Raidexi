@@ -51,7 +51,7 @@ namespace Raidexi.Infrastructure.Services
                     User = null
                 };
             }
-            _httpContextAccessor.HttpContext?.Response.Cookies.Append("access_token_client", token, new CookieOptions
+            _httpContextAccessor.HttpContext?.Response.Cookies.Append(user.Role == "Admin" ? "access_token_admin" : "access_token_client", token, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
@@ -64,10 +64,12 @@ namespace Raidexi.Infrastructure.Services
                 ErrorMessage = null,
                 User = user
             };
+
         }
 
-        public async Task<AuthResult> RegisterAsync(string email, string password, string fullName)
+        public async Task<AuthResult> RegisterAsync(string email, string password, string fullName, string typeRegister)
         {
+
             var existingUser = await _userRepository.GetByEmailAsync(email);
             if (existingUser != null)
             {
@@ -88,11 +90,12 @@ namespace Raidexi.Infrastructure.Services
                 FullName = fullName,
                 HashPassword = hashedPassword,
                 CreatedAt = DateTime.UtcNow,
-                ImageUrl = ""
+                ImageUrl = "",
+                Role = typeRegister == "admin" ? "Admin" : "User"
             };
             await _userRepository.AddAsync(newUser);
             var token = _tokenService.CreateToken(newUser);
-            _httpContextAccessor.HttpContext?.Response.Cookies.Append("access_token_client", token, new CookieOptions
+            _httpContextAccessor.HttpContext?.Response.Cookies.Append(newUser.Role == "Admin" ? "access_token_admin" : "access_token_client", token, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
@@ -117,9 +120,9 @@ namespace Raidexi.Infrastructure.Services
 
             existingUser.Email = user.Email ?? existingUser.Email;
             existingUser.FullName = user.FullName ?? existingUser.FullName;
-            existingUser.HashPassword = existingUser.HashPassword; 
+            existingUser.HashPassword = existingUser.HashPassword;
             existingUser.CreatedAt = user.CreatedAt != default ? user.CreatedAt : existingUser.CreatedAt;
-            existingUser.Phone= user.Phone ?? existingUser.Phone;
+            existingUser.Phone = user.Phone ?? existingUser.Phone;
             existingUser.Address = user.Address ?? existingUser.Address;
             existingUser.ImageUrl = user.ImageUrl ?? existingUser.ImageUrl;
 
@@ -177,7 +180,8 @@ namespace Raidexi.Infrastructure.Services
 
         public async Task<AuthResult> GetDataUser()
         {
-            var token = _httpContextAccessor.HttpContext?.Request.Cookies[$"access_token_client"];
+            var token = _httpContextAccessor.HttpContext?.Request.Cookies["access_token_client"]
+                ?? _httpContextAccessor.HttpContext?.Request.Cookies["access_token_admin"];
             if (token == null)
             {
                 return null;
@@ -196,6 +200,7 @@ namespace Raidexi.Infrastructure.Services
         public async Task LogOut()
         {
             _httpContextAccessor.HttpContext?.Response.Cookies.Delete("access_token_client");
+            _httpContextAccessor.HttpContext?.Response.Cookies.Delete("access_token_admin");
             await Task.CompletedTask;
         }
         public async Task SaveMeasure(MeasureData data)
@@ -237,19 +242,19 @@ namespace Raidexi.Infrastructure.Services
 
         public async Task SaveCustomProfile(SaveMeasureCustomDataList data)
         {
-           var id=_httpContextAccessor.HttpContext.Request.Cookies[$"access_token_client"];
-           var jwt =new JwtSecurityTokenHandler().ReadJwtToken(id);
-           var userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
-           var filter=Builders<SaveMeasureDataDto>.Filter.Eq(u=>u.id,userId);
-           var existingData = await dbContext.MeasureUserData.Find(filter).FirstOrDefaultAsync();
-           if(existingData!=null)
-           {
+            var id = _httpContextAccessor.HttpContext.Request.Cookies[$"access_token_client"];
+            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(id);
+            var userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            var filter = Builders<SaveMeasureDataDto>.Filter.Eq(u => u.id, userId);
+            var existingData = await dbContext.MeasureUserData.Find(filter).FirstOrDefaultAsync();
+            if (existingData != null)
+            {
                 var update = Builders<SaveMeasureDataDto>.Update.Push(u => u.dataMeasureCustom, data);
                 await dbContext.MeasureUserData.UpdateOneAsync(filter, update);
                 return;
-           }
-           else
-           {
+            }
+            else
+            {
                 var datas = new SaveMeasureDataDto
                 {
                     id = userId,
@@ -260,7 +265,7 @@ namespace Raidexi.Infrastructure.Services
                 };
                 await dbContext.MeasureUserData.InsertOneAsync(datas);
                 return;
-           }
+            }
         }
 
         public async Task<List<SaveMeasureCustomDataList>> GetCustomProfileForUser()
@@ -268,7 +273,7 @@ namespace Raidexi.Infrastructure.Services
             var jwtToken = _httpContextAccessor.HttpContext?.Request.Cookies[$"access_token_client"];
             var jwt = new JwtSecurityTokenHandler().ReadJwtToken(jwtToken);
             var userId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
-            var filter=Builders<SaveMeasureDataDto>.Filter.Eq(u=>u.id,userId);
+            var filter = Builders<SaveMeasureDataDto>.Filter.Eq(u => u.id, userId);
             var data = await dbContext.MeasureUserData.Find(filter).FirstOrDefaultAsync();
             return data?.dataMeasureCustom.ToList() ?? new List<SaveMeasureCustomDataList>();
         }
@@ -290,8 +295,6 @@ namespace Raidexi.Infrastructure.Services
         }
         public async Task<SaveMeasureDataDto> GetMeasureForUser(string id)
         {
-            var rar = _httpContextAccessor.HttpContext.Request.Cookies[$"access_token_client"];
-            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(rar);
             var filter = Builders<SaveMeasureDataDto>.Filter.Eq(a => a.id, id);
             var data = await dbContext.MeasureUserData.Find(filter).FirstOrDefaultAsync();
             return data;

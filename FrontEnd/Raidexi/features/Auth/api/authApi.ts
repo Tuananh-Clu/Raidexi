@@ -7,7 +7,8 @@ export const authApi = {
         api_Response(API.Authentication.Register, "POST", {
             email: params.email,
             password: params.password,
-            fullname: params.fullname
+            fullname: params.fullname,
+            typeLogin: params.typeLogin
         }),
     logout: () => api_Response(API.Authentication.Logout, "POST", {}),
     getDataUser: () => api_Response(API.Authentication.GetDataUser, "GET", {}, {}),

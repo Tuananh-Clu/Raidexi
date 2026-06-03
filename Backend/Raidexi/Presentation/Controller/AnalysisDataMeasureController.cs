@@ -49,8 +49,10 @@ namespace Raidexi.Presentation.Controller
         [HttpPost("UploadChart")]
         [RequestSizeLimit(50 * 1024 * 1024)]
         [RequestFormLimits(MultipartBodyLengthLimit = 50 * 1024 * 1024)]
-        public async Task<IActionResult> UploadChart([FromForm] IFormFile file)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadChart([FromForm] UploadChartRequest request)
         {
+            var file = request.File;
             if (file == null || file.Length == 0)
             {
                 return BadRequest("A file is required.");

@@ -12,8 +12,8 @@ using Raidexi.Infrastructure.Persistence;
 namespace Raidexi.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20260323144935_RemoveUsersTable")]
-    partial class RemoveUsersTable
+    [Migration("20260603145841_MakeUserProfileFieldsNullable")]
+    partial class MakeUserProfileFieldsNullable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,6 +28,9 @@ namespace Raidexi.Migrations
             modelBuilder.Entity("Raidexi.Domain.Entities.User", b =>
                 {
                     b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Address")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
@@ -46,6 +49,12 @@ namespace Raidexi.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("ImageUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
 

@@ -126,6 +126,9 @@ builder.Services.AddSingleton<MongoDbContext>();
 // ─── Build & migrate ───────────────────────────────────────────────────────────
 var app = builder.Build();
 
+app.Services.CreateScope().ServiceProvider
+    .GetRequiredService<AppDBContext>()
+    .Database.Migrate();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDBContext>();

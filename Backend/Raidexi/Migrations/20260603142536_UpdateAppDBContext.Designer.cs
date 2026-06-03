@@ -12,8 +12,8 @@ using Raidexi.Infrastructure.Persistence;
 namespace Raidexi.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20260323145424_DropUsersTable")]
-    partial class DropUsersTable
+    [Migration("20260603142536_UpdateAppDBContext")]
+    partial class UpdateAppDBContext
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,6 +54,10 @@ namespace Raidexi.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
 

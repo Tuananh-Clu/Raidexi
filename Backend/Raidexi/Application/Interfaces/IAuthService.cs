@@ -6,7 +6,7 @@ namespace Raidexi.Application.Interfaces
 {
     public interface IAuthService
     {
-        Task<AuthResult> RegisterAsync(string email, string password, string fullName);
+        Task<AuthResult> RegisterAsync(string email, string password, string fullName,string typeLogin);
         Task<AuthResult> LoginAsync(string email, string password);
         Task<AuthResult> GetDataUser();
         Task<AuthResult> LoginWithFirebase(string token);
