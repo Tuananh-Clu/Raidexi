@@ -57,6 +57,9 @@ export const MainContent = ({ brandData }: { brandData?: Brand }) => {
             <p className="mt-3 font-mono text-xs uppercase tracking-[0.14em] text-[var(--ink-muted)]">
               Mã phân tích: {dataAnalysis?.analysisCode || "-"} · {dataAnalysis?.analysisDate || "-"}
             </p>
+            <p className="rx-copy mt-4 max-w-2xl text-sm">
+              Nếu số đo hoặc hệ size cần hiệu chuẩn thêm, bạn có thể gửi cấu hình này cho admin để cập nhật logic thương hiệu.
+            </p>
           </div>
           <button onClick={() => back()} className="rx-btn rx-btn-secondary" type="button">
             <ArrowLeft size={15} strokeWidth={1.35} />
@@ -138,7 +141,7 @@ export const MainContent = ({ brandData }: { brandData?: Brand }) => {
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         <button onClick={handleSave} className="rx-btn rx-btn-primary md:col-span-2" type="button">
           <SaveAll size={18} strokeWidth={1.35} />
-          Lưu dữ liệu vào tài khoản
+          Gửi yêu cầu hiệu chuẩn cho admin
         </button>
         <button onClick={() => navigate("/Brand")} className="rx-btn rx-btn-secondary" type="button">
           <List size={18} strokeWidth={1.35} />

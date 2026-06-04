@@ -17,39 +17,57 @@ namespace Raidexi.Presentation.Controller
             _sizeMapping = sizeMapping;
         }
         [HttpGet("brand-profiles")]
-        public IActionResult Getbrandprofiles()
+        public async Task<IActionResult> Getbrandprofiles()
         {
-            var brandProfiles = _sizeMapping.GetAllBrandProfiles().Result;
+            var brandProfiles = await _sizeMapping.GetAllBrandProfiles();
             return Ok(brandProfiles);
 
         }
         [HttpPost("AddBrandProfile")]
-        public async Task AddBrandProfile([FromBody] List<MappingSize.BrandProfile> brandProfile)
+        public async Task<IActionResult> AddBrandProfile([FromBody] List<MappingSize.BrandProfile> brandProfile)
         {
-            _sizeMapping.AddBrandProfile(brandProfile);
+            await _sizeMapping.AddBrandProfile(brandProfile);
+            return Ok(new { isSuccess = true, message = "Brand profile added" });
+        }
+        [HttpPost("brand-profile-requests")]
+        public async Task<IActionResult> AddBrandProfileRequest([FromBody] MappingSize.BrandProfileRequest brandProfileRequest)
+        {
+            if (string.IsNullOrWhiteSpace(brandProfileRequest.brandName))
+            {
+                return BadRequest(new { isSuccess = false, message = "Brand name is required" });
+            }
+
+            await _sizeMapping.AddBrandProfileRequest(brandProfileRequest);
+            return Ok(new { isSuccess = true, message = "Brand profile request submitted" });
+        }
+        [HttpGet("brand-profile-requests")]
+        public async Task<IActionResult> GetBrandProfileRequests()
+        {
+            var requests = await _sizeMapping.GetBrandProfileRequests();
+            return Ok(requests);
         }
         [HttpPost("AddSizeMapping")]
         public async Task<IActionResult> AddSizeMapping([FromBody] List<MappingSize.SizeMapping> sizeMapping)
         {
-            _sizeMapping.AddSizeMapping(sizeMapping);
+            await _sizeMapping.AddSizeMapping(sizeMapping);
             return Ok("Success");
         }
         [HttpPost("AddUniversalSize")]
         public async Task<IActionResult> AddUniversalSize([FromBody] List<MappingSize.UniversalSize> universalSize)
         {
-            _sizeMapping.AddUniversalSize(universalSize);
+            await _sizeMapping.AddUniversalSize(universalSize);
             return Ok("Success");
         }
         [HttpPost("AddCategoryRule")]
         public async Task<IActionResult> AddCategoryRule([FromBody] List<MappingSize.CategoryRule> categoryRule)
         {
-            _sizeMapping.AddCategoryRule(categoryRule);
+            await _sizeMapping.AddCategoryRule(categoryRule);
             return Ok("Success");
         }
         [HttpPost("AddBrandRule")]
         public async Task<IActionResult> AddBrandRule([FromBody] List<MappingSize.BrandRule> brandRule)
         {
-            _sizeMapping.AddBrandRule(brandRule);
+            await _sizeMapping.AddBrandRule(brandRule);
             return Ok("Success");
         }
 

@@ -146,7 +146,10 @@ namespace Raidexi.Infrastructure.Services
                     FullName = decodeToken.Claims["name"]?.ToString(),
                     HashPassword = "",
                     CreatedAt = DateTime.UtcNow,
-                    ImageUrl = decodeToken.Claims["picture"]?.ToString()
+                    ImageUrl = decodeToken.Claims["picture"]?.ToString(),
+                    Role = "User",
+                    Phone = "",
+                    Address = ""
                 };
                 await _userRepository.AddAsync(user);
                 var tokens = _tokenService.CreateToken(user);
@@ -316,5 +319,6 @@ namespace Raidexi.Infrastructure.Services
             var dataBrandAnalysis = await _userRepository.GetBrandAnalysisByIdAsync(userId);
             return dataBrandAnalysis;
         }
+       
     }
 }

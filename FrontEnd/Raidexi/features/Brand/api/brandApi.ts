@@ -1,8 +1,14 @@
 import { API, api_Response } from "@/Shared/Service/Api";
 import { DataToSaveBrandMeasure } from "@/Shared/types";
+import { BrandProfileRequest } from "../types";
 
 export const brandApi = {
     getBrandProfile: () => api_Response(API.Brand.GetBrandProfile, 'GET'),
+    createBrandProfileRequest: (data: BrandProfileRequest) =>
+        api_Response(API.Brand.CreateBrandProfileRequest, "POST", data, {
+            withCredentials: true
+        }),
+    getBrandProfileRequests: () => api_Response(API.Brand.GetBrandProfileRequests, "GET"),
     saveMeasureBrandSize: (data: DataToSaveBrandMeasure | undefined) =>
         api_Response(API.Authentication.SaveMeasureBrandSize, "POST", data, {
             withCredentials: true

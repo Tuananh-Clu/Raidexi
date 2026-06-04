@@ -50,9 +50,7 @@ export const NavBar: React.FC = () => {
               className="group flex min-w-0 items-center gap-3 rounded-full py-1.5 pl-1 pr-3 text-left transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--signal-blue)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-paper)]"
               aria-label="Về trang chủ Raidexi"
             >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--ink)] text-sm font-bold text-[var(--surface-paper)] shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105">
-                R
-              </span>
+              <img src="/logo.png" alt="Logo" className="h-13 w-13" />
               <span className="hidden min-w-0 sm:block">
                 <span className="block text-[0.86rem] font-extrabold leading-none text-[var(--ink)]">Raidexi</span>
                 <span className="mt-1 block font-mono text-[9px] font-semibold uppercase tracking-[0.13em] text-[var(--ink-muted)]">

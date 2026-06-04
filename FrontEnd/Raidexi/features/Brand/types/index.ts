@@ -10,6 +10,7 @@ export interface FilterBarProps {
   onFilterChange: (filter: FilterType) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  onOpenCustomizer: () => void;
   counts: {
     all: number;
     international: number;
@@ -49,6 +50,19 @@ export interface PaginationProps {
   totalItems: number|undefined;
   itemsPerPage: number;
   onPageChange: (page: number) => void;
+}
+export interface BrandProfileRequest {
+  id?: string;
+  brandName: string;
+  refCode: string;
+  category: string;
+  origin: string;
+  segment: string;
+  productType: string;
+  sizeSystem: string;
+  requesterNote: string;
+  status?: "PENDING" | "REVIEWING" | "APPROVED" | "REJECTED";
+  createdAt?: string;
 }
 export enum Gender {
   MALE = 'male',

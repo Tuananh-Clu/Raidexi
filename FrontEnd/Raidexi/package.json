@@ -7,7 +7,8 @@
     "build": "next build ",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest"
+    "test": "vitest",
+    "test-https":"npm run dev -- --experimental-https"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

@@ -47,7 +47,7 @@ namespace Raidexi.Infrastructure.Services
                     Waist         = raw.Waist           * 0.97f,
                     Hip           = raw.Hip             * 1.02f,
                     Height        = raw.Height,
-                    // supplementary — pass through unchanged
+
                     Neck          = raw.Neck,
                     SleeveLength  = raw.SleeveLength,
                     ArmHole       = raw.ArmHole,

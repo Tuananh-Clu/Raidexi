@@ -13,11 +13,14 @@ import Pagination from "@/features/Brand/components/Pagination";
 import { AuthContext } from "@/provider/AuthProvider";
 import { BrandContext } from "@/provider/BrandProvider";
 import { SizeCustomizer } from "@/features/Brand/components/SizeCustomizer";
+import { BrandProfileRequestForm } from "@/features/Brand/components/BrandProfileRequestForm";
 
 export default function Page() {
   const [activeFilter, setActiveFilter] = useState<FilterType>(FilterType.ALL);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [brandRequestOpen, setBrandRequestOpen] = useState(false);
+  const [brandRequestName, setBrandRequestName] = useState("Yêu cầu thương hiệu mới");
   const authContext = useContext(AuthContext);
   const brandContext = useContext(BrandContext);
   const isLoggedIn = authContext?.isLoggedIn;
@@ -62,12 +65,25 @@ export default function Page() {
     setCurrentPage(1);
   };
 
+  const handleOpenCustomizer = () => {
+    const requestedBrand = searchQuery.trim() || "Yêu cầu thương hiệu mới";
+    setBrandRequestName(requestedBrand);
+    setBrandRequestOpen(true);
+  };
+
   return (
     <div className="rx-page min-h-screen">
       {brandContext.popUpSettings.isopened && (
         <div className="rx-modal-backdrop fixed z-50 flex items-center justify-center p-4">
           <div className="pointer-events-auto">
             <SizeCustomizer type="brand" />
+          </div>
+        </div>
+      )}
+      {brandRequestOpen && (
+        <div className="rx-modal-backdrop fixed z-50 grid place-items-center overflow-y-auto p-4">
+          <div className="pointer-events-auto w-full max-w-3xl">
+            <BrandProfileRequestForm initialBrandName={brandRequestName} onClose={() => setBrandRequestOpen(false)} />
           </div>
         </div>
       )}
@@ -90,7 +106,14 @@ export default function Page() {
             </div>
           </section>
 
-          <FilterBar activeFilter={activeFilter} onFilterChange={handleFilterChange} searchQuery={searchQuery} onSearchChange={handleSearchChange} counts={counts} />
+          <FilterBar
+            activeFilter={activeFilter}
+            onFilterChange={handleFilterChange}
+            searchQuery={searchQuery}
+            onSearchChange={handleSearchChange}
+            onOpenCustomizer={handleOpenCustomizer}
+            counts={counts}
+          />
 
           <section className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {currentBrands.map((brand) => <BrandCard key={brand.id} brand={brand} />)}

@@ -75,6 +75,14 @@ namespace Raidexi.Domain.Entities
             PENDING,
             RECALIBRATE
         }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public enum BrandProfileRequestStatus
+        {
+            PENDING,
+            REVIEWING,
+            APPROVED,
+            REJECTED
+        }
         public class BrandProfile
         {
             public string _id { get; set; }
@@ -89,6 +97,22 @@ namespace Raidexi.Domain.Entities
             public string origin { get; set; }
             public string segment { get; set; }
             public string dataSeason { get; set; }
+        }
+        public class BrandProfileRequest
+        {
+            [BsonId]
+            [BsonRepresentation(BsonType.ObjectId)]
+            public string? id { get; set; }
+            public string brandName { get; set; } = string.Empty;
+            public string refCode { get; set; } = string.Empty;
+            public string category { get; set; } = string.Empty;
+            public string origin { get; set; } = string.Empty;
+            public string segment { get; set; } = string.Empty;
+            public string productType { get; set; } = string.Empty;
+            public string sizeSystem { get; set; } = string.Empty;
+            public string requesterNote { get; set; } = string.Empty;
+            public BrandProfileRequestStatus status { get; set; } = BrandProfileRequestStatus.PENDING;
+            public DateTime createdAt { get; set; } = DateTime.UtcNow;
         }
     }
 }

@@ -1,7 +1,9 @@
 "use client";
 
-import { ArrowUpRight, FileUp, Plus, RefreshCw } from "lucide-react";
-import { useState } from "react";
+import { ArrowUpRight, FileUp, Inbox, Plus, RefreshCw } from "lucide-react";
+import { useEffect, useState } from "react";
+import { brandApi } from "@/features/Brand/api/brandApi";
+import type { BrandProfileRequest } from "@/features/Brand/types";
 import { brandRows } from "../constants";
 import { AdminPill } from "./AdminPill";
 
@@ -12,9 +14,49 @@ const sizeRules = [
   { rule: "Return risk", value: "Low", note: "Dựa trên lịch sử fit" },
 ];
 
+const fallbackRequests: BrandProfileRequest[] = [
+  {
+    brandName: "YODY",
+    refCode: "YODY",
+    category: "Vietnam",
+    origin: "Việt Nam",
+    segment: "Basic apparel",
+    productType: "top",
+    sizeSystem: "VN",
+    requesterNote: "Người dùng yêu cầu thêm brand nội địa.",
+    status: "PENDING",
+  },
+];
+
 export function BrandLogicWorkspace() {
   const [selectedBrand, setSelectedBrand] = useState(brandRows[0].brand);
+  const [requests, setRequests] = useState<BrandProfileRequest[]>([]);
   const brand = brandRows.find((item) => item.brand === selectedBrand) || brandRows[0];
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadRequests = async () => {
+      try {
+        const response = await brandApi.getBrandProfileRequests();
+        if (mounted && Array.isArray(response)) {
+          setRequests(response);
+        }
+      } catch {
+        if (mounted) {
+          setRequests(fallbackRequests);
+        }
+      }
+    };
+
+    loadRequests();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const visibleRequests = requests.length > 0 ? requests : fallbackRequests;
 
   return (
     <section className="grid gap-5 xl:grid-cols-[1fr_22rem]">
@@ -24,10 +66,10 @@ export function BrandLogicWorkspace() {
             <div>
               <AdminPill>Brand logic studio</AdminPill>
               <h2 className="mt-4 font-serif text-4xl font-light leading-none text-[var(--ink)]">
-                Chuẩn hóa bảng size theo thương hiệu
+                Chuẩn hóa hồ sơ fit theo thương hiệu
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--ink-soft)]">
-                Upload bảng size, gán rule chuyển đổi và kiểm tra mức phủ trước khi đưa thương hiệu vào hệ gợi ý.
+                Quản lý brand profile, rule chuyển đổi và request từ người dùng trước khi đưa thương hiệu vào hệ gợi ý.
               </p>
             </div>
             <button className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[var(--ink)] px-5 text-sm font-bold text-[var(--surface-paper)]" type="button">
@@ -75,9 +117,9 @@ export function BrandLogicWorkspace() {
 
               <div className="mt-6 rounded-[1.5rem] border border-dashed border-[rgba(24,23,20,0.18)] bg-[rgba(255,253,247,0.48)] p-6">
                 <FileUp size={24} strokeWidth={1.15} className="text-[var(--signal-blue)]" />
-                <h3 className="mt-4 text-sm font-extrabold text-[var(--ink)]">Upload bảng size mới</h3>
+                <h3 className="mt-4 text-sm font-extrabold text-[var(--ink)]">Upload bảng size khi có dữ liệu thật</h3>
                 <p className="mt-2 max-w-lg text-xs leading-5 text-[var(--ink-muted)]">
-                  Nhận CSV/XLSX, tự phát hiện đơn vị đo và map cột với chest, waist, hip, shoulder.
+                  Hiện tại hệ thống dùng universal size + brand bias. Khi có CSV/XLSX thật, admin có thể chuyển brand sang bảng size riêng.
                 </p>
                 <button className="mt-5 rounded-full bg-[rgba(24,23,20,0.075)] px-4 py-2 text-xs font-bold text-[var(--ink)]" type="button">
                   Chọn file
@@ -89,6 +131,38 @@ export function BrandLogicWorkspace() {
       </div>
 
       <aside className="space-y-5">
+        <section className="raidexi-shell rounded-[2rem] p-1.5">
+          <div className="raidexi-core rounded-[calc(2rem-0.375rem)] p-5">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <AdminPill>Yêu cầu brand mới</AdminPill>
+                <h3 className="mt-4 font-serif text-3xl font-light leading-none text-[var(--ink)]">Inbox admin</h3>
+              </div>
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[rgba(93,116,101,0.12)] text-[var(--signal-blue)]">
+                <Inbox size={17} strokeWidth={1.15} />
+              </span>
+            </div>
+            <div className="mt-5 space-y-3">
+              {visibleRequests.map((request) => (
+                <article key={`${request.brandName}-${request.refCode}`} className="rounded-[1.2rem] border border-[rgba(24,23,20,0.08)] bg-[rgba(255,253,247,0.52)] p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-extrabold text-[var(--ink)]">{request.brandName}</p>
+                    <span className="rounded-full bg-[rgba(93,116,101,0.11)] px-2.5 py-1 text-[10px] font-bold text-[var(--signal-blue)]">
+                      {request.status || "PENDING"}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-xs leading-5 text-[var(--ink-muted)]">
+                    {request.productType || "mixed"} · hệ {request.sizeSystem || "VN"} · {request.category || "Vietnam"}
+                  </p>
+                  {request.requesterNote && (
+                    <p className="mt-2 line-clamp-2 text-xs leading-5 text-[var(--ink-soft)]">{request.requesterNote}</p>
+                  )}
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section className="raidexi-shell rounded-[2rem] p-1.5">
           <div className="raidexi-core rounded-[calc(2rem-0.375rem)] p-5">
             <AdminPill>Rule engine</AdminPill>

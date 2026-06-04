@@ -13,6 +13,7 @@ type EditableUser = {
   address?: string;
   createdAt?: string;
   imageUrl?: string | null;
+  role?: string;
 };
 
 export const EditProfile = ({
@@ -36,6 +37,7 @@ export const EditProfile = ({
     createdAt: data?.createdAt ?? "",
     hashPassword: "",
     imageUrl: data?.imageUrl ?? "",
+      role: data?.role ?? "",
   });
 
   const handleSave = async () => {

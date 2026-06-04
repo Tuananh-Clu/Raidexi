@@ -160,5 +160,36 @@ namespace Raidexi.Presentation.Controller
                 isSuccess = true
             });
         }
+        [HttpGet("GetCustomProfileForUser")]
+        public async Task<IActionResult> GetCustomProfileForUser()
+        {
+            var result = await authService.GetCustomProfileForUser();
+            return Ok(new
+            {
+                message = "Lấy Thành Công",
+                isSuccess = true,
+                data = result
+            });
+        }
+        [HttpPost("SaveCustomProfileForUser")]
+        public async Task<IActionResult> SaveCustomProfileForUser([FromBody] SaveMeasureCustomDataList data)
+        {
+            await authService.SaveCustomProfile(data);
+            return Ok(new
+            {
+                message = "Thêm Thành Công",
+                isSuccess = true
+            });
+        }
+        [HttpPut("UpdateCustomProfile")]
+        public async Task<IActionResult> UpdateCustomProfile([FromBody] SaveMeasureCustomDataList data)
+        {
+            await authService.UpdateCustomProfile(data);
+            return Ok(new
+            {
+                message = "Cập Nhật Thành Công",
+                isSuccess = true
+            });
+        }
     }
 }
