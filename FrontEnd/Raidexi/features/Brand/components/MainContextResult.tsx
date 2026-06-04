@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useContext, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { ArrowLeft, CheckCircle2, List, Ruler, SaveAll } from "lucide-react";
 import { Gender, ProductType, RegionSystem, Brand } from "../types";
 import { AISuggestSize } from "@/provider/AISuggestSize";
@@ -33,7 +33,7 @@ export const MainContent = ({ brandData }: { brandData?: Brand }) => {
     HandleSaveSuggestBrand(dataToSave);
   };
 
-  const renderSegment = <T extends string>(value: T, current: T, setter: (value: T) => void) => (
+  const renderSegment = <T extends string>(value: T, current: T, setter: Dispatch<SetStateAction<T>>) => (
     <button
       key={value}
       onClick={() => setter(value)}
