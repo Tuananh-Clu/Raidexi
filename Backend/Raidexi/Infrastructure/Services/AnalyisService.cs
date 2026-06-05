@@ -132,11 +132,12 @@ namespace Raidexi.Infrastructure.Services
 
         public async Task<SizeResult> GetSizeFromMeasure(
             MeasureData measureData,
+            MappingSize.BrandSizeChart brandChart,
             string category,
-            string gender)
+            string gender,
+            string sizeOutputRegion)
         {
             var categories = await cache.CategoryRuleAsync();
-            var sizes = await cache.GetUniversalSizeAsync();
 
             var rule = categories.FirstOrDefault(c =>
                 c.Category.Equals(category, StringComparison.OrdinalIgnoreCase));
@@ -150,7 +151,14 @@ namespace Raidexi.Infrastructure.Services
 
             var weight = GetWeightByCategory(category);
 
-            // Build field map from float properties (MeasureData now uses float)
+            var group = brandChart.charts?.FirstOrDefault(c => 
+                string.Equals(c.gender, gender, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(c.productType, category, StringComparison.OrdinalIgnoreCase));
+
+            if (group == null || group.items == null || !group.items.Any())
+                return new SizeResult { SizeCode = "No Chart Available", FitPercent = 0 };
+
+            // Build field map from float properties
             var fieldMap = typeof(MeasureData)
                 .GetProperties()
                 .Where(p => p.PropertyType == typeof(float))
@@ -163,15 +171,18 @@ namespace Raidexi.Infrastructure.Services
                 .ToDictionary(x => x.Name, x => (int)Math.Round(x.Value));
 
             var results = new List<SizeResult>();
-            var filteredSizes = sizes.Where(s => s.Gender == gender).ToList();
 
-            foreach (var size in filteredSizes)
+            foreach (var sizeItem in group.items)
             {
                 double totalFit = 0;
                 double totalWeight = 0;
                 int matchedFields = 0;
 
-                Console.WriteLine($"\n📏 Checking size: {size.Code}");
+                string label = sizeItem.labels != null && sizeItem.labels.ContainsKey(sizeOutputRegion.ToUpper()) 
+                    ? sizeItem.labels[sizeOutputRegion.ToUpper()] 
+                    : (sizeItem.labels != null && sizeItem.labels.Any() ? sizeItem.labels.First().Value : "Unknown");
+
+                Console.WriteLine($"\n📏 Checking size: {label}");
 
                 foreach (var field in rule.Fields)
                 {
@@ -187,8 +198,8 @@ namespace Raidexi.Infrastructure.Services
                         continue;
                     }
 
-                    var rangeProp = size.GetType().GetProperty(field);
-                    var range = rangeProp?.GetValue(size);
+                    var rangeProp = sizeItem.GetType().GetProperty(field);
+                    var range = rangeProp?.GetValue(sizeItem) as MappingSize.ValueSize;
 
                     if (range == null)
                     {
@@ -196,14 +207,8 @@ namespace Raidexi.Infrastructure.Services
                         continue;
                     }
 
-                    var minProp = range.GetType().GetProperty("Min");
-                    var maxProp = range.GetType().GetProperty("Max");
-
-                    if (minProp == null || maxProp == null)
-                        continue;
-
-                    var min = (int)minProp.GetValue(range)!;
-                    var max = (int)maxProp.GetValue(range)!;
+                    var min = range.Min;
+                    var max = range.Max;
 
                     var fit = CalculateRangeFit(userValue, min, max);
 
@@ -222,7 +227,7 @@ namespace Raidexi.Infrastructure.Services
 
                 results.Add(new SizeResult
                 {
-                    SizeCode = size.Code ?? "Unknown",
+                    SizeCode = label,
                     FitPercent = (int)Math.Round(finalFit)
                 });
             }
@@ -248,48 +253,33 @@ namespace Raidexi.Infrastructure.Services
             var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
             if (string.IsNullOrEmpty(apiKey))
                 throw new InvalidOperationException("Missing GEMINI_API_KEY environment variable");
-            var brandRules = await cache.BrandRuleAsync();
-            var brandRule = brandRules.FirstOrDefault(b =>
-                b.Brand.Equals(uploadDataToAnalysisMeasure.brand, StringComparison.OrdinalIgnoreCase));
 
-            if (brandRule == null)
-                throw new Exception("Brand rule not found");
+            var brandProfiles = await cache.GetAllBrandProfilesAsync();
+            var brandProfile = brandProfiles.FirstOrDefault(b =>
+                b.name.Equals(uploadDataToAnalysisMeasure.brand, StringComparison.OrdinalIgnoreCase));
+
+            var brandRefCode = brandProfile?.refCode ?? "UNIVERSAL";
+
+            var brandChart = await cache.GetBrandSizeChartAsync(brandRefCode) 
+                ?? await cache.GetBrandSizeChartAsync("UNIVERSAL");
+
+            if (brandChart == null)
+                throw new Exception("Critical: UNIVERSAL size chart is missing from the database.");
 
             var measureData = uploadDataToAnalysisMeasure.dataMeasure;
 
-            var dataMeasureAdjusted = new MeasureData
-            {
-                // Core — apply brand ease allowance
-                Chest         = measureData.Chest         + brandRule.Chest,
-                Waist         = measureData.Waist         + brandRule.Waist,
-                Hip           = measureData.Hip           + brandRule.Hip,
-                ShoulderWidth = measureData.ShoulderWidth,
-                Height        = measureData.Height,
-                // Upper body — pass through unchanged
-                Neck          = measureData.Neck,
-                SleeveLength  = measureData.SleeveLength,
-                ArmHole       = measureData.ArmHole,
-                UpperArm      = measureData.UpperArm,
-                // Lower body — pass through unchanged
-                Inseam        = measureData.Inseam,
-                CrotchDepth   = measureData.CrotchDepth,
-                Thigh         = measureData.Thigh,
-                OutseamLength = measureData.OutseamLength,
-            };
-
-            dataMeasureAdjusted = AdjustByGenderSlight(
-                dataMeasureAdjusted,
+            var dataMeasureAdjusted = AdjustByGenderSlight(
+                measureData,
                 uploadDataToAnalysisMeasure.userCustom.gender
             );
 
             var dataSize = await GetSizeFromMeasure(
                 dataMeasureAdjusted,
+                brandChart,
                 uploadDataToAnalysisMeasure.userCustom.typeProduct,
-                uploadDataToAnalysisMeasure.userCustom.gender
+                uploadDataToAnalysisMeasure.userCustom.gender,
+                uploadDataToAnalysisMeasure.userCustom.sizeOutput
             );
-
-            var dataSizeMap = await cache.SizeMappingAsync();
-            var sizeMap = dataSizeMap.FirstOrDefault(a => a.Universal == dataSize.SizeCode);
 
             string fitSuggest = dataSize.FitPercent switch
             {
@@ -301,10 +291,6 @@ namespace Raidexi.Infrastructure.Services
                 _     => "Không phù hợp"
             };
 
-            var outputSize = sizeMap?.GetType()
-                .GetProperty(uploadDataToAnalysisMeasure.userCustom.sizeOutput.ToUpper())?
-                .GetValue(sizeMap)?.ToString();
-
             var prompt = geminiServices.CreatePrompt(uploadDataToAnalysisMeasure);
             var GeminiResponse = await geminiServices.GetAIMeasure(prompt);
             var result = new ResultAnalysis
@@ -313,7 +299,7 @@ namespace Raidexi.Infrastructure.Services
                 analysisDate = DateTime.UtcNow,
                 typeCustom = uploadDataToAnalysisMeasure.userCustom,
                 fitSuggest = fitSuggest,
-                sizeSuggest = outputSize ?? dataSize.SizeCode,
+                sizeSuggest = dataSize.SizeCode,
                 reliableRate = dataSize.FitPercent,
                 fitSuggestFromAI = new GeminiResponse
                 {

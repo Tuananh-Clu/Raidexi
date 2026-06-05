@@ -19,6 +19,7 @@ export const API={
         "GetBrandProfile":"/api/MappingSize/brand-profiles",
         "CreateBrandProfileRequest":"/api/MappingSize/brand-profile-requests",
         "GetBrandProfileRequests":"/api/MappingSize/brand-profile-requests",
+        "AddBrandSizeChart":"/api/MappingSize/brand-size-chart",
     },
     "AnalysisDataMeasurement":{
         "GetSuggestSize":"/api/AnalysisDataMeasure/AISuggest",

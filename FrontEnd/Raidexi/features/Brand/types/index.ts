@@ -23,6 +23,7 @@ export enum FilterType {
   International = 'International',
   VietNam = 'VietNam'
 }
+
 export enum BrandStatus {
   OPTIMIZED = 'OPTIMIZED',
   PENDING = 'PENDING',
@@ -42,6 +43,8 @@ export interface Brand {
   origin: string;
   segment: string;
   dataSeason: string;
+  coverage?: string;
+  requests?: string;
 }
 
 export interface PaginationProps {

@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver;
+using MongoDB.Driver;
 using Raidexi.Application.Dtos;
 using Raidexi.Domain.Entities;
 
@@ -12,11 +12,9 @@ namespace Raidexi.Infrastructure.Persistence
         {
             mongoDatabase = mongoDatabases;
         }
-        public IMongoCollection<MappingSize.UniversalSize> UniversalSize => mongoDatabase.GetCollection<MappingSize.UniversalSize>("UniversalSize");
-        public IMongoCollection<MappingSize.BrandRule> BrandRule => mongoDatabase.GetCollection<MappingSize.BrandRule>("BrandRUle");
         public IMongoCollection<MappingSize.CategoryRule> CategoryRule => mongoDatabase.GetCollection<MappingSize.CategoryRule>("CategoryRule");
-        public IMongoCollection<MappingSize.SizeMapping> SizeMapping => mongoDatabase.GetCollection<MappingSize.SizeMapping>("SizeMapping");
         public IMongoCollection<MappingSize.BrandProfile> BrandProfile => mongoDatabase.GetCollection<MappingSize.BrandProfile>("BrandProfile");
+        public IMongoCollection<MappingSize.BrandSizeChart> BrandSizeChart => mongoDatabase.GetCollection<MappingSize.BrandSizeChart>("BrandSizeChart");
         public IMongoCollection<MappingSize.BrandProfileRequest> BrandProfileRequest => mongoDatabase.GetCollection<MappingSize.BrandProfileRequest>("BrandProfileRequest");
         public IMongoCollection<SaveMeasureDataDto> MeasureUserData => mongoDatabase.GetCollection<SaveMeasureDataDto>("MeasureDataUser");
         public IMongoCollection<DataBrandAnalysisResult> DataBrandAnalysis => mongoDatabase.GetCollection<DataBrandAnalysisResult>("DataBrandAnalysis");

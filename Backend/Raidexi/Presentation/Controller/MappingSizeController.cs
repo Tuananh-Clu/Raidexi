@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Raidexi.Domain.Entities;
@@ -46,28 +46,23 @@ namespace Raidexi.Presentation.Controller
             var requests = await _sizeMapping.GetBrandProfileRequests();
             return Ok(requests);
         }
-        [HttpPost("AddSizeMapping")]
-        public async Task<IActionResult> AddSizeMapping([FromBody] List<MappingSize.SizeMapping> sizeMapping)
+        [HttpPost("AddBrandSizeChart")]
+        public async Task<IActionResult> AddBrandSizeChart([FromBody] List<MappingSize.BrandSizeChart> brandSizeCharts)
         {
-            await _sizeMapping.AddSizeMapping(sizeMapping);
+            await _sizeMapping.AddBrandSizeChart(brandSizeCharts);
             return Ok("Success");
         }
-        [HttpPost("AddUniversalSize")]
-        public async Task<IActionResult> AddUniversalSize([FromBody] List<MappingSize.UniversalSize> universalSize)
+        [HttpGet("brand-size-chart/{brandRefCode}")]
+        public async Task<IActionResult> GetBrandSizeChart(string brandRefCode)
         {
-            await _sizeMapping.AddUniversalSize(universalSize);
-            return Ok("Success");
+            var chart = await _sizeMapping.GetBrandSizeChartAsync(brandRefCode);
+            if (chart == null) return NotFound();
+            return Ok(chart);
         }
         [HttpPost("AddCategoryRule")]
         public async Task<IActionResult> AddCategoryRule([FromBody] List<MappingSize.CategoryRule> categoryRule)
         {
             await _sizeMapping.AddCategoryRule(categoryRule);
-            return Ok("Success");
-        }
-        [HttpPost("AddBrandRule")]
-        public async Task<IActionResult> AddBrandRule([FromBody] List<MappingSize.BrandRule> brandRule)
-        {
-            await _sizeMapping.AddBrandRule(brandRule);
             return Ok("Success");
         }
 

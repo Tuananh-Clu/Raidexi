@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver;
+using MongoDB.Driver;
 using Raidexi.Domain.Entities;
 using Raidexi.Domain.Interfaces;
 
@@ -13,22 +13,6 @@ namespace Raidexi.Infrastructure.Persistence
             _db = db;
         }
         
-        public async Task AddUniversalSize(MappingSize.UniversalSize universalSize)
-        {
-            await _db.UniversalSize.InsertOneAsync(universalSize);
-        }
-        public async Task AddUniversalSize(List<MappingSize.UniversalSize> universalSizes)
-        {
-            await _db.UniversalSize.InsertManyAsync(universalSizes);
-        }
-        public async Task AddSizeMapping(MappingSize.SizeMapping sizeMapping)
-        {
-            await _db.SizeMapping.InsertOneAsync(sizeMapping);
-        }
-        public async Task AddSizeMapping(List<MappingSize.SizeMapping> sizeMappings)
-        {
-            await _db.SizeMapping.InsertManyAsync(sizeMappings);
-        }
         public async Task AddCategoryRule(MappingSize.CategoryRule categoryRule)
         {
             await _db.CategoryRule.InsertOneAsync(categoryRule);
@@ -37,13 +21,13 @@ namespace Raidexi.Infrastructure.Persistence
         {
             await _db.CategoryRule.InsertManyAsync(categoryRules);
         }
-        public async Task AddBrandRule(MappingSize.BrandRule brandRule)
+        public async Task AddBrandSizeChart(List<MappingSize.BrandSizeChart> brandSizeCharts)
         {
-            await _db.BrandRule.InsertOneAsync(brandRule);
+            await _db.BrandSizeChart.InsertManyAsync(brandSizeCharts);
         }
-        public async Task AddBrandRule(List<MappingSize.BrandRule> brandRules)
+        public async Task<MappingSize.BrandSizeChart> GetBrandSizeChartAsync(string brandRefCode)
         {
-            await _db.BrandRule.InsertManyAsync(brandRules);
+            return await _db.BrandSizeChart.Find(x => x.brandRefCode == brandRefCode).FirstOrDefaultAsync();
         }
         public async Task AddBrandProfile(List<MappingSize.BrandProfile> brandProfiles)
         {

@@ -1,8 +1,23 @@
 import { ArrowUpRight } from "lucide-react";
-import { brandRows } from "../constants";
+import { useEffect, useState } from "react";
+import { brandApi } from "@/features/Brand/api/brandApi";
+import type { Brand } from "@/features/Brand/types";
 import { AdminPill } from "./AdminPill";
 
 export function BrandTable() {
+  const [brands, setBrands] = useState<Brand[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    brandApi.getBrandProfile().then((data) => {
+      if (mounted && Array.isArray(data)) {
+        setBrands(data);
+      }
+    }).catch(console.error);
+
+    return () => { mounted = false; };
+  }, []);
+
   return (
     <section className="raidexi-shell rounded-[2rem] p-1.5 lg:col-span-2">
       <div className="raidexi-core overflow-hidden rounded-[calc(2rem-0.375rem)]">
@@ -37,19 +52,19 @@ export function BrandTable() {
               </tr>
             </thead>
             <tbody>
-              {brandRows.map((row) => (
-                <tr key={row.brand} className="border-b border-[rgba(24,23,20,0.08)] last:border-b-0">
-                  <td className="px-6 py-4 text-sm font-extrabold text-[var(--ink)]">{row.brand}</td>
+              {brands.map((row) => (
+                <tr key={row.name} className="border-b border-[rgba(24,23,20,0.08)] last:border-b-0">
+                  <td className="px-6 py-4 text-sm font-extrabold text-[var(--ink)]">{row.name}</td>
                   <td className="px-6 py-4 text-sm text-[var(--ink-soft)]">{row.category}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="h-1.5 w-24 overflow-hidden rounded-full bg-[rgba(24,23,20,0.08)]">
-                        <div className="h-full rounded-full bg-[var(--signal-blue)]" style={{ width: row.coverage }} />
+                        <div className="h-full rounded-full bg-[var(--signal-blue)]" style={{ width: row.coverage || '0%' }} />
                       </div>
-                      <span className="font-mono text-xs font-semibold text-[var(--ink)]">{row.coverage}</span>
+                      <span className="font-mono text-xs font-semibold text-[var(--ink)]">{row.coverage || '0%'}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 font-mono text-sm font-semibold text-[var(--ink)]">{row.requests}</td>
+                  <td className="px-6 py-4 font-mono text-sm font-semibold text-[var(--ink)]">{row.requests || '0'}</td>
                   <td className="px-6 py-4">
                     <span className="rounded-full border border-[rgba(24,23,20,0.1)] bg-[rgba(255,253,247,0.62)] px-3 py-1 text-xs font-bold text-[var(--ink-soft)]">
                       {row.status}

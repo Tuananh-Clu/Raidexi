@@ -3,8 +3,7 @@
 import { ArrowUpRight, FileUp, Inbox, Plus, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { brandApi } from "@/features/Brand/api/brandApi";
-import type { BrandProfileRequest } from "@/features/Brand/types";
-import { brandRows } from "../constants";
+import type { Brand, BrandProfileRequest } from "@/features/Brand/types";
 import { AdminPill } from "./AdminPill";
 
 const sizeRules = [
@@ -29,18 +28,30 @@ const fallbackRequests: BrandProfileRequest[] = [
 ];
 
 export function BrandLogicWorkspace() {
-  const [selectedBrand, setSelectedBrand] = useState(brandRows[0].brand);
+  const [selectedBrandId, setSelectedBrandId] = useState<string>("");
+  const [brands, setBrands] = useState<Brand[]>([]);
   const [requests, setRequests] = useState<BrandProfileRequest[]>([]);
-  const brand = brandRows.find((item) => item.brand === selectedBrand) || brandRows[0];
+  
+  const selectedBrand = brands.find((item) => item.name === selectedBrandId) || brands[0];
 
   useEffect(() => {
     let mounted = true;
 
-    const loadRequests = async () => {
+    const loadData = async () => {
       try {
-        const response = await brandApi.getBrandProfileRequests();
-        if (mounted && Array.isArray(response)) {
-          setRequests(response);
+        const [brandData, requestData] = await Promise.all([
+          brandApi.getBrandProfile(),
+          brandApi.getBrandProfileRequests()
+        ]);
+        
+        if (mounted) {
+          if (Array.isArray(brandData)) {
+             setBrands(brandData);
+             if (brandData.length > 0) setSelectedBrandId(brandData[0].name);
+          }
+          if (Array.isArray(requestData)) {
+             setRequests(requestData);
+          }
         }
       } catch {
         if (mounted) {
@@ -49,7 +60,7 @@ export function BrandLogicWorkspace() {
       }
     };
 
-    loadRequests();
+    loadData();
 
     return () => {
       mounted = false;
@@ -81,18 +92,18 @@ export function BrandLogicWorkspace() {
           <div className="grid gap-0 lg:grid-cols-[16rem_1fr]">
             <div className="border-b border-[rgba(24,23,20,0.08)] p-4 lg:border-b-0 lg:border-r">
               <div className="space-y-2">
-                {brandRows.map((item) => (
+                {brands.map((item) => (
                   <button
-                    key={item.brand}
+                    key={item.name}
                     className={`w-full rounded-[1.2rem] px-4 py-3 text-left transition-all ${
-                      selectedBrand === item.brand
+                      selectedBrandId === item.name
                         ? "bg-[var(--ink)] text-[var(--surface-paper)]"
                         : "text-[var(--ink-soft)] hover:bg-[rgba(24,23,20,0.055)] hover:text-[var(--ink)]"
                     }`}
-                    onClick={() => setSelectedBrand(item.brand)}
+                    onClick={() => setSelectedBrandId(item.name)}
                     type="button"
                   >
-                    <span className="block text-sm font-extrabold">{item.brand}</span>
+                    <span className="block text-sm font-extrabold">{item.name}</span>
                     <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.12em] opacity-65">{item.category}</span>
                   </button>
                 ))}
@@ -103,15 +114,15 @@ export function BrandLogicWorkspace() {
               <div className="grid gap-4 md:grid-cols-3">
                 <article className="rounded-[1.4rem] bg-[rgba(93,116,101,0.1)] p-4">
                   <p className="text-xs font-bold text-[var(--ink-muted)]">Mức phủ</p>
-                  <p className="mt-3 font-serif text-5xl font-light text-[var(--signal-blue)]">{brand.coverage}</p>
+                  <p className="mt-3 font-serif text-5xl font-light text-[var(--signal-blue)]">{selectedBrand?.coverage || "0%"}</p>
                 </article>
                 <article className="rounded-[1.4rem] bg-[rgba(154,116,71,0.11)] p-4">
                   <p className="text-xs font-bold text-[var(--ink-muted)]">Lượt gợi ý</p>
-                  <p className="mt-3 font-serif text-5xl font-light text-[var(--brass)]">{brand.requests}</p>
+                  <p className="mt-3 font-serif text-5xl font-light text-[var(--brass)]">{selectedBrand?.requests || "0"}</p>
                 </article>
                 <article className="rounded-[1.4rem] bg-[rgba(24,23,20,0.055)] p-4">
                   <p className="text-xs font-bold text-[var(--ink-muted)]">Trạng thái</p>
-                  <p className="mt-4 text-sm font-extrabold text-[var(--ink)]">{brand.status}</p>
+                  <p className="mt-4 text-sm font-extrabold text-[var(--ink)]">{selectedBrand?.status || "UNKNOWN"}</p>
                 </article>
               </div>
 

@@ -11,43 +11,6 @@ namespace Raidexi.Domain.Entities
             public int Min { get; set; }
             public int Max { get; set; }
         }
-        public class UniversalSize
-        {
-            [BsonId]
-            [BsonRepresentation(BsonType.ObjectId)]
-            public string id { get; set; }
-            public string Gender { get; set; }
-            public string Code { get; set; }
-            // Core
-            public ValueSize Chest { get; set; }
-            public ValueSize Waist { get; set; }
-            public ValueSize Hip { get; set; }
-            public ValueSize ShoulderWidth { get; set; }
-            public ValueSize Height { get; set; }
-            // Upper body
-            public ValueSize Neck { get; set; }
-            public ValueSize SleeveLength { get; set; }
-            public ValueSize ArmHole { get; set; }
-            public ValueSize UpperArm { get; set; }
-            // Lower body
-            public ValueSize Inseam { get; set; }
-            public ValueSize CrotchDepth { get; set; }
-            public ValueSize Thigh { get; set; }
-            public ValueSize OutseamLength { get; set; }
-        }
-
-        public class SizeMapping
-        {
-            [BsonId]
-            [BsonRepresentation(BsonType.ObjectId)]
-            public string id { get; set; }
-            public string Universal { get; set; }
-            public string VN { get; set; }
-            public string US { get; set; }
-            public string EU { get; set; }
-            public string JP { get; set; }
-            public string KR { get; set; }
-        }
 
         public class CategoryRule
         {
@@ -58,16 +21,6 @@ namespace Raidexi.Domain.Entities
             public List<string> Fields { get; set; }
         }
 
-        public class BrandRule
-        {
-            [BsonId]
-            [BsonRepresentation(BsonType.ObjectId)]
-            public string id { get; set; }
-            public string Brand { get; set; }
-            public int Chest { get; set; }
-            public int Waist { get; set; }
-            public int Hip { get; set; }
-        }
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public enum BrandStatus
         {
@@ -85,7 +38,9 @@ namespace Raidexi.Domain.Entities
         }
         public class BrandProfile
         {
-            public string _id { get; set; }
+            [BsonId]
+            [BsonRepresentation(BsonType.ObjectId)]
+            public string? _id { get; set; }
             public string name { get; set; }
             public string refCode { get; set; }
             public BrandStatus status { get; set; }
@@ -97,7 +52,47 @@ namespace Raidexi.Domain.Entities
             public string origin { get; set; }
             public string segment { get; set; }
             public string dataSeason { get; set; }
+            public string coverage { get; set; }
+            public string requests { get; set; }
         }
+
+        public class BrandSizeChart
+        {
+            [BsonId]
+            [BsonRepresentation(BsonType.ObjectId)]
+            public string? id { get; set; }
+            public string brandRefCode { get; set; }
+            public List<SizeChartGroup> charts { get; set; }
+        }
+
+        public class SizeChartGroup
+        {
+            public string gender { get; set; }
+            public string productType { get; set; }
+            public List<SizeChartItem> items { get; set; }
+        }
+
+        public class SizeChartItem
+        {
+            public Dictionary<string, string> labels { get; set; }
+            // Core
+            public ValueSize? Chest { get; set; }
+            public ValueSize? Waist { get; set; }
+            public ValueSize? Hip { get; set; }
+            public ValueSize? ShoulderWidth { get; set; }
+            public ValueSize? Height { get; set; }
+            // Upper body
+            public ValueSize? Neck { get; set; }
+            public ValueSize? SleeveLength { get; set; }
+            public ValueSize? ArmHole { get; set; }
+            public ValueSize? UpperArm { get; set; }
+            // Lower body
+            public ValueSize? Inseam { get; set; }
+            public ValueSize? CrotchDepth { get; set; }
+            public ValueSize? Thigh { get; set; }
+            public ValueSize? OutseamLength { get; set; }
+        }
+
         public class BrandProfileRequest
         {
             [BsonId]

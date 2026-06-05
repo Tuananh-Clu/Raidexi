@@ -2,7 +2,7 @@
 import { useBrandMeasure } from "@/features/Brand/hooks/useBrandMeasure";
 import { useBrandProfile } from "@/features/Brand/hooks/useBrandProfile";
 import { Brand } from "@/features/Brand/types";
-import { BRANDS } from "@/features/Brand/constants";
+
 import { useBrandDataUserStore } from "@/Shared/store/brandDataUser.store";
 import { DataToSaveBrandMeasure } from "@/Shared/types";
 
@@ -47,7 +47,7 @@ export const BrandProvider = ({children}: {children: React.ReactNode}) => {
                 const brandMeasureData = await GetBrandMeasureData();
                 setDataBrandMeasured(brandMeasureData.data);
             } catch {
-                setDataBrand((current) => current.length > 0 ? current : BRANDS);
+                setDataBrand((current) => current.length > 0 ? current : []);
             }
         };
         fetchData();
