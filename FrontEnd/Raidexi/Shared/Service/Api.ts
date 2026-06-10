@@ -14,12 +14,16 @@ export const API={
         "SaveCustomProfile":"/api/User/SaveCustomProfileForUser",
         "GetCustomProfileForUser":"/api/User/GetCustomProfileForUser",
         "UpdateCustomProfile":"/api/User/UpdateCustomProfile",
+        "ResetPassword":"/api/User/ResetPassword",
     },
     "Brand":{
         "GetBrandProfile":"/api/MappingSize/brand-profiles",
         "CreateBrandProfileRequest":"/api/MappingSize/brand-profile-requests",
         "GetBrandProfileRequests":"/api/MappingSize/brand-profile-requests",
+        "UpdateBrandProfileRequestStatus":"/api/MappingSize/brand-profile-requests/{id}/status",
         "AddBrandSizeChart":"/api/MappingSize/brand-size-chart",
+        "GetBrandSizeChartsForId":"/api/MappingSize/brand-size-chart",
+        "MyBrandProfileRequests": "/api/MappingSize/my-brand-profile-requests",
     },
     "AnalysisDataMeasurement":{
         "GetSuggestSize":"/api/AnalysisDataMeasure/AISuggest",

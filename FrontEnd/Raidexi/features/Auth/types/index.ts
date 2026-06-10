@@ -7,6 +7,7 @@ export type UserData = {
   createdAt?: string;
   hashPassword?: string;
   imageUrl?: string | null;
+  resetPasswordToken?: string;
 };
 
 export type LoginParams = {

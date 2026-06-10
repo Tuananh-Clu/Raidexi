@@ -40,7 +40,7 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand }) => {
   const StatusIcon = config.icon;
 
   const handleClick = () => {
-    setPopUpSettings({ isopened: true, brandrefcode: name, gender: "", productType: "", sizeSystem: "" });
+    setPopUpSettings({ isopened: true, brandrefcode: refCode, gender: "", productType: "", sizeSystem: "" });
   };
   const iconSrc = typeof icon === "string" && (icon.startsWith("/") || icon.startsWith("http")) ? icon : "/logo.png";
 

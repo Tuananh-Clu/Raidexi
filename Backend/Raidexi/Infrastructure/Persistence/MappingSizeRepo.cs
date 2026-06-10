@@ -49,5 +49,25 @@ namespace Raidexi.Infrastructure.Persistence
             var sort = Builders<MappingSize.BrandProfileRequest>.Sort.Descending(request => request.createdAt);
             return await _db.BrandProfileRequest.Find(_ => true).Sort(sort).ToListAsync();
         }
+        public async Task<List<MappingSize.BrandProfileRequest>> GetBrandProfileRequestsByUserId(string userId)
+        {
+            var filter = Builders<MappingSize.BrandProfileRequest>.Filter.Eq(request => request.userId, userId);
+            var sort = Builders<MappingSize.BrandProfileRequest>.Sort.Descending(request => request.createdAt);
+            return await _db.BrandProfileRequest.Find(filter).Sort(sort).ToListAsync();
+        }
+        public async Task UpdateBrandProfileRequestStatus(string id, MappingSize.BrandProfileRequestStatus status)
+        {
+            var update = Builders<MappingSize.BrandProfileRequest>.Update.Set(x => x.status, status);
+            await _db.BrandProfileRequest.UpdateOneAsync(x => x.id == id, update);
+        }
+        public async Task AddBrandSizeChartAndBrandProfile(List<MappingSize.BrandSizeChart> brandSizeCharts, List<MappingSize.BrandProfile> brandProfiles)
+        {
+            var tasks = new List<Task>
+            {
+                _db.BrandSizeChart.InsertManyAsync(brandSizeCharts),
+                _db.BrandProfile.InsertManyAsync(brandProfiles)
+            };
+            await Task.WhenAll(tasks);
+        }
     }
 }

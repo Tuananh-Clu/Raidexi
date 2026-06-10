@@ -191,5 +191,11 @@ namespace Raidexi.Presentation.Controller
                 isSuccess = true
             });
         }
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] string email)
+        {
+            await authService.SendEmailResetPassword(email);
+            return Ok(new { message = "Password reset successfully." });
+        }
     }
 }

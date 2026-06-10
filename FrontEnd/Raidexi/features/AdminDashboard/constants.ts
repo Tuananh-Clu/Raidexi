@@ -1,8 +1,8 @@
 import type { LucideIcon } from "lucide-react";
-import { Boxes, Camera, CircleGauge, Database, Radar, Ruler, Users } from "lucide-react";
+import { Boxes, Camera, CircleGauge, Database, FileText, Radar, Ruler, Users } from "lucide-react";
 
 export type MetricTone = "sage" | "brass" | "clay" | "ink";
-export type AdminTabKey = "overview" | "users" | "profiles" | "brands" | "ai";
+export type AdminTabKey = "overview" | "users" | "profiles" | "brands" | "ai" | "requests";
 
 export type Metric = {
   label: string;
@@ -38,6 +38,7 @@ export const navItems: AdminNavItem[] = [
   { key: "profiles", label: "Hồ sơ fit", eyebrow: "Dữ liệu cơ thể", icon: Ruler },
   { key: "brands", label: "Thương hiệu", eyebrow: "Logic size", icon: Boxes },
   { key: "ai", label: "Hệ thống AI", eyebrow: "Chất lượng gợi ý", icon: Radar },
+  { key: "requests", label: "Yêu cầu", eyebrow: "Xử lý & duyệt", icon: FileText },
 ];
 
 export const tabCopy: Record<AdminTabKey, { pill: string; title: string; accent: string; description: string }> = {
@@ -75,6 +76,13 @@ export const tabCopy: Record<AdminTabKey, { pill: string; title: string; accent:
     accent: "độ chính xác fit.",
     description:
       "Theo dõi pipeline đo lường, độ lệch gợi ý, cảnh báo chất lượng và sức khỏe của hệ thống AI.",
+  },
+  requests: {
+    pill: "Requests management",
+    title: "Quản lý",
+    accent: "yêu cầu số đo.",
+    description:
+      "Kiểm duyệt và xử lý các yêu cầu cập nhật profile thương hiệu và mapping bảng size từ người dùng.",
   },
 };
 

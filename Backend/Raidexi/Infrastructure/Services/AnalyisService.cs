@@ -19,47 +19,6 @@ namespace Raidexi.Infrastructure.Services
             geminiServices = geminiService;
         }
 
-        private MeasureData AdjustByGenderSlight(MeasureData raw, string gender)
-        {
-            return gender.ToLower() switch
-            {
-                "male" => new MeasureData
-                {
-                    Chest         = raw.Chest         * 1.02f,
-                    ShoulderWidth = raw.ShoulderWidth  * 1.03f,
-                    Waist         = raw.Waist          * 1.01f,
-                    Hip           = raw.Hip,
-                    Height        = raw.Height,
-                    // supplementary — pass through unchanged
-                    Neck          = raw.Neck,
-                    SleeveLength  = raw.SleeveLength,
-                    ArmHole       = raw.ArmHole,
-                    UpperArm      = raw.UpperArm,
-                    Inseam        = raw.Inseam,
-                    CrotchDepth   = raw.CrotchDepth,
-                    Thigh         = raw.Thigh,
-                    OutseamLength = raw.OutseamLength,
-                },
-                "female" => new MeasureData
-                {
-                    Chest         = raw.Chest          * 0.99f,
-                    ShoulderWidth = raw.ShoulderWidth   * 0.97f,
-                    Waist         = raw.Waist           * 0.97f,
-                    Hip           = raw.Hip             * 1.02f,
-                    Height        = raw.Height,
-
-                    Neck          = raw.Neck,
-                    SleeveLength  = raw.SleeveLength,
-                    ArmHole       = raw.ArmHole,
-                    UpperArm      = raw.UpperArm,
-                    Inseam        = raw.Inseam,
-                    CrotchDepth   = raw.CrotchDepth,
-                    Thigh         = raw.Thigh,
-                    OutseamLength = raw.OutseamLength,
-                },
-                _ => raw
-            };
-        }
 
         private double CalculateRangeFit(float user, int min, int max)
         {
@@ -95,40 +54,7 @@ namespace Raidexi.Infrastructure.Services
             return 0;
         }
 
-        private Dictionary<string, double> GetWeightByCategory(string category)
-        {
-            return category.ToLower() switch
-            {
-                "top" => new()
-                {
-                    ["Chest"]         = 0.45,
-                    ["ShoulderWidth"] = 0.30,
-                    ["Waist"]         = 0.15,
-                    ["Height"]        = 0.10
-                },
-                "bottom" => new()
-                {
-                    ["Waist"]  = 0.45,
-                    ["Hip"]    = 0.40,
-                    ["Height"] = 0.15
-                },
-                "dress" => new()
-                {
-                    ["Chest"]         = 0.25,
-                    ["Waist"]         = 0.25,
-                    ["Hip"]           = 0.30,
-                    ["ShoulderWidth"] = 0.10,
-                    ["Height"]        = 0.10
-                },
-                _ => new()
-                {
-                    ["Chest"]  = 0.35,
-                    ["Waist"]  = 0.30,
-                    ["Hip"]    = 0.25,
-                    ["Height"] = 0.10
-                }
-            };
-        }
+
 
         public async Task<SizeResult> GetSizeFromMeasure(
             MeasureData measureData,
@@ -137,20 +63,6 @@ namespace Raidexi.Infrastructure.Services
             string gender,
             string sizeOutputRegion)
         {
-            var categories = await cache.CategoryRuleAsync();
-
-            var rule = categories.FirstOrDefault(c =>
-                c.Category.Equals(category, StringComparison.OrdinalIgnoreCase));
-
-            if (rule == null)
-                return new SizeResult
-                {
-                    SizeCode = "Size Not Found",
-                    FitPercent = 0
-                };
-
-            var weight = GetWeightByCategory(category);
-
             var group = brandChart.charts?.FirstOrDefault(c => 
                 string.Equals(c.gender, gender, StringComparison.OrdinalIgnoreCase) &&
                 string.Equals(c.productType, category, StringComparison.OrdinalIgnoreCase));
@@ -158,7 +70,6 @@ namespace Raidexi.Infrastructure.Services
             if (group == null || group.items == null || !group.items.Any())
                 return new SizeResult { SizeCode = "No Chart Available", FitPercent = 0 };
 
-            // Build field map from float properties
             var fieldMap = typeof(MeasureData)
                 .GetProperties()
                 .Where(p => p.PropertyType == typeof(float))
@@ -171,59 +82,40 @@ namespace Raidexi.Infrastructure.Services
                 .ToDictionary(x => x.Name, x => (int)Math.Round(x.Value));
 
             var results = new List<SizeResult>();
+            var properties = typeof(MappingSize.SizeChartItem).GetProperties()
+                .Where(p => p.PropertyType == typeof(MappingSize.ValueSize))
+                .ToList();
 
             foreach (var sizeItem in group.items)
             {
                 double totalFit = 0;
-                double totalWeight = 0;
                 int matchedFields = 0;
 
                 string label = sizeItem.labels != null && sizeItem.labels.ContainsKey(sizeOutputRegion.ToUpper()) 
                     ? sizeItem.labels[sizeOutputRegion.ToUpper()] 
                     : (sizeItem.labels != null && sizeItem.labels.Any() ? sizeItem.labels.First().Value : "Unknown");
 
-                Console.WriteLine($"\n📏 Checking size: {label}");
 
-                foreach (var field in rule.Fields)
+                foreach (var prop in properties)
                 {
+                    var range = prop.GetValue(sizeItem) as MappingSize.ValueSize;
+                    if (range == null) continue;
+
+                    string field = prop.Name;
                     if (!fieldMap.TryGetValue(field, out var userValue))
                     {
                         Console.WriteLine($"  ⚠️ Field '{field}' not in user data");
                         continue;
                     }
 
-                    if (!weight.TryGetValue(field, out var w))
-                    {
-                        Console.WriteLine($"  ⚠️ Field '{field}' not in weight config");
-                        continue;
-                    }
-
-                    var rangeProp = sizeItem.GetType().GetProperty(field);
-                    var range = rangeProp?.GetValue(sizeItem) as MappingSize.ValueSize;
-
-                    if (range == null)
-                    {
-                        Console.WriteLine($"  ⚠️ Field '{field}' not in size data");
-                        continue;
-                    }
-
-                    var min = range.Min;
-                    var max = range.Max;
-
-                    var fit = CalculateRangeFit(userValue, min, max);
-
-                    totalFit += fit * w;
-                    totalWeight += w;
+                    var fit = CalculateRangeFit(userValue, range.Min, range.Max);
+                    totalFit += fit;
                     matchedFields++;
                 }
 
-                var finalFit = totalWeight > 0 ? totalFit / totalWeight : 0;
+                if (matchedFields == 0) continue;
 
-                if (matchedFields < rule.Fields.Count)
-                {
-                    var completeness = (double)matchedFields / rule.Fields.Count;
-                    finalFit *= completeness;
-                }
+                var finalFit = totalFit / matchedFields;
 
                 results.Add(new SizeResult
                 {
@@ -242,7 +134,6 @@ namespace Raidexi.Infrastructure.Services
             }
 
             var bestResult = results.OrderByDescending(x => x.FitPercent).First();
-            Console.WriteLine($"\n🎯 Best match: {bestResult.SizeCode} with {bestResult.FitPercent}% fit\n");
 
             return bestResult;
         }
@@ -268,13 +159,10 @@ namespace Raidexi.Infrastructure.Services
 
             var measureData = uploadDataToAnalysisMeasure.dataMeasure;
 
-            var dataMeasureAdjusted = AdjustByGenderSlight(
-                measureData,
-                uploadDataToAnalysisMeasure.userCustom.gender
-            );
+
 
             var dataSize = await GetSizeFromMeasure(
-                dataMeasureAdjusted,
+                measureData,
                 brandChart,
                 uploadDataToAnalysisMeasure.userCustom.typeProduct,
                 uploadDataToAnalysisMeasure.userCustom.gender,
@@ -362,16 +250,7 @@ namespace Raidexi.Infrastructure.Services
             return await geminiServices.GetMeasureFromFile(memoryStream.ToArray(), mimeType);
         }
 
-        private double Score(double value, double min, double max)
-        {
-            if (value >= min && value <= max)
-                return 100;
 
-            double center = (min + max) / 2;
-            double distance = Math.Abs(value - center);
-
-            return Math.Max(0, 100 - distance * 5);
-        }
 
         public async Task<ResultAnalysis> AnalysisPictureToSize(
          SizeAnalysisResponse uploadData,
@@ -380,40 +259,51 @@ namespace Raidexi.Infrastructure.Services
             double bestScore = -1;
             string bestSize = "";
 
+            var measureDataDict = typeof(MeasureData)
+                .GetProperties()
+                .Where(p => p.PropertyType == typeof(float))
+                .Select(p => new
+                {
+                    Name  = p.Name,
+                    Value = (float)p.GetValue(measureData)!
+                })
+                .Where(x => x.Value > 0)
+                .ToDictionary(x => x.Name, x => (int)Math.Round(x.Value));
+
             foreach (var s in uploadData.Sizes)
             {
-                var data1 = AdjustByGenderSlight(measureData, customizeDataAiSuggest.gender);
-                double chestScore = Score(data1.Chest, s.Chest_Min_Cm, s.Chest_Max_Cm);
-                double waistScore = Score(data1.Waist, s.Waist_Min_Cm, s.Waist_Max_Cm);
-                double hipScore   = Score(data1.Hip,   s.Hip_Min_Cm,   s.Hip_Max_Cm);
+                double totalScore = 0;
+                int count = 0;
 
-                if (customizeDataAiSuggest.typeProduct.ToLower() == "dress")
+                if (s.Chest_Min_Cm > 0 && s.Chest_Max_Cm > 0 && measureDataDict.TryGetValue("Chest", out var userChest))
                 {
-                    chestScore *= 0.25;
-                    waistScore *= 0.25;
-                    hipScore   *= 0.30;
+                    totalScore += CalculateRangeFit(userChest, (int)Math.Round(s.Chest_Min_Cm), (int)Math.Round(s.Chest_Max_Cm));
+                    count++;
                 }
-                else if (customizeDataAiSuggest.typeProduct.ToLower() == "top")
+                if (s.Waist_Min_Cm > 0 && s.Waist_Max_Cm > 0 && measureDataDict.TryGetValue("Waist", out var userWaist))
                 {
-                    chestScore *= 0.45;
-                    waistScore *= 0.15;
-                    hipScore   *= 0.10;
+                    totalScore += CalculateRangeFit(userWaist, (int)Math.Round(s.Waist_Min_Cm), (int)Math.Round(s.Waist_Max_Cm));
+                    count++;
                 }
-                else if (customizeDataAiSuggest.typeProduct.ToLower() == "bottom")
+                if (s.Hip_Min_Cm > 0 && s.Hip_Max_Cm > 0 && measureDataDict.TryGetValue("Hip", out var userHip))
                 {
-                    waistScore *= 0.45;
-                    hipScore   *= 0.40;
+                    totalScore += CalculateRangeFit(userHip, (int)Math.Round(s.Hip_Min_Cm), (int)Math.Round(s.Hip_Max_Cm));
+                    count++;
+                }
+                if (s.Height_Min_Cm > 0 && s.Height_Max_Cm > 0 && measureDataDict.TryGetValue("Height", out var userHeight))
+                {
+                    totalScore += CalculateRangeFit(userHeight, (int)Math.Round(s.Height_Min_Cm), (int)Math.Round(s.Height_Max_Cm));
+                    count++;
                 }
 
-                double totalScore =
-                    chestScore * 0.5 +
-                    waistScore * 0.3 +
-                    hipScore   * 0.2;
-
-                if (totalScore > bestScore)
+                if (count > 0)
                 {
-                    bestScore = totalScore;
-                    bestSize  = s.Size_Us;
+                    double score = totalScore / count;
+                    if (score > bestScore)
+                    {
+                        bestScore = score;
+                        bestSize = s.Size_Us;
+                    }
                 }
             }
             var data = new uploadDataToAnalysisMeasure
@@ -440,10 +330,11 @@ namespace Raidexi.Infrastructure.Services
                     >= 80 => "Vừa vặn",
                     >= 70 => "Tạm ổn",
                     >= 60 => "Hơi lệch",
+                    >= 50 => "Không khuyến nghị",
                     _     => "Không phù hợp"
                 },
                 sizeSuggest  = bestSize,
-                reliableRate = (int)Math.Round(bestScore),
+                reliableRate = bestScore > 0 ? (int)Math.Round(bestScore) : 0,
                 fitSuggestFromAI = new GeminiResponse
                 {
                     expectedFit        = new GeminiContent { content = GeminiResponse.expectedFit.content },

@@ -17,6 +17,7 @@ import { QualityPanel } from "./QualityPanel";
 import { TimelinePanel } from "./TimelinePanel";
 import { UserManagementWorkspace } from "./UserManagementWorkspace";
 import { VolumeChart } from "./VolumeChart";
+import { RequestsWorkspace } from "./RequestsWorkspace";
 
 function MetricsGrid() {
   return (
@@ -63,6 +64,10 @@ function AiTab() {
   return <AiControlWorkspace />;
 }
 
+function RequestsTab() {
+  return <RequestsWorkspace />;
+}
+
 function renderTab(activeTab: AdminTabKey) {
   switch (activeTab) {
     case "users":
@@ -73,6 +78,8 @@ function renderTab(activeTab: AdminTabKey) {
       return <BrandsTab />;
     case "ai":
       return <AiTab />;
+    case "requests":
+      return <RequestsTab />;
     case "overview":
     default:
       return <OverviewTab />;

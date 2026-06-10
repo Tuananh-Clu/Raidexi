@@ -9,6 +9,9 @@ export const brandApi = {
             withCredentials: true
         }),
     getBrandProfileRequests: () => api_Response(API.Brand.GetBrandProfileRequests, "GET"),
+    getMyBrandProfileRequests: () => api_Response(API.Brand.MyBrandProfileRequests, "GET", undefined, {
+        withCredentials: true
+    }),
     addBrandSizeChart: (data: object) =>
         api_Response(API.Brand.AddBrandSizeChart, "POST", data, {
             withCredentials: true

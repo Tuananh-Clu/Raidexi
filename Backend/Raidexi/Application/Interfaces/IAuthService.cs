@@ -20,6 +20,7 @@ namespace Raidexi.Application.Interfaces
         Task<List<SaveMeasureCustomDataList>> GetCustomProfileForUser();
         Task UpdateCustomProfile(SaveMeasureCustomDataList data);
         Task SaveCustomProfile(SaveMeasureCustomDataList data);
+        Task SendEmailResetPassword(string email);
 
     }
     public class AuthResult

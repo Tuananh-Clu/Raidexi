@@ -25,7 +25,7 @@ namespace Raidexi.Presentation.Services.CacheServices
             });
         }
 
-        public async Task<MappingSize.BrandSizeChart> GetBrandSizeChartAsync(string brandRefCode)
+        public async Task<MappingSize.BrandSizeChart?> GetBrandSizeChartAsync(string brandRefCode)
         {
             return await cache.GetOrCreateAsync($"analysis_brand_size_chart_{brandRefCode}", async entry =>
             {

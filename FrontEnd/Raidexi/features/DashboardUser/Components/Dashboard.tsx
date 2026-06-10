@@ -5,6 +5,7 @@ import { Camera, Download, Eye, History, Plus, Ruler } from "lucide-react";
 import { AuthContext } from "@/provider/AuthProvider";
 import { EditProfile } from "./EditProfile";
 import { ListMeasure } from "./ListMeasure";
+import { MyBrandRequests } from "./MyBrandRequests";
 
 const groups = [
   {
@@ -161,6 +162,8 @@ const Dashboard = ({
           </div>
         </div>
       )}
+
+      <MyBrandRequests />
 
       <div className="rx-card flex flex-col items-start justify-between gap-5 p-5 sm:flex-row sm:items-center">
         <div className="flex items-center gap-4">

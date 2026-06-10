@@ -98,6 +98,7 @@ namespace Raidexi.Domain.Entities
             [BsonId]
             [BsonRepresentation(BsonType.ObjectId)]
             public string? id { get; set; }
+            public string userId { get; set; } = string.Empty;
             public string brandName { get; set; } = string.Empty;
             public string refCode { get; set; } = string.Empty;
             public string category { get; set; } = string.Empty;

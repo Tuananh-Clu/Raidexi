@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using MongoDB.Driver;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Raidexi.Application.Dtos;
@@ -19,6 +19,7 @@ namespace Raidexi.Infrastructure.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AppDBContext appDBContext;
         private readonly MongoDbContext dbContext;
+        private readonly MailService emailService;
         public AuthService(IUserRepository userRepository, IPassWordHash passWordHash, ITokenServices tokenService, IHttpContextAccessor httpContextAccessor, AppDBContext context, MongoDbContext dbContext)
         {
             _userRepository = userRepository;
@@ -165,7 +166,7 @@ namespace Raidexi.Infrastructure.Services
             else
             {
                 var tokens = _tokenService.CreateToken(user);
-                _httpContextAccessor.HttpContext?.Response.Cookies.Append("access_token_client", tokens, new CookieOptions
+                _httpContextAccessor.HttpContext?.Response.Cookies.Append("access_token_admin", tokens, new CookieOptions
                 {
                     HttpOnly = true,
                     Secure = true,
@@ -202,8 +203,20 @@ namespace Raidexi.Infrastructure.Services
         }
         public async Task LogOut()
         {
-            _httpContextAccessor.HttpContext?.Response.Cookies.Delete("access_token_client");
-            _httpContextAccessor.HttpContext?.Response.Cookies.Delete("access_token_admin");
+            _httpContextAccessor.HttpContext?.Response.Cookies.Delete(
+    "access_token_client",
+    new CookieOptions
+    {
+        Secure = true,
+        SameSite = SameSiteMode.None
+    });
+            _httpContextAccessor.HttpContext?.Response.Cookies.Delete(
+     "access_token_admin",
+     new CookieOptions
+     {
+         Secure = true,
+         SameSite = SameSiteMode.None
+     });
             await Task.CompletedTask;
         }
         public async Task SaveMeasure(MeasureData data)
@@ -319,6 +332,48 @@ namespace Raidexi.Infrastructure.Services
             var dataBrandAnalysis = await _userRepository.GetBrandAnalysisByIdAsync(userId);
             return dataBrandAnalysis;
         }
-       
+
+        public async Task SendEmailResetPassword(string email)
+        {
+            var user = await _userRepository.GetByEmailAsync(email);
+            if (user == null)            {
+                return;
+            }
+            var token=Guid.NewGuid().ToString();
+            var base32Token = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(token));
+            var jwtService = new JwtSecurityTokenHandler();      
+            var jwtToken = jwtService.CreateJwtSecurityToken(
+                subject: new System.Security.Claims.ClaimsIdentity(new[]
+                {
+                    new System.Security.Claims.Claim("sub", user.Id)
+                }),
+                expires: DateTime.UtcNow.AddMinutes(15)
+            );
+            var tokenString = jwtService.WriteToken(jwtToken);
+            var userdata=new User
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FullName = user.FullName,
+                HashPassword = user.HashPassword,
+                CreatedAt = user.CreatedAt,
+                ImageUrl = user.ImageUrl,
+                Role = user.Role,
+                Phone = user.Phone,
+                Address = user.Address,
+                ResetPasswordToken=tokenString,
+            };
+            var resetLink = $"https://raidexi.com/reset-password?token={tokenString}";
+            var mailTemplate=emailService.PasswordResetTemplate(user.FullName, resetLink);
+            var sendEmailRequest = new SendMailRequest
+            {
+                To = user.Email,
+                Subject = "Password Reset Request",
+                Html = mailTemplate
+            };
+            await emailService.SendMailAsync(sendEmailRequest);
+            await _userRepository.UpdateAsync(userdata);
+            await Task.CompletedTask;
+        }
     }
 }

@@ -10,7 +10,7 @@ export const authApi = {
             fullname: params.fullname,
             typeLogin: params.typeLogin
         }),
-    logout: () => api_Response(API.Authentication.Logout, "POST", {}),
+    logout: () => api_Response(API.Authentication.Logout, "POST", {}, {withCredentials: true}),
     getDataUser: () => api_Response(API.Authentication.GetDataUser, "GET", {}, {}),
     loginWithFirebase: (token: string) =>
         api_Response(`${API.Authentication.LoginWithFirebase}?token=${token}`, "POST", {})

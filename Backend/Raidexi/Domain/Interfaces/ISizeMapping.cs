@@ -13,6 +13,10 @@ namespace Raidexi.Domain.Interfaces
 
         Task AddBrandProfileRequest(MappingSize.BrandProfileRequest brandProfileRequest);
         Task<List<MappingSize.BrandProfileRequest>> GetBrandProfileRequests();
+        Task<List<MappingSize.BrandProfileRequest>> GetBrandProfileRequestsByUserId(string userId);
+        Task UpdateBrandProfileRequestStatus(string id, MappingSize.BrandProfileRequestStatus status);
+
+        Task AddBrandSizeChartAndBrandProfile(List<MappingSize.BrandSizeChart> brandSizeCharts, List<MappingSize.BrandProfile> brandProfiles);
 
     }
 }

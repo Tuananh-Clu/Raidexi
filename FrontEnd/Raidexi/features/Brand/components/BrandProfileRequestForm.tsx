@@ -6,7 +6,6 @@ import { brandApi } from "../api/brandApi";
 import { BrandProfileRequest } from "../types";
 import { ToasterUi } from "@/Shared/Ui/ToasterUi";
 
-// ─── constants ───────────────────────────────────────────────────────────────
 const categoryOptions = [
   { label: "Việt Nam", value: "Vietnam" },
   { label: "Quốc tế", value: "International" },
@@ -44,7 +43,7 @@ const CHART_TEMPLATE = `[
   }
 ]`;
 
-// ─── types ────────────────────────────────────────────────────────────────────
+
 type Step = "profile" | "chart";
 
 interface ChartBlock {
@@ -190,7 +189,7 @@ export function BrandProfileRequestForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [skipChart, setSkipChart] = useState(false);
 
-  // step 1 — profile
+
   const [form, setForm] = useState<BrandProfileRequest>({
     brandName: initialBrandName === "Yêu cầu thương hiệu mới" ? "" : initialBrandName,
     refCode: "",
@@ -202,7 +201,7 @@ export function BrandProfileRequestForm({
     requesterNote: "",
   });
 
-  // step 2 — chart blocks
+
   const [chartBlocks, setChartBlocks] = useState<ChartBlock[]>([
     { gender: "male", productType: "top", rawJson: CHART_TEMPLATE, error: null },
   ]);
@@ -216,14 +215,13 @@ export function BrandProfileRequestForm({
   const updateField = (field: keyof BrandProfileRequest, value: string) =>
     setForm((c) => ({ ...c, [field]: value }));
 
-  // ── step 1 submit → move to step 2 ──
+
   const handleProfileNext = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!form.brandName.trim()) { ToasterUi("Vui lòng nhập tên thương hiệu", "error"); return; }
     setStep("chart");
   };
 
-  // ── add chart block ──
   const addBlock = () =>
     setChartBlocks((b) => [...b, { gender: "female", productType: "dress", rawJson: "[\n  {\n    \"labels\": { \"VN\": \"S\" },\n    \"Chest\": { \"Min\": 82, \"Max\": 86 },\n    \"Waist\": { \"Min\": 64, \"Max\": 68 },\n    \"Hip\":   { \"Min\": 86, \"Max\": 90 }\n  }\n]", error: null }]);
 
@@ -235,17 +233,13 @@ export function BrandProfileRequestForm({
 
   const hasJsonErrors = chartBlocks.some((b) => b.error !== null);
 
-  // ── final submit ──
   const handleFinalSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!skipChart && hasJsonErrors) { ToasterUi("Có lỗi JSON trong size chart", "error"); return; }
 
     setIsSubmitting(true);
     try {
-      // 1. tạo brand profile request
       await brandApi.createBrandProfileRequest({ ...form, brandName: form.brandName.trim(), refCode: resolvedRef });
-
-      // 2. nếu có size chart, gửi luôn
       if (!skipChart && chartBlocks.length > 0) {
         const charts = parseChartBlocks(chartBlocks);
         if (charts) {

@@ -22,8 +22,8 @@ namespace Raidexi.Infrastructure.Services
             }
 
 
-            var mailAccount =Environment.GetEnvironmentVariable("MailAdmin");
-            var password =Environment.GetEnvironmentVariable("MailAdminPassword");
+            var mailAccount = Environment.GetEnvironmentVariable("MailAdmin");
+            var password = Environment.GetEnvironmentVariable("MailAdminPassword");
 
             if (string.IsNullOrWhiteSpace(mailAccount) || string.IsNullOrWhiteSpace(password))
             {
@@ -83,6 +83,75 @@ namespace Raidexi.Infrastructure.Services
                     </body>
                 </html>
             ";
+        }
+        public string PasswordResetTemplate(string name, string link)
+        {
+
+            return $@"
+<html>
+<body style='margin:0;padding:0;background-color:#f5f5f5;font-family:Arial,sans-serif;'>
+    <table width='100%' cellpadding='0' cellspacing='0' style='padding:40px 0;background-color:#f5f5f5;'>
+        <tr>
+            <td align='center'>
+                <table width='600' cellpadding='0' cellspacing='0'
+                       style='background:#ffffff;border-radius:8px;padding:40px;'>
+
+                    <tr>
+                        <td align='center'>
+                            <h2 style='margin:0;color:#202124;'>
+                                Reset Your Password
+                            </h2>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style='padding-top:20px;color:#5f6368;font-size:16px;line-height:24px;'>
+                            Hi {name},
+                            <br/><br/>
+                            We received a request to reset the password for your Raidexi account.
+                            Click the button below to create a new password.
+                        </td>
+                        <a href='{link}' style='display:none;'>Reset Password Link</a>
+                    </tr>
+
+                    <tr>
+                        <td align='center' style='padding:30px 0;'>
+                            <a href='{link}'
+                               style='background:#1a73e8;
+                                      color:#ffffff;
+                                      text-decoration:none;
+                                      padding:14px 32px;
+                                      border-radius:4px;
+                                      display:inline-block;
+                                      font-weight:bold;'>
+                                Reset Password
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style='color:#5f6368;font-size:14px;line-height:22px;'>
+                            This link will expire in 15 minutes for security reasons.
+                            <br/><br/>
+                            If you didn't request a password reset, you can safely ignore this email.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style='padding-top:30px;border-top:1px solid #e0e0e0;color:#9aa0a6;font-size:12px;'>
+                            Best regards,<br/>
+                            The Raidexi Team
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>";
+
+
         }
     }
 }

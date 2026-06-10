@@ -1,4 +1,11 @@
-import { useContext, useState, Dispatch, SetStateAction } from "react";
+import {
+  useContext,
+  useState,
+  Dispatch,
+  SetStateAction,
+  use,
+  useEffect,
+} from "react";
 import { ArrowRight, History, Ruler, Send, X } from "lucide-react";
 import { Gender, ProductType, SizeSystem } from "../types";
 import { BrandContext } from "@/provider/BrandProvider";
@@ -8,6 +15,7 @@ import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 import { useLoadingStore } from "@/Shared/store/loading.store";
 import { useRouterService } from "@/Shared/Service/routerService";
 import { sizeTransferFromPic } from "@/Shared/store/sizeTransferFromPic";
+import { API, api_Response } from "@/Shared/Service/Api";
 
 export const SizeCustomizer = ({ type }: { type: string }) => {
   const { navigate } = useRouterService();
@@ -19,10 +27,36 @@ export const SizeCustomizer = ({ type }: { type: string }) => {
   const measurementData = useContext(BodyMeasureEstimateContext);
   const size = sizeTransferFromPic((state) => state.sizes);
   const { isLoading } = useLoadingStore();
-  const requestedBrand = context.popUpSettings.brandrefcode || "Yêu cầu thương hiệu mới";
+  const requestedBrand =
+    context.popUpSettings.brandrefcode || "Yêu cầu thương hiệu mới";
+  const [brandSizeCharts, setBrandSizeCharts] = useState<any>(null);
+
+  const dataBrand = async () => {
+    try {
+      const response = await api_Response(
+        API.Brand.GetBrandSizeChartsForId +
+          `/${context.popUpSettings.brandrefcode}`,
+        "GET",
+      );
+      setBrandSizeCharts(response);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    dataBrand();
+    console.log(brandSizeCharts);
+  }, [context.popUpSettings.brandrefcode]);
 
   const onClose = () => {
-    context.setPopUpSettings({ isopened: false, brandrefcode: "", gender: "", productType: "", sizeSystem: "" });
+    context.setPopUpSettings({
+      isopened: false,
+      brandrefcode: "",
+      gender: "",
+      productType: "",
+      sizeSystem: "",
+    });
   };
 
   const handleSubmit = async () => {
@@ -33,12 +67,20 @@ export const SizeCustomizer = ({ type }: { type: string }) => {
       aiContext.setDataMeasure({
         brand: requestedBrand,
         dataMeasure: latestMeasure,
-        userCustom: { gender, typeProduct: productType, sizeOutput: sizeSystem },
+        userCustom: {
+          gender,
+          typeProduct: productType,
+          sizeOutput: sizeSystem,
+        },
       } as AISuggestSizeType);
     } else {
       aiContext.setDataMeasureForImage({
         measureData: latestMeasure,
-        customizeDataAiSuggest: { gender, typeProduct: productType, sizeOutput: sizeSystem },
+        customizeDataAiSuggest: {
+          gender,
+          typeProduct: productType,
+          sizeOutput: sizeSystem,
+        },
         sizeAnalysisResponse: { sizes: size && size.length > 0 ? size : null },
       } as AISuggestSizeImageType);
     }
@@ -50,7 +92,7 @@ export const SizeCustomizer = ({ type }: { type: string }) => {
     value: T,
     currentValue: T,
     setValue: Dispatch<SetStateAction<T>>,
-    label: string
+    label: string,
   ) => {
     const isSelected = value === currentValue;
     return (
@@ -82,13 +124,20 @@ export const SizeCustomizer = ({ type }: { type: string }) => {
             </p>
             <h2 className="mt-4 font-serif text-5xl font-light leading-[0.92] text-[var(--ink)]">
               Customize số đo
-              <span className="block italic text-[var(--signal-blue)]">cho admin duyệt.</span>
+              <span className="block italic text-[var(--signal-blue)]">
+                cho admin duyệt.
+              </span>
             </h2>
             <div className="mt-8 rounded-[1.4rem] border border-[rgba(24,23,20,0.1)] bg-[rgba(255,253,247,0.58)] p-4">
-              <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--ink-muted)]">Thương hiệu</p>
-              <p className="mt-2 text-base font-extrabold text-[var(--ink)]">{requestedBrand}</p>
+              <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--ink-muted)]">
+                Thương hiệu
+              </p>
+              <p className="mt-2 text-base font-extrabold text-[var(--ink)]">
+                {requestedBrand}
+              </p>
               <p className="mt-2 text-xs leading-5 text-[var(--ink-soft)]">
-                Cấu hình này sẽ được dùng để tạo kết quả fit. Ở trang kết quả, bạn có thể gửi/lưu dữ liệu để admin hiệu chuẩn.
+                Cấu hình này sẽ được dùng để tạo kết quả fit. Ở trang kết quả,
+                bạn có thể gửi/lưu dữ liệu để admin hiệu chuẩn.
               </p>
             </div>
           </aside>
@@ -97,12 +146,20 @@ export const SizeCustomizer = ({ type }: { type: string }) => {
             <div className="mb-7 flex items-start justify-between gap-4">
               <div>
                 <span className="rx-badge rx-badge-blue">Tùy chọn fit</span>
-                <h3 className="mt-4 text-2xl font-extrabold text-[var(--ink)]">Thông số xuất cho thương hiệu</h3>
+                <h3 className="mt-4 text-2xl font-extrabold text-[var(--ink)]">
+                  Thông số xuất cho thương hiệu
+                </h3>
                 <p className="rx-copy mt-2 text-sm">
-                  Chọn ngữ cảnh sản phẩm để Raidexi tạo phân tích size đúng hơn trước khi gửi cho admin.
+                  Chọn ngữ cảnh sản phẩm để Raidexi tạo phân tích size đúng hơn
+                  trước khi gửi cho admin.
                 </p>
               </div>
-              <button onClick={onClose} className="rx-icon-btn" type="button" aria-label="Đóng">
+              <button
+                onClick={onClose}
+                className="rx-icon-btn"
+                type="button"
+                aria-label="Đóng"
+              >
                 <X size={16} strokeWidth={1.35} />
               </button>
             </div>
@@ -111,17 +168,45 @@ export const SizeCustomizer = ({ type }: { type: string }) => {
               <section>
                 <p className="rx-label">Giới tính</p>
                 <div className="grid grid-cols-2 gap-3">
-                  {renderOption(Gender.MALE, gender, setGender, "Nam")}
-                  {renderOption(Gender.FEMALE, gender, setGender, "Nữ")}
+                  {brandSizeCharts?.charts.some(
+                    (chart: any) => chart.gender === "male",
+                  ) && renderOption(Gender.MALE, gender, setGender, "Nam")}
+                  {brandSizeCharts?.charts.some(
+                    (chart: any) => chart.gender === "female",
+                  ) && renderOption(Gender.FEMALE, gender, setGender, "Nữ")}
                 </div>
               </section>
 
               <section>
                 <p className="rx-label">Loại sản phẩm</p>
                 <div className="grid grid-cols-3 gap-3">
-                  {renderOption(ProductType.TOP, productType, setProductType, "Áo")}
-                  {renderOption(ProductType.BOTTOM, productType, setProductType, "Quần")}
-                  {renderOption(ProductType.DRESS, productType, setProductType, "Đầm")}
+                  {brandSizeCharts?.charts.some(
+                    (chart: any) => chart.productType === "top",
+                  ) &&
+                    renderOption(
+                      ProductType.TOP,
+                      productType,
+                      setProductType,
+                      "Áo",
+                    )}
+                  {brandSizeCharts?.charts.some(
+                    (chart: any) => chart.productType === "bottom",
+                  ) &&
+                    renderOption(
+                      ProductType.BOTTOM,
+                      productType,
+                      setProductType,
+                      "Quần",
+                    )}
+                  {brandSizeCharts?.charts.some(
+                    (chart: any) => chart.productType === "dress",
+                  ) &&
+                    renderOption(
+                      ProductType.DRESS,
+                      productType,
+                      setProductType,
+                      "Váy",
+                    )}
                 </div>
               </section>
 
@@ -137,21 +222,45 @@ export const SizeCustomizer = ({ type }: { type: string }) => {
 
               {context?.brandMeasuredRefCodesData && (
                 <button
-                  onClick={() => navigate(`/Brand/result/?brand=${context.brandMeasuredRefCodesData?.brand}`)}
+                  onClick={() =>
+                    navigate(
+                      `/Brand/result/?brand=${context.brandMeasuredRefCodesData?.brand}`,
+                    )
+                  }
                   className="rx-card flex w-full items-center justify-between gap-4 p-4 text-left"
                   type="button"
                 >
                   <span>
                     <span className="rx-label">Yêu cầu gần nhất</span>
-                    <span className="block text-sm font-semibold text-[var(--ink)]">{context.brandMeasuredRefCodesData?.dataAnalysis.analysisDate}</span>
+                    <span className="block text-sm font-semibold text-[var(--ink)]">
+                      {
+                        context.brandMeasuredRefCodesData?.dataAnalysis
+                          .analysisDate
+                      }
+                    </span>
                   </span>
-                  <History size={16} strokeWidth={1.35} className="text-[var(--signal-blue)]" />
+                  <History
+                    size={16}
+                    strokeWidth={1.35}
+                    className="text-[var(--signal-blue)]"
+                  />
                 </button>
               )}
 
               <div className="flex flex-col gap-3 pt-3 md:flex-row">
-                <button onClick={onClose} className="rx-btn rx-btn-secondary flex-1" type="button">Hủy bỏ</button>
-                <button disabled={isLoading} onClick={handleSubmit} className={`rx-btn rx-btn-primary flex-1 ${isLoading ? "rx-btn-loading" : ""}`} type="button">
+                <button
+                  onClick={onClose}
+                  className="rx-btn rx-btn-secondary flex-1"
+                  type="button"
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  disabled={isLoading}
+                  onClick={handleSubmit}
+                  className={`rx-btn rx-btn-primary flex-1 ${isLoading ? "rx-btn-loading" : ""}`}
+                  type="button"
+                >
                   Tạo phân tích
                   <Send size={16} strokeWidth={1.35} />
                   <ArrowRight size={16} strokeWidth={1.35} />

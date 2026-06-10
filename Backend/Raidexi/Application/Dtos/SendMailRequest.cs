@@ -6,7 +6,7 @@
             public string To { get; set; }
             public string Subject { get; set; }
             public string Html { get; set; }
-            public AttachmentDto Attachment { get; set; }
+            public AttachmentDto? Attachment { get; set; }
         }
 
         public class AttachmentDto
