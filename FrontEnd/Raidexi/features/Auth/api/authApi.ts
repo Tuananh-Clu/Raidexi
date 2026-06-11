@@ -13,5 +13,9 @@ export const authApi = {
     logout: () => api_Response(API.Authentication.Logout, "POST", {}, {withCredentials: true}),
     getDataUser: () => api_Response(API.Authentication.GetDataUser, "GET", {}, {}),
     loginWithFirebase: (token: string) =>
-        api_Response(`${API.Authentication.LoginWithFirebase}?token=${token}`, "POST", {})
+        api_Response(`${API.Authentication.LoginWithFirebase}?token=${token}`, "POST", {}),
+    resetPassword: (email: string) =>
+        api_Response(`${API.Authentication.ResetPassword}?email=${email}`, "POST", {}, {withCredentials: true}),
+    confirmResetPassword: (params: { email: string; token: string; newPassword: string }) =>
+        api_Response(API.Authentication.ConfirmResetPassword, "POST", params)
 };

@@ -30,11 +30,21 @@ export const useAuth = () => {
         return await authApi.loginWithFirebase(token);
     };
 
+    const ResetPassword = async (email: string) => {
+        return await authApi.resetPassword(email);
+    };
+
+    const ConfirmResetPassword = async (email: string, token: string, newPassword: string) => {
+        return await authApi.confirmResetPassword({ email, token, newPassword });
+    };
+
     return {
         Login,
         Logout,
         Register,
         GetDataUser,
         LoginWithGoogle,
+        ResetPassword,
+        ConfirmResetPassword,
     };
 };

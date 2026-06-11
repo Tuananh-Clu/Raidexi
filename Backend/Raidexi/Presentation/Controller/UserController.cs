@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Raidexi.Application.Dtos;
 using Raidexi.Domain.Entities;
@@ -192,10 +192,21 @@ namespace Raidexi.Presentation.Controller
             });
         }
         [HttpPost("ResetPassword")]
-        public async Task<IActionResult> ResetPassword([FromBody] string email)
+        public async Task<IActionResult> ResetPassword([FromQuery] string email)
         {
             await authService.SendEmailResetPassword(email);
-            return Ok(new { message = "Password reset successfully." });
+            return Ok(new { message = "Password reset successfully.", isSuccess = true });
+        }
+
+        [HttpPost("ConfirmResetPassword")]
+        public async Task<IActionResult> ConfirmResetPassword([FromBody] ResetPasswordConfirmDto dto)
+        {
+            var result = await authService.ResetPassword(dto.Email, dto.NewPassword, dto.Token);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(new { message = result.ErrorMessage, isSuccess = false });
+            }
+            return Ok(new { message = "Password reset successfully.", isSuccess = true });
         }
     }
 }

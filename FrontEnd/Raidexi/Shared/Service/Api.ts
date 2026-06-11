@@ -15,6 +15,7 @@ export const API={
         "GetCustomProfileForUser":"/api/User/GetCustomProfileForUser",
         "UpdateCustomProfile":"/api/User/UpdateCustomProfile",
         "ResetPassword":"/api/User/ResetPassword",
+        "ConfirmResetPassword":"/api/User/ConfirmResetPassword",
     },
     "Brand":{
         "GetBrandProfile":"/api/MappingSize/brand-profiles",

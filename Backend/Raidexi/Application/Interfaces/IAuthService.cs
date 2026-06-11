@@ -21,6 +21,7 @@ namespace Raidexi.Application.Interfaces
         Task UpdateCustomProfile(SaveMeasureCustomDataList data);
         Task SaveCustomProfile(SaveMeasureCustomDataList data);
         Task SendEmailResetPassword(string email);
+        Task<AuthResult> ResetPassword(string email, string newPassword, string token);
 
     }
     public class AuthResult

@@ -4,11 +4,13 @@ import React, { useContext, useState } from "react";
 import { ArrowLeft, Lock, Mail } from "lucide-react";
 import { AuthContext } from "@/provider/AuthProvider";
 import { useLoadingStore } from "@/Shared/store/loading.store";
+import { ResetPasswordPopup } from "@/features/Auth/components/ResetPasswordPopup";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [keepActive, setKeepActive] = useState(false);
+  const [isResetPopupOpen, setIsResetPopupOpen] = useState(false);
   const { startLoading, stopLoading, isLoading } = useLoadingStore();
   const context = useContext(AuthContext);
 
@@ -116,7 +118,7 @@ const LoginPage: React.FC = () => {
                 <button
                   type="button"
                   className="text-sm font-bold text-[var(--signal-blue)]"
-                  onClick={() => alert("Chức năng đặt lại mật khẩu.")}
+                  onClick={() => setIsResetPopupOpen(true)}
                 >
                   Quên mật khẩu?
                 </button>
@@ -153,6 +155,8 @@ const LoginPage: React.FC = () => {
           </div>
         </section>
       </div>
+
+      <ResetPasswordPopup isOpen={isResetPopupOpen} onClose={() => setIsResetPopupOpen(false)} />
     </main>
   );
 };

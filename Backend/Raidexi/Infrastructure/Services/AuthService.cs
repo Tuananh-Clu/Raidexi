@@ -19,8 +19,8 @@ namespace Raidexi.Infrastructure.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AppDBContext appDBContext;
         private readonly MongoDbContext dbContext;
-        private readonly MailService emailService;
-        public AuthService(IUserRepository userRepository, IPassWordHash passWordHash, ITokenServices tokenService, IHttpContextAccessor httpContextAccessor, AppDBContext context, MongoDbContext dbContext)
+        private readonly IMailServicecs emailService;
+        public AuthService(IUserRepository userRepository, IPassWordHash passWordHash, ITokenServices tokenService, IHttpContextAccessor httpContextAccessor, AppDBContext context, MongoDbContext dbContext, IMailServicecs mailService)
         {
             _userRepository = userRepository;
             _passWordHash = passWordHash;
@@ -28,6 +28,7 @@ namespace Raidexi.Infrastructure.Services
             _httpContextAccessor = httpContextAccessor;
             appDBContext = context;
             this.dbContext = dbContext;
+            emailService = mailService;
         }
 
         public async Task<AuthResult> LoginAsync(string email, string password)
@@ -339,8 +340,6 @@ namespace Raidexi.Infrastructure.Services
             if (user == null)            {
                 return;
             }
-            var token=Guid.NewGuid().ToString();
-            var base32Token = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(token));
             var jwtService = new JwtSecurityTokenHandler();      
             var jwtToken = jwtService.CreateJwtSecurityToken(
                 subject: new System.Security.Claims.ClaimsIdentity(new[]
@@ -374,6 +373,28 @@ namespace Raidexi.Infrastructure.Services
             await emailService.SendMailAsync(sendEmailRequest);
             await _userRepository.UpdateAsync(userdata);
             await Task.CompletedTask;
+        }
+        public async Task<AuthResult> ResetPassword(string email, string newPassword, string token)
+        {
+            var user = await _userRepository.GetByEmailAsync(email);
+            if (user == null || user.ResetPasswordToken != token)
+            {
+                return new AuthResult
+                {
+                    IsSuccess = false,
+                    ErrorMessage = "Invalid token or email.",
+                    User = null
+                };
+            }
+            user.HashPassword = _passWordHash.HashPassword(newPassword);
+            user.ResetPasswordToken = null;
+            await _userRepository.UpdateAsync(user);
+            return new AuthResult
+            {
+                IsSuccess = true,
+                ErrorMessage = null,
+                User = user
+            };
         }
     }
 }
