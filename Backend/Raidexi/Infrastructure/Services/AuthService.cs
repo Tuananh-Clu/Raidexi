@@ -348,21 +348,10 @@ namespace Raidexi.Infrastructure.Services
                 }),
                 expires: DateTime.UtcNow.AddMinutes(15)
             );
+            
             var tokenString = jwtService.WriteToken(jwtToken);
-            var userdata=new User
-            {
-                Id = user.Id,
-                Email = user.Email,
-                FullName = user.FullName,
-                HashPassword = user.HashPassword,
-                CreatedAt = user.CreatedAt,
-                ImageUrl = user.ImageUrl,
-                Role = user.Role,
-                Phone = user.Phone,
-                Address = user.Address,
-                ResetPasswordToken=tokenString,
-            };
-            var resetLink = $"https://raidexi.com/reset-password?token={tokenString}";
+            user.ResetPasswordToken = tokenString;
+            var resetLink = $"https://raidexi.vercel.app/reset-password?token={tokenString}";
             var mailTemplate=emailService.PasswordResetTemplate(user.FullName, resetLink);
             var sendEmailRequest = new SendMailRequest
             {
@@ -371,7 +360,7 @@ namespace Raidexi.Infrastructure.Services
                 Html = mailTemplate
             };
             await emailService.SendMailAsync(sendEmailRequest);
-            await _userRepository.UpdateAsync(userdata);
+            await _userRepository.UpdateAsync(user);
             await Task.CompletedTask;
         }
         public async Task<AuthResult> ResetPassword(string email, string newPassword, string token)
