@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Raidexi.Application.Dtos;
 using Raidexi.Domain.Entities;
 using Raidexi.Domain.Interfaces;
+using Raidexi.Infrastructure.Persistence;
 using Raidexi.Infrastructure.Services;
 
 namespace Raidexi.Presentation.Controller
@@ -12,9 +13,11 @@ namespace Raidexi.Presentation.Controller
     public class UserController : ControllerBase
     {
         private readonly AuthService authService;
-        public UserController(AuthService auth)
+        private readonly UserRepository userRepository;
+        public UserController(AuthService auth, UserRepository userRepo)
         {
             authService = auth;
+            userRepository = userRepo;
         }
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
@@ -192,11 +195,24 @@ namespace Raidexi.Presentation.Controller
             });
         }
         [HttpPost("ResetPassword")]
-        public async Task<IActionResult> ResetPassword([FromQuery] string email)
+        public async Task<IActionResult> ResetPassword([FromBody] string email)
         {
+            if (string.IsNullOrEmpty(email))
+            {
+                return BadRequest(new { message = "Email is required.", isSuccess = false });
+            }
+
+            var user = await userRepository.GetByEmailAsync(email);
+            if (user == null)
+                    {
+                        return NotFound(new { message = "User not found.", isSuccess = false });
+            }
+
             await authService.SendEmailResetPassword(email);
-            return Ok(new { message = "Password reset successfully.", isSuccess = true });
+            return Ok(new { message = "Password reset email sent successfully.", isSuccess = true });
         }
+        
+        
 
         [HttpPost("ConfirmResetPassword")]
         public async Task<IActionResult> ConfirmResetPassword([FromBody] ResetPasswordConfirmDto dto)
