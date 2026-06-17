@@ -2,20 +2,37 @@ import { API, api_Response } from "@/Shared/Service/Api";
 import { LoginParams, RegisterParams } from "../types";
 
 export const authApi = {
-    login: (params: LoginParams) => api_Response(API.Authentication.Login, "POST", params),
-    register: (params: RegisterParams) =>
-        api_Response(API.Authentication.Register, "POST", {
-            email: params.email,
-            password: params.password,
-            fullname: params.fullname,
-            typeLogin: params.typeLogin
-        }),
-    logout: () => api_Response(API.Authentication.Logout, "POST", {}, {withCredentials: true}),
-    getDataUser: () => api_Response(API.Authentication.GetDataUser, "GET", {}, {}),
-    loginWithFirebase: (token: string) =>
-        api_Response(`${API.Authentication.LoginWithFirebase}?token=${token}`, "POST", {}),
-    resetPassword: (email: string) =>
-        api_Response(`${API.Authentication.ResetPassword}?email=${email}`, "POST", {}),
-    confirmResetPassword: (params: { email: string; token: string; newPassword: string }) =>
-        api_Response(API.Authentication.ConfirmResetPassword, "POST", params)
+  login: (params: LoginParams) =>
+    api_Response(API.Authentication.Login, "POST", params),
+  register: (params: RegisterParams) =>
+    api_Response(API.Authentication.Register, "POST", {
+      email: params.email,
+      password: params.password,
+      fullname: params.fullname,
+      typeLogin: params.typeLogin,
+    }),
+  logout: () =>
+    api_Response(
+      API.Authentication.Logout,
+      "POST",
+      {},
+      { withCredentials: true },
+    ),
+  getDataUser: () =>
+    api_Response(API.Authentication.GetDataUser, "GET", {}, {}),
+  loginWithFirebase: (token: string) =>
+    api_Response(
+      `${API.Authentication.LoginWithFirebase}?token=${token}`,
+      "POST",
+      {},
+    ),
+  resetPassword: (email: string) =>
+    api_Response(`${API.Authentication.ResetPassword}`, "POST", email, {
+      headers: { "Content-Type": "text/plain" },
+    }),
+  confirmResetPassword: (params: {
+    email: string;
+    token: string;
+    newPassword: string;
+  }) => api_Response(API.Authentication.ConfirmResetPassword, "POST", params),
 };
