@@ -8,6 +8,7 @@ using Raidexi.Application.Interfaces;
 using Raidexi.Infrastructure.Persistence;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Security.Policy;
 
 namespace Raidexi.Infrastructure.Services
 {
@@ -351,7 +352,7 @@ namespace Raidexi.Infrastructure.Services
             
             var tokenString = jwtService.WriteToken(jwtToken);
             user.ResetPasswordToken = tokenString;
-            var resetLink = $"https://raidexi.vercel.app/ResetPassword?token={tokenString}";
+            var resetLink = $"https://raidexi.vercel.app/ResetPassword?token={tokenString}&email={Uri.EscapeDataString(email)}";
             var mailTemplate=emailService.PasswordResetTemplate(user.FullName, resetLink);
             var sendEmailRequest = new SendMailRequest
             {
