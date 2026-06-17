@@ -351,7 +351,7 @@ namespace Raidexi.Infrastructure.Services
             
             var tokenString = jwtService.WriteToken(jwtToken);
             user.ResetPasswordToken = tokenString;
-            var resetLink = $"https://raidexi.vercel.app/reset-password?token={tokenString}";
+            var resetLink = $"https://raidexi.vercel.app/ResetPassword?token={tokenString}";
             var mailTemplate=emailService.PasswordResetTemplate(user.FullName, resetLink);
             var sendEmailRequest = new SendMailRequest
             {
