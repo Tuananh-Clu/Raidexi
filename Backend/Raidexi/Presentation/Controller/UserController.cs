@@ -14,7 +14,7 @@ namespace Raidexi.Presentation.Controller
     {
 
         private readonly AuthService authService; 
-        public UserController(AuthService auth, UserRepository userRepo)
+        public UserController(AuthService auth)
         {
             authService = auth;
 
