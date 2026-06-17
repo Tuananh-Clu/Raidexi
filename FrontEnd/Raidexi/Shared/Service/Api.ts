@@ -40,26 +40,30 @@ const rawBaseUrl = process.env.NEXT_PUBLIC_RAIDEXI_API_BASE_URL || "http://local
 
 export const BASE_URL = rawBaseUrl.replace(/\/+$/, "");
 
-export const api_Response=async(endpoint:string,method:'GET'|'POST'|'PUT'|'DELETE',data?:any,headers?:any)=>{
-    try {
-        let response;
-        switch (method) {
-            case 'GET':
-                response=await axios.get(BASE_URL + endpoint,{headers,withCredentials:true});
-                break;
-            case 'POST':
-                response=await axios.post(BASE_URL + endpoint,data,{headers,withCredentials:true});
-                break;
-            case 'PUT':
-                response=await axios.put(BASE_URL + endpoint,data,{headers,withCredentials:true});
-                break;
-            case 'DELETE':
-                response=await axios.delete(BASE_URL + endpoint,{headers,withCredentials:true});
-                break;
-            
-        }
-        return response.data as any;
-    } catch (error) {
-        throw error;
-    }   
+export const api_Response = async (
+  endpoint: string,
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+  data?: any,
+  config?: any 
+) => {
+  try {
+    let response;
+    switch (method) {
+      case 'GET':
+        response = await axios.get(BASE_URL + endpoint, { ...config, withCredentials: true });
+        break;
+      case 'POST':
+        response = await axios.post(BASE_URL + endpoint, data, { ...config, withCredentials: true });
+        break;
+      case 'PUT':
+        response = await axios.put(BASE_URL + endpoint, data, { ...config, withCredentials: true });
+        break;
+      case 'DELETE':
+        response = await axios.delete(BASE_URL + endpoint, { ...config, withCredentials: true });
+        break;
+    }
+    return response.data as any;
+  } catch (error) {
+    throw error;
+  }
 }
