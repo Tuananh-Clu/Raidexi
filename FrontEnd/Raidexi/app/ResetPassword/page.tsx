@@ -27,10 +27,6 @@ const ResetPasswordContent: React.FC = () => {
       return;
     }
 
-    if (!email || !token) {
-      ToasterUi("Đường dẫn không hợp lệ hoặc đã hết hạn.", "error");
-      return;
-    }
 
     startLoading?.("Đang cập nhật mật khẩu...");
     
