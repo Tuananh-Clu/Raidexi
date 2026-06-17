@@ -135,9 +135,7 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
-// ─── Middleware ────────────────────────────────────────────────────────────────
-if (app.Environment.IsDevelopment())
-{
+
     app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
@@ -145,7 +143,7 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Raidexi API v1");
         c.RoutePrefix = "swagger";
     });
-}
+
 
 app.UseRateLimiter();
 app.UseCors("AllowConfiguredOrigins");
