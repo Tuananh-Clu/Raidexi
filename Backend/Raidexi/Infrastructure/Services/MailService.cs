@@ -32,7 +32,7 @@ namespace Raidexi.Infrastructure.Services
             }
 
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("Raidexi", "raidexi@example.com"));
+            message.From.Add(new MailboxAddress("Raidexi", "hello@demomailtrap.co"));
             message.To.Add(MailboxAddress.Parse(sendMailRequest.To));
             message.Subject = sendMailRequest.Subject;
 
