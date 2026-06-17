@@ -1,3 +1,4 @@
+using System;
 using MailKit.Security;
 using MimeKit;
 using Raidexi.Application.Dtos;
@@ -64,7 +65,7 @@ namespace Raidexi.Infrastructure.Services
             message.Body = bodyBuilder.ToMessageBody();
 
             using var smtpClient = new MailKit.Net.Smtp.SmtpClient();
-            await smtpClient.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+            await smtpClient.ConnectAsync("live.smtp.mailtrap.io", 587, SecureSocketOptions.StartTls);
             await smtpClient.AuthenticateAsync(mailAccount, password);
             await smtpClient.SendAsync(message);
             await smtpClient.DisconnectAsync(true);
