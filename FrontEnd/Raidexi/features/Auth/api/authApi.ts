@@ -26,10 +26,10 @@ export const authApi = {
       "POST",
       {},
     ),
-  resetPassword: (email: string) =>
-    api_Response(`${API.Authentication.ResetPassword}`, "POST", email, {
-      headers: { "Content-Type": "text/plain" },
-    }),
+ resetPassword: (email: string) =>
+  api_Response(`${API.Authentication.ResetPassword}`, "POST", JSON.stringify(email), {
+    headers: { "Content-Type": "application/json" },
+  }),
   confirmResetPassword: (params: {
     email: string;
     token: string;
