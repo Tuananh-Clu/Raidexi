@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -163,11 +163,10 @@ const ProfileTagSelector: React.FC<ProfileTagSelectorProps> = ({ selectedProfile
                         onSelectProfile(profile);
                         setIsExpanded(false);
                       }}
-                      className={`flex w-full items-center gap-3 rounded-[1.1rem] border p-3 text-left transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
-                        isSelected
+                      className={`flex w-full items-center gap-3 rounded-[1.1rem] border p-3 text-left transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${isSelected
                           ? "border-[var(--signal-blue)] bg-[rgba(93,116,101,0.08)]"
                           : "border-transparent hover:border-[rgba(24,23,20,0.12)] hover:bg-[rgba(24,23,20,0.04)]"
-                      }`}
+                        }`}
                     >
                       <span className="h-3 w-3 rounded-full" style={{ backgroundColor: profile.color }} />
                       <span className="flex-1 truncate text-sm font-bold text-[var(--ink)]">{profile.name}</span>
@@ -228,11 +227,10 @@ const ProfileTagSelector: React.FC<ProfileTagSelectorProps> = ({ selectedProfile
                           key={relation}
                           onClick={() => setNewRelation(relation)}
                           type="button"
-                          className={`rounded-full px-3 py-1.5 text-[11px] font-bold transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
-                            newRelation === relation
+                          className={`rounded-full px-3 py-1.5 text-[11px] font-bold transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${newRelation === relation
                               ? "bg-[var(--ink)] text-[var(--surface-paper)]"
                               : "bg-[rgba(24,23,20,0.06)] text-[var(--ink-soft)] hover:bg-[rgba(24,23,20,0.1)]"
-                          }`}
+                            }`}
                         >
                           {relation}
                         </button>

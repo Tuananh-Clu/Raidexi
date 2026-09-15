@@ -63,18 +63,16 @@ function PrimaryAction({
   return (
     <a
       href={href}
-      className={`group inline-flex min-h-12 items-center justify-between gap-4 rounded-full px-5 py-2 text-sm font-bold transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--signal-blue)] focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--surface-canvas)] active:scale-[0.98] ${
-        primary
-          ? "bg-[var(--ink)] text-[var(--surface-paper)] shadow-[0_26px_80px_-38px_rgba(24,23,20,0.9)]"
-          : "bg-[rgba(255,253,247,0.74)] text-[var(--ink)] ring-1 ring-[rgba(24,23,20,0.12)]"
-      }`}
+      className={`group inline-flex min-h-12 items-center justify-between gap-4 rounded-full px-5 py-2 text-sm font-bold transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--signal-blue)] focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--surface-canvas)] active:scale-[0.98] ${primary
+        ? "bg-[var(--ink)] text-[var(--surface-paper)] shadow-[0_26px_80px_-38px_rgba(24,23,20,0.9)]"
+        : "bg-[rgba(255,253,247,0.74)] text-[var(--ink)] ring-1 ring-[rgba(24,23,20,0.12)]"
+        }`}
     >
       <span>{children}</span>
       <span
         aria-hidden="true"
-        className={`flex h-9 w-9 items-center justify-center rounded-full transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1 group-hover:-translate-y-[1px] ${
-          primary ? "bg-[var(--signal-blue)] text-white" : "bg-[var(--ink)] text-[var(--surface-paper)]"
-        }`}
+        className={`flex h-9 w-9 items-center justify-center rounded-full transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1 group-hover:-translate-y-[1px] ${primary ? "bg-[var(--signal-blue)] text-white" : "bg-[var(--ink)] text-[var(--surface-paper)]"
+          }`}
       >
         -&gt;
       </span>
@@ -184,13 +182,12 @@ function FitPassport() {
                   <span className="block text-[11px] font-semibold text-[var(--ink-muted)]">{item.note}</span>
                 </span>
                 <span
-                  className={`flex h-11 min-w-11 items-center justify-center rounded-full px-3 font-serif text-2xl ${
-                    item.tone === "sage"
-                      ? "bg-[rgba(93,116,101,0.13)] text-[var(--signal-blue)]"
-                      : item.tone === "clay"
-                        ? "bg-[rgba(159,74,61,0.12)] text-[var(--tailor-red)]"
-                        : "bg-[rgba(154,116,71,0.13)] text-[var(--brass)]"
-                  }`}
+                  className={`flex h-11 min-w-11 items-center justify-center rounded-full px-3 font-serif text-2xl ${item.tone === "sage"
+                    ? "bg-[rgba(93,116,101,0.13)] text-[var(--signal-blue)]"
+                    : item.tone === "clay"
+                      ? "bg-[rgba(159,74,61,0.12)] text-[var(--tailor-red)]"
+                      : "bg-[rgba(154,116,71,0.13)] text-[var(--brass)]"
+                    }`}
                 >
                   {item.size}
                 </span>

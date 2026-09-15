@@ -1,4 +1,4 @@
-﻿import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
@@ -138,13 +138,12 @@ const ControlPanel: React.FC<ControlPanelProps> = ({ status, data, onToggleGrid,
                     initial={false}
                     animate={{ opacity: isActive || isDone ? 1 : 0.58, y: 0 }}
                     transition={{ duration: 0.42, ease: motionEase }}
-                    className={`relative z-10 flex items-start gap-3 rounded-[1.15rem] border p-3 ${
-                      isActive
+                    className={`relative z-10 flex items-start gap-3 rounded-[1.15rem] border p-3 ${isActive
                         ? "border-[var(--signal-blue)] bg-[rgba(93,116,101,0.08)]"
                         : isDone
                           ? "border-[rgba(101,114,98,0.25)] bg-[rgba(101,114,98,0.08)]"
                           : "border-transparent bg-[rgba(255,253,247,0.56)]"
-                    }`}
+                      }`}
                   >
                     <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border bg-[var(--surface-paper)] ${isActive ? "border-[var(--signal-blue)] text-[var(--signal-blue)]" : isDone ? "border-[var(--sage)] text-[var(--sage)]" : "border-[rgba(24,23,20,0.12)] text-[var(--ink-muted)]"}`}>
                       {isDone ? <Check size={15} strokeWidth={1.35} /> : <Icon size={15} strokeWidth={1.35} />}

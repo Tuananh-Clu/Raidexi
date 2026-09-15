@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Hero from "@/features/Brand/components/Hero";
 import { Footer } from "@/Shared/Components/components/Footer";

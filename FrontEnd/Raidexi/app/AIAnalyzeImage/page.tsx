@@ -220,11 +220,10 @@ export default function AIAnalyzeImage() {
                   setIsDragging(false);
                 }}
                 onDrop={handleDrop}
-                className={`flex min-h-[420px] flex-col items-center justify-center rounded-[1.6rem] border-2 border-dashed p-10 text-center transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
-                  isDragging
+                className={`flex min-h-[420px] flex-col items-center justify-center rounded-[1.6rem] border-2 border-dashed p-10 text-center transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${isDragging
                     ? "border-[var(--signal-blue)] bg-[rgba(93,116,101,0.1)]"
                     : "border-[rgba(93,116,101,0.34)] bg-[rgba(255,253,247,0.62)]"
-                }`}
+                  }`}
               >
                 <ImageIcon className="mb-6 text-[var(--signal-blue)]" size={48} strokeWidth={1.2} />
                 <h2 className="text-3xl font-extrabold text-[var(--ink)]">

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Header from "@/features/Preview/component/header";
 import React, { useContext, useState } from "react";

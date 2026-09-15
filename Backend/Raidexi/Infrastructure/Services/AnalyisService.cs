@@ -12,11 +12,13 @@ namespace Raidexi.Infrastructure.Services
     {
         private readonly CacheAnalysisDataService cache;
         private readonly GeminiService geminiServices;
+        private readonly CachingCategory cachingCategory;
 
-        public AnalyisService(CacheAnalysisDataService cacheAnalysisDataService, GeminiService geminiService)
+        public AnalyisService(CacheAnalysisDataService cacheAnalysisDataService, GeminiService geminiService, CachingCategory cachingCategory)
         {
             cache = cacheAnalysisDataService;
             geminiServices = geminiService;
+            this.cachingCategory = cachingCategory;
         }
 
 
@@ -70,17 +72,7 @@ namespace Raidexi.Infrastructure.Services
             if (group == null || group.items == null || !group.items.Any())
                 return new SizeResult { SizeCode = "No Chart Available", FitPercent = 0 };
 
-            var fieldMap = typeof(MeasureData)
-                .GetProperties()
-                .Where(p => p.PropertyType == typeof(float))
-                .Select(p => new
-                {
-                    Name  = p.Name,
-                    Value = (float)p.GetValue(measureData)!
-                })
-                .Where(x => x.Value > 0)
-                .ToDictionary(x => x.Name, x => (int)Math.Round(x.Value));
-
+            var fieldMap = cachingCategory.CategoryCache(measureData);
             var results = new List<SizeResult>();
             var properties = typeof(MappingSize.SizeChartItem).GetProperties()
                 .Where(p => p.PropertyType == typeof(MappingSize.ValueSize))
@@ -259,16 +251,7 @@ namespace Raidexi.Infrastructure.Services
             double bestScore = -1;
             string bestSize = "";
 
-            var measureDataDict = typeof(MeasureData)
-                .GetProperties()
-                .Where(p => p.PropertyType == typeof(float))
-                .Select(p => new
-                {
-                    Name  = p.Name,
-                    Value = (float)p.GetValue(measureData)!
-                })
-                .Where(x => x.Value > 0)
-                .ToDictionary(x => x.Name, x => (int)Math.Round(x.Value));
+            var measureDataDict = cachingCategory.CategoryCache(measureData);
 
             foreach (var s in uploadData.Sizes)
             {

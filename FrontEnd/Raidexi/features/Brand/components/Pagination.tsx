@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PaginationProps } from "../types";
 
@@ -29,11 +29,10 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, totalI
           <button
             key={page}
             onClick={() => onPageChange(page)}
-            className={`flex h-9 w-9 items-center justify-center rounded-full text-xs transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--signal-blue)] ${
-              currentPage === page
+            className={`flex h-9 w-9 items-center justify-center rounded-full text-xs transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--signal-blue)] ${currentPage === page
                 ? "bg-[var(--ink)] text-[var(--surface-paper)]"
                 : "bg-[rgba(24,23,20,0.06)] text-[var(--ink)] hover:bg-[rgba(24,23,20,0.1)]"
-            }`}
+              }`}
             aria-current={currentPage === page ? "page" : undefined}
             type="button"
           >

@@ -46,11 +46,10 @@ const FilterBar: React.FC<FilterBarProps> = ({
               <button
                 key={filter.label}
                 onClick={() => onFilterChange(filter.type)}
-                className={`inline-flex min-h-11 items-center gap-2 rounded-full px-5 text-sm font-bold transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
-                  isActive
+                className={`inline-flex min-h-11 items-center gap-2 rounded-full px-5 text-sm font-bold transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${isActive
                     ? "bg-[var(--ink)] text-[var(--surface-paper)] shadow-[0_16px_42px_-32px_rgba(24,23,20,0.9)]"
                     : "border border-[rgba(24,23,20,0.1)] bg-[rgba(255,253,247,0.62)] text-[var(--ink)] hover:bg-[rgba(24,23,20,0.055)]"
-                }`}
+                  }`}
                 type="button"
               >
                 {filter.label}

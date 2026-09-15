@@ -70,11 +70,10 @@ export const NavBar: React.FC = () => {
                     key={item.href}
                     href={item.href}
                     aria-current={active ? "page" : undefined}
-                    className={`rounded-full px-4 py-2 text-xs font-bold transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--signal-blue)] ${
-                      active
-                        ? "bg-[var(--ink)] text-[var(--surface-paper)] shadow-[0_16px_44px_-30px_rgba(24,23,20,0.72)]"
-                        : "text-[var(--ink-soft)] hover:bg-[rgba(255,253,247,0.7)] hover:text-[var(--ink)]"
-                    }`}
+                    className={`rounded-full px-4 py-2 text-xs font-bold transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--signal-blue)] ${active
+                      ? "bg-[var(--ink)] text-[var(--surface-paper)] shadow-[0_16px_44px_-30px_rgba(24,23,20,0.72)]"
+                      : "text-[var(--ink-soft)] hover:bg-[rgba(255,253,247,0.7)] hover:text-[var(--ink)]"
+                      }`}
                   >
                     {item.label}
                   </a>
@@ -129,14 +128,12 @@ export const NavBar: React.FC = () => {
               aria-expanded={open}
             >
               <span
-                className={`absolute h-px w-4 bg-current transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
-                  open ? "translate-y-0 rotate-45" : "-translate-y-1.5"
-                }`}
+                className={`absolute h-px w-4 bg-current transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${open ? "translate-y-0 rotate-45" : "-translate-y-1.5"
+                  }`}
               />
               <span
-                className={`absolute h-px w-4 bg-current transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
-                  open ? "translate-y-0 -rotate-45" : "translate-y-1.5"
-                }`}
+                className={`absolute h-px w-4 bg-current transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${open ? "translate-y-0 -rotate-45" : "translate-y-1.5"
+                  }`}
               />
             </button>
           </div>
@@ -183,11 +180,10 @@ export const NavBar: React.FC = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.08 + index * 0.045, duration: 0.58, ease: navEase }}
                         onClick={() => closeAndGo(item.href)}
-                        className={`rounded-[1.35rem] px-4 py-3 text-left text-2xl font-bold transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
-                          active
-                            ? "bg-[var(--ink)] text-[var(--surface-paper)]"
-                            : "bg-[rgba(255,253,247,0.58)] text-[var(--ink)] ring-1 ring-[rgba(24,23,20,0.08)]"
-                        }`}
+                        className={`rounded-[1.35rem] px-4 py-3 text-left text-2xl font-bold transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${active
+                          ? "bg-[var(--ink)] text-[var(--surface-paper)]"
+                          : "bg-[rgba(255,253,247,0.58)] text-[var(--ink)] ring-1 ring-[rgba(24,23,20,0.08)]"
+                          }`}
                       >
                         {item.label}
                       </motion.button>

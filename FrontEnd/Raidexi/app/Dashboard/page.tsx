@@ -17,10 +17,10 @@ export default function Page() {
   const lastUpdate =
     dataMeasurements && dataMeasurements.length > 0
       ? new Date(
-          [...dataMeasurements].sort(
-            (a, b) => new Date(b.lastUpdate).getTime() - new Date(a.lastUpdate).getTime(),
-          )[0].lastUpdate,
-        ).toLocaleDateString("vi-VN")
+        [...dataMeasurements].sort(
+          (a, b) => new Date(b.lastUpdate).getTime() - new Date(a.lastUpdate).getTime(),
+        )[0].lastUpdate,
+      ).toLocaleDateString("vi-VN")
       : null;
 
   return (

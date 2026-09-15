@@ -37,7 +37,7 @@ export const EditProfile = ({
     createdAt: data?.createdAt ?? "",
     hashPassword: "",
     imageUrl: data?.imageUrl ?? "",
-      role: data?.role ?? "",
+    role: data?.role ?? "",
   });
 
   const handleSave = async () => {

@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { BadgeCheck, Fingerprint, Mail, MapPin, Phone, Repeat2, ShieldCheck, TrendingDown } from "lucide-react";
 
 const benefits = [

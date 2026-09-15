@@ -1,4 +1,4 @@
-﻿import IntroSection from "@/features/Contact/components/IntroSection";
+import IntroSection from "@/features/Contact/components/IntroSection";
 import { NavBar } from "@/Shared/Components/components/NavBar";
 import React from "react";
 import ContactForm from "@/features/Contact/components/ContactForm";

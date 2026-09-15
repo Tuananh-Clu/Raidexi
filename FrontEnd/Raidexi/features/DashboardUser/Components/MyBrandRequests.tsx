@@ -116,7 +116,7 @@ export function MyBrandRequests() {
                   <span>{req.createdAt ? new Date(req.createdAt).toLocaleDateString("vi-VN") : "—"}</span>
                 </div>
               </div>
-              
+
               <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset ${config.color} sm:self-center w-fit`}>
                 <Icon size={13} strokeWidth={2} />
                 {config.label}

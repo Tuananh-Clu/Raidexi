@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { BodyMeasureEstimateContext } from "@/provider/BodyMeasureEstimate";
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";

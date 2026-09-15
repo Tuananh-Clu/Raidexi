@@ -29,7 +29,7 @@ const ResetPasswordContent: React.FC = () => {
 
 
     startLoading?.("Đang cập nhật mật khẩu...");
-    
+
     try {
       await ConfirmResetPassword(email, token, password);
       setIsSuccess(true);

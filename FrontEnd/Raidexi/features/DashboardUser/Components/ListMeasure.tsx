@@ -1,4 +1,4 @@
-﻿import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Clock, Eye, Shield, X } from "lucide-react";
 import { data, ProfileTag } from "@/features/Camera/types";
 import { useContext, useEffect, useState } from "react";
